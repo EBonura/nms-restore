@@ -240,6 +240,57 @@ polls = [3000, 3800]
 offsets = [-24, -12, 0, 12, 24, 36]
 launch_args = ["--digital-pad"]
 
+# Load times (the owner, 2026-11-23: "everything should load at the same speed or even faster" under the core), in
+# VBlanks on the PSoXide frontend, never more than the baseline. The disc builds split each game into a base and scene
+# images that load where the game already loads from the CD (docs/DECISIONS.md, "Scene images"): these rows time
+# the loads that now include an image. A poll-bound tape's presses land on the same game states whatever a load
+# costs, so a row's VBlanks differ between two builds only by their loads.
+[[load]]
+name = "x360-boot"
+build = "x360"
+until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 1 }
+max_polls = 1500
+launch_args = ["--digital-pad"]
+
+[[load]]
+name = "x360-mission1"
+build = "x360"
+tape = "pgo/x360-boot-thrust.pxtape"
+from = { kind = "ram", sym = "craftremaining", size = 2, op = "eq", value = 5 }
+until = { kind = "ram", sym = "fuel", size = 2, op = "gt", value = 0 }
+max_polls = 2850
+launch_args = ["--digital-pad"]
+
+[[load]]
+name = "qdup-boot"
+build = "qdup"
+until = { kind = "ram", sym = "BackScreen", size = 4, op = "ne", value = 0 }
+max_polls = 1500
+launch_args = ["--digital-pad"]
+
+[[load]]
+name = "qdup-table"
+build = "qdup"
+tape = "pgo/qdup-shot.pxtape"
+from = { kind = "ram", sym = "Allocated_Memory_Block", size = 4, op = "ge", value = 800000 }
+until = { kind = "ram", sym = "Allocated_Memory_Block", size = 4, op = "eq", value = 643028 }
+max_polls = 3000
+launch_args = ["--digital-pad"]
+
+# The deepest stack at the end of each smoke: the stack top is 100h under the RAM top psyq/core-window.sh gives the
+# link (a --defsym, which the map does not carry), 16 KB kept for each game's stack.
+[[stack]]
+journey = "smoke-x360"
+checkpoint = "thrust"
+top = 0x801FDF00
+reserve = 0x4000
+
+[[stack]]
+journey = "smoke-qdup"
+checkpoint = "game"
+top = 0x801FDF00
+reserve = 0x4000
+
 [journeys]
 files = "tests/*.toml"
 # The analog start-heading journey forces a DualShock in analog mode: the owner plays that way, and the layer hands such a pad to the

@@ -324,7 +324,8 @@ pub(crate) fn attach() {
     block_u16(0x06, 0x100);
     block_u32(0x0C, psx_io::disc_base::lba_offset());
     block_u32(0x10, u32::from(psx_io::disc_base::cdda_track_base()));
-    block_u16(OFF_CURRENT, 0);
+    // The boot scene's image comes in with the program when the EXE carries it (tools/scenes.py `preload`).
+    block_u16(OFF_CURRENT, &raw const __scene_preloaded as u16);
     block_u16(OFF_PREVIOUS, 0xFFFF);
     block_u32(0xFC, !BLOCK_MAGIC);
 }
@@ -370,6 +371,8 @@ extern "C" {
     /// program without images).
     static __scene_region_start: u8;
     static __scene_region_end: u8;
+    /// The scene id of the image the EXE carries in the region (0: none), an absolute symbol.
+    static __scene_preloaded: u8;
 }
 
 /// Word FNV-1a (CORE-ABI.md: offset basis 0x811C9DC5, prime 0x01000193, a word at a step).

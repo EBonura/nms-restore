@@ -155,6 +155,7 @@ if [ "$ram" = cd ]; then
 		"$root/psyq/hazard.sh" --image "$out/qdup.exe" "$out/qdup.map" "$f" "${f%.bin}.map"
 	done
 	python3 -I "$root/tools/scenes.py" pack "$here/scenes.txt" "$out" "$out/SCENES.IMG" --list "$out/SCENES.IMG.txt"
+	python3 -I "$root/tools/scenes.py" splice "$here/scenes.txt" "$out" "$out/qdup.exe"
 fi
 # RESTORE: PLATFORM. A disc's executable carries the gate's receipt (sdk/docs/GATE.md): psx-gate over the
 # layer, then the stamp, as the last change to the file.

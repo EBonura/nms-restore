@@ -11,7 +11,7 @@ region 0x1000 0x000
 
 # The boot scene: the splash (the SDK's, with the PSX Archive credit) and the film player, which
 # only the start of the game uses. Loaded once, then overwritten by the language screen.
-image 1 BOOT
+image 1 BOOT preload
 layer .boot_only .boot_only.* .text.FmvPlay .text.FmvMemoryBytes .text.*psx_fmv* .rodata.*psx_fmv* .bss.*psx_fmv*
 layer .text.PsxSplash .text.*psx_splash* .rodata.*psx_splash*
 entry PsxSplash FmvPlay FmvMemoryBytes

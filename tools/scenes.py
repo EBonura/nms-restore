@@ -12,6 +12,7 @@ into one shared region, docs/DECISIONS.md "Scene images").
                                                             (the SDK's hazard-patch, through the
                                                             program's trampolines; EXE is updated)
     scenes.py pack    SCENES.TXT OUTDIR OUT.IMG [--list TXT]  SCENES.IMG (table sector, then images)
+    scenes.py splice  SCENES.TXT OUTDIR EXE                 the preloaded image into the EXE
     scenes.py flags   SCENES.TXT                            the linker's --wrap flags
 
 SCENES.TXT, one directive a line, `#` starts a comment:
@@ -19,7 +20,10 @@ SCENES.TXT, one directive a line, `#` starts a comment:
     region ALIGN OFFSET        the region starts at the first address after .data that is OFFSET
                                past a multiple of ALIGN (the I-cache knob: the region's code keeps
                                its place in the 4 KB cache whatever the base grows or shrinks to)
-    image ID NAME              a new image; ID is its scene id (its row in the table)
+    image ID NAME [preload]    a new image; ID is its scene id (its row in the table). `preload`
+                               (the first image only, the boot scene): the EXE carries it in the
+                               region too, so the BIOS loads it with the program and it is the
+                               current scene from the start (no read, no seek before the splash)
     objects NAME...            NMS objects (NAME.o) whose code and constant data go in the image
                                (.text*, .rodata*): their .data and .bss stay in the base, so a
                                reload never resets a variable
@@ -85,6 +89,9 @@ def parse(path):
             region = (int(args[0], 0), int(args[1], 0))
         elif kind == 'image':
             images.append(Image(int(args[0]), args[1]))
+            images[-1].preload = args[2:] == ['preload']
+            if images[-1].preload and len(images) != 1:
+                sys.exit(f'{path}:{n}: only the first image can be preloaded')
         elif kind == 'objects':
             images[-1].objects += args
         elif kind == 'functions':
@@ -152,6 +159,8 @@ def cmd_ld(scenes, out, objdir):
     size = '0'
     for im in images:
         size = 'MAX(%s, SIZEOF(.scene_%s))' % (size, im.name)
+    pre = [im for im in images if im.preload]
+    w += ['    __scene_preloaded = %d;' % (pre[0].id if pre else 0)]
     w += ['    . = __scene_region_start + %s;' % size,
           '    __scene_region_end = .;',
           '}',
@@ -496,6 +505,28 @@ def cmd_patch(exe, mapfile, blob, blobmap, tools):
         shutil.rmtree(tmp)
 
 
+def cmd_splice(scenes, outdir, exe):
+    """Put the preloaded image (patched, from cmd_cut/cmd_patch) into the EXE at its place in the region,
+    after the program's load, and grow the header's size to cover it."""
+    _, images, _ = parse(scenes)
+    pre = [im for im in images if im.preload]
+    if not pre:
+        return
+    base = os.path.join(outdir, 'SCENES.%s' % pre[0].name)
+    data = open(base + '.bin', 'rb').read()
+    start = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)
+    prog = bytearray(open(exe, 'rb').read())
+    load = struct.unpack_from('<I', prog, 0x18)[0]
+    at = 0x800 + start - load
+    if at < len(prog.rstrip(b'\0')) or at < 0x800:
+        sys.exit('scenes.py splice: the region starts inside the program')
+    prog = prog[:at].ljust(at, b'\0') + data
+    prog += b'\0' * ((-len(prog)) % SECTOR)
+    struct.pack_into('<I', prog, 0x1C, len(prog) - 0x800)
+    open(exe, 'wb').write(prog)
+    print(f'scenes: {pre[0].name} preloaded in the EXE at {start:#x} ({len(data)} bytes)')
+
+
 def cmd_pack(scenes, outdir, out, listing):
     """SCENES.IMG from the images cmd_cut wrote (and cmd_patch patched): the table sector, then each."""
     _, images, _ = parse(scenes)
@@ -552,6 +583,8 @@ def main():
         cmd_cut(*args)
     elif cmd == 'patch' and len(args) == 5:
         cmd_patch(*args)
+    elif cmd == 'splice' and len(args) == 3:
+        cmd_splice(*args)
     elif cmd == 'pack' and len(args) in (3, 5):
         cmd_pack(args[0], args[1], args[2], args[4] if len(args) == 5 else None)
     else:

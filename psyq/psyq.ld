@@ -109,9 +109,14 @@ SECTIONS {
     }
 
     __heap_start = __bss_end;
+    /* The scene core's handoff block (CORE-ABI.md 2, src/core_shim.rs) and its current scene's word, named
+       for the tools that watch it. */
+    __psx_handoff_block = 0x801FFF00;
+    __psx_handoff_scene = 0x801FFF14;
     /* a program without scene images (tools/scenes.py) has an empty region */
     PROVIDE(__scene_region_start = 0);
     PROVIDE(__scene_region_end = 0);
+    PROVIDE(__scene_preloaded = 0);
     __heap_end   = STACK_INIT - STACK_RESERVE;
     ASSERT(__bss_end <= STACK_INIT - STACK_RESERVE, "program does not fit below the stack reserve")
 
