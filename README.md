@@ -78,7 +78,7 @@ Every choice made in the restoration, including what was kept as NMS left it and
 You need:
 - `mipsel-none-elf-gcc` 14 (Homebrew: `brew install mipsel-none-elf-gcc`), Rust `nightly-2026-03-25` with `rust-src` (rustup installs it from `psyq/rust-toolchain.toml`), Python 3, `git` and `unzip`.
 - `ffmpeg`, for the 360X disc only (it decodes NMS's intro film).
-- NMS's original archives `360X.ZIP`, `20SEPT96.ZIP` and `P_200996.ZIP`. They hold the game data, which is not in this repository.
+- NMS's original archives `360X.ZIP`, `20SEPT96.ZIP` and `P_200996.ZIP`. They hold the game data, which is not in this repository. They come from the PlayStation Museum's set of NMS's backups. An earlier, partial copy of NMS's backup CD is on archive.org ([NMS Backup CD](https://archive.org/details/nms_backup_cd)); it does not include these three archives.
 
 Unpack the archives once (the script checks each one's sha256 and repairs five known bit flips in `P_200996.ZIP`):
 
