@@ -11,7 +11,7 @@
 set -e
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
-rev=${PSOXIDE_REV:-6bfe478ff0e0c6e226cdf67b164df311c1658fec}
+rev=${PSOXIDE_REV:-6e32ce0a94a32dbe207018d52abc0104e63b9a03}
 src=${PSOXIDE_SRC:-https://github.com/EBonura/PSoXide}
 sdk=$root/build/psoxide
 

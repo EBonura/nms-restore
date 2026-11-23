@@ -12,6 +12,7 @@ repository = "EBonura/nms-restore"
 [sdk]
 file = "psyq/build.sh"
 after = "PSOXIDE_REV:-"
+guest_tree = "6bc974a3e5a2f456d0ac311a8ff95f2dd945b6a7c000a55f1e44bf324d51836e"
 
 # 360X's disc and QD Up's disc: two programs, two builds (they share the layer build and the SDK clone, so they
 # run in this order). The gameplay scripts take a build's output directory ({out}).
