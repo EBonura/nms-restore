@@ -140,6 +140,8 @@ if [ "$ram" = cd ]; then
 	done
 	python3 -I "$root/tools/scenes.py" pack "$here/scenes.txt" "$out" "$out/SCENES.IMG" --list "$out/SCENES.IMG.txt"
 	python3 -I "$root/tools/scenes.py" splice "$here/scenes.txt" "$out" "$out/360x.exe"
+	# the rows, with SCENES.IMG where the disc puts it: the first file after the boot area (disc.sh checks)
+	python3 -I "$root/tools/scenes.py" embed "$out/SCENES.IMG" "$out/360x.exe" ${SCENES_LBA:-1024}
 fi
 # RESTORE: PLATFORM. A disc's executable carries the gate's receipt (sdk/docs/GATE.md): psx-gate over the
 # layer, then the stamp, as the last change to the file.

@@ -7,6 +7,11 @@
 # gives back is the smaller of FRONT and MISSION: MISSION is only as large as it needs to be (at
 # least FRONT), and every byte of it is read at the Load_Level switch.
 
+# arrange: the per-game setting (owner, 2026-11-23). overlap (this): FRONT and MISSION share one region and load at
+# the switches (a 19-sector read at a game over or QUIT, 27 at each mission's briefing, about 0.4 to 0.6 s each in the
+# emulator); heap room above the 1319 KB block 19,644 B (4,164 B before the split). resident: no read at a switch, but
+# the room goes to -19,268 B, so maxmalloc (MAIN.C:51) would lose 19 KB of Mission 1's 56.2 KB margin.
+arrange overlap
 region 0x1000 0x000
 
 # Boot-only code, not a scene (PLAN.md "Splash: one mechanism"): the splash (the SDK's, with the PSX Archive credit) and the film player, which

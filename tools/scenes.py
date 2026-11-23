@@ -13,10 +13,17 @@ into one shared region, docs/DECISIONS.md "Scene images").
                                                             program's trampolines; EXE is updated)
     scenes.py pack    SCENES.TXT OUTDIR OUT.IMG [--list TXT]  SCENES.IMG (table sector, then images)
     scenes.py splice  SCENES.TXT OUTDIR EXE                 the preloaded image into the EXE
+    scenes.py embed   SCENES.IMG EXE LBA                    the table's rows into the EXE, SCENES.IMG at LBA
     scenes.py flags   SCENES.TXT                            the linker's --wrap flags
 
 SCENES.TXT, one directive a line, `#` starts a comment:
 
+    arrange overlap|resident   the per-game setting (owner, 2026-11-23: a modular loader, the
+                               arrangement a setting): `overlap` puts the region images at one
+                               address, loaded on demand (frees RAM, a read at each switch);
+                               `resident` puts each at its own address, all carried by the EXE
+                               (no read at a switch, the RAM of all of them). SCENES_ARRANGE in
+                               the environment overrides it (measurements of both)
     region ALIGN OFFSET        the region starts at the first address after .data that is OFFSET
                                past a multiple of ALIGN (the I-cache knob: the region's code keeps
                                its place in the 4 KB cache whatever the base grows or shrinks to)
@@ -83,6 +90,8 @@ class Image:
 
 
 def parse(path):
+    global ARRANGE
+    ARRANGE = 'overlap'
     region = (0x1000, 0)
     images, allows = [], []
     for n, raw in enumerate(open(path), 1):
@@ -90,13 +99,15 @@ def parse(path):
         if not line:
             continue
         kind, args = line[0], line[1:]
-        if kind == 'region':
+        if kind == 'arrange':
+            ARRANGE = args[0]
+        elif kind == 'region':
             region = (int(args[0], 0), int(args[1], 0))
         elif kind == 'image':
             images.append(Image(int(args[0]), args[1]))
             images[-1].preload = 'preload' in args[2:]
             images[-1].boot = 'boot' in args[2:]
-            if sum(i.preload for i in images) > 1 or sum(i.boot for i in images) > 1:
+            if sum(i.boot for i in images) > 1:
                 sys.exit(f'{path}:{n}: one preloaded image and one boot image at most')
         elif kind == 'objects':
             images[-1].objects += args
@@ -117,6 +128,13 @@ def parse(path):
             allows.append((args[0], args[1]))
         else:
             sys.exit(f'{path}:{n}: unknown directive {kind}')
+    ARRANGE = os.environ.get('SCENES_ARRANGE', ARRANGE)
+    if ARRANGE not in ('overlap', 'resident'):
+        sys.exit(f'{path}: arrange is overlap or resident')
+    if ARRANGE == 'resident':
+        for im in images:
+            if not im.boot:
+                im.preload = True
     ids = [i.id for i in images]
     if len(set(ids)) != len(ids) or 0 in ids:
         sys.exit(f'{path}: image ids must be distinct and not 0 (row 0 is the program)')
@@ -163,12 +181,22 @@ def cmd_ld(scenes, out, objdir):
     region = [im for im in images if not im.boot]
     boot = [im for im in images if im.boot]
     pre = [im for im in images if im.preload]
+    at = '__scene_region_start'
     for im in region:
-        w += ['    .scene_%s __scene_region_start : AT(__scene_region_start) {' % im.name] + body(im, '__scene_region_start')
-    size = '0'
-    for im in region:
-        size = 'MAX(%s, SIZEOF(.scene_%s))' % (size, im.name)
-    w += ['    __scene_preloaded = %d;' % (pre[0].id if pre else 0)]
+        w += ['    __scene_%s_at = %s;' % (im.name, at)]
+        w += ['    .scene_%s __scene_%s_at : AT(__scene_%s_at) {' % (im.name, im.name, im.name)] + body(im, '__scene_%s_at' % im.name)
+        if ARRANGE == 'resident':
+            at = '__scene_%s_at + SIZEOF(.scene_%s)' % (im.name, im.name)
+    if ARRANGE == 'resident':
+        size = '(%s - __scene_region_start)' % at
+    else:
+        size = '0'
+        for im in region:
+            size = 'MAX(%s, SIZEOF(.scene_%s))' % (size, im.name)
+    mask = 0
+    for im in pre:
+        mask |= 1 << im.id
+    w += ['    __scene_preloaded = %d;' % mask]
     w += ['    . = __scene_region_start + %s;' % size,
           '    __scene_region_end = .;',
           '}',
@@ -176,7 +204,7 @@ def cmd_ld(scenes, out, objdir):
     if boot:
         im = boot[0]
         # stored after the preloaded image in the EXE (or at the region's start), run at the start of the heap
-        lma = '__scene_region_start' + (' + SIZEOF(.scene_%s)' % pre[0].name if pre else '')
+        lma = ('ADDR(.scene_%s) + SIZEOF(.scene_%s)' % (pre[-1].name, pre[-1].name)) if pre else '__scene_region_start'
         w += ['SECTIONS {',
               '    __scene_boot_vma = ALIGN(ADDR(.bss) + SIZEOF(.bss), 16);',
               '    __scene_boot_lma = %s;' % lma,
@@ -466,7 +494,7 @@ def cmd_cut(scenes, elf, outdir):
         data = open(base + '.bin', 'rb').read()
         data += b'\0' * ((-len(data)) % SECTOR)
         start = syms['__scene_%s_start' % im.name]
-        if not im.boot and (start != region[0] or start + len(data) > region[1]):
+        if not im.boot and (start < region[0] or start + len(data) > region[1] or (ARRANGE == 'overlap' and start != region[0])):
             sys.exit(f'scenes.py cut: {im.name} is not inside the region')
         open(base + '.bin', 'wb').write(data)
         image_map(os.path.splitext(elf)[0] + '.map', im.name, base + '.map')
@@ -549,6 +577,31 @@ def cmd_splice(scenes, outdir, exe):
     open(exe, 'wb').write(prog)
 
 
+def cmd_embed(img, exe, base_lba):
+    """Write SCENES.IMG's rows, with disc LBAs (the file at BASE_LBA), into the program's PSYQ_SCENE_ROWS
+    (psyq/src/core_shim.rs), so a switch reads no table."""
+    table = open(img, 'rb').read(SECTOR)
+    count = struct.unpack_from('<H', table, 0x0A)[0]
+    syms = elf_symbols(os.path.splitext(exe)[0] + '.elf')
+    prog = bytearray(open(exe, 'rb').read())
+    at = 0x800 + syms['PSYQ_SCENE_ROWS'] - struct.unpack_from('<I', prog, 0x18)[0]
+    if prog[at:at + 4] != b'PSQT':
+        sys.exit('scenes.py embed: no PSYQ_SCENE_ROWS in the EXE')
+    rows = bytearray(table[0x40:0x40 + 64 * count])
+    for i in range(count):
+        kind = rows[i * 64 + 2]
+        if kind == 1:
+            lba = struct.unpack_from('<I', rows, i * 64 + 4)[0]
+            struct.pack_into('<I', rows, i * 64 + 4, lba + base_lba)
+    cap = (struct.calcsize('<I') * (2 + 16 * 8))
+    if 8 + len(rows) > cap:
+        sys.exit('scenes.py embed: more rows than PSYQ_SCENE_ROWS holds')
+    prog[at + 4:at + 8] = struct.pack('<I', count)
+    prog[at + 8:at + 8 + len(rows)] = rows
+    open(exe, 'wb').write(prog)
+    print(f'scenes: {count} rows embedded, SCENES.IMG at LBA {base_lba}')
+
+
 def boot_lma(outdir, exe):
     syms = elf_symbols(os.path.splitext(exe)[0] + '.elf')
     return syms['__scene_boot_lma']
@@ -612,6 +665,8 @@ def main():
         cmd_cut(*args)
     elif cmd == 'patch' and len(args) == 5:
         cmd_patch(*args)
+    elif cmd == 'embed' and len(args) == 3:
+        cmd_embed(args[0], args[1], int(args[2], 0))
     elif cmd == 'splice' and len(args) == 3:
         cmd_splice(*args)
     elif cmd == 'pack' and len(args) in (3, 5):

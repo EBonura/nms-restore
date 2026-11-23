@@ -8,6 +8,10 @@
 # The 2D and 3D views, the physics, rules and AI stay in the base, so pause, undo, replay, the end of
 # a frame and the L2+R2 view switch never wait on the disc.
 
+# arrange: the per-game setting (owner, 2026-11-23). overlap (this): FRONT and TABLE share one region and TABLE loads
+# behind PLEASE WAIT (+30 VBlanks there in the emulator); resident: no read at a switch (+3), the heap block 18 KB
+# smaller (157,336 B free at the table-load peak instead of 175,768; 172,576 before the split).
+arrange overlap
 region 0x1000 0x000
 
 # Boot-only code, not a scene (PLAN.md "Splash: one mechanism"): the splash (the SDK's, with the PSX Archive credit). POOL.C calls it first thing, before

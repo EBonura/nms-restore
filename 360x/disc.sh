@@ -49,4 +49,7 @@ python3 -I "$root/tools/x360_dat.py" "$data" "$out/360X.DAT" --list "$out/360X.D
 cargo build -q --release --locked $offline --manifest-path "$psoxide/tools/mkisopsx/Cargo.toml" \
 	--target-dir "$root/build/mkiso-target"
 "$root/build/mkiso-target/release/mkisopsx" --exe "$out/360x.exe" --out "$out/360x.bin" --gate-file "$root/psx-gate.toml" ${MKISO_DIAG:+--diag} --volume 360X \
-	--file "$out/SCENES.IMG" --file "$out/360X.DAT" --xa-file "$out/SAT2.STR"
+	--file "$out/SCENES.IMG" --file "$out/360X.DAT" --xa-file "$out/SAT2.STR" > "$out/mkisopsx.log" 2>&1 || { cat "$out/mkisopsx.log"; exit 1; }
+cat "$out/mkisopsx.log"
+# RESTORE: PLATFORM. The program carries the scene rows with SCENES.IMG at LBA 1024 (build.sh): the disc must agree.
+grep -q "^SCENES.IMG: LBA ${SCENES_LBA:-1024}," "$out/mkisopsx.log" || { echo "SCENES.IMG is not at LBA ${SCENES_LBA:-1024}"; exit 1; }

@@ -340,7 +340,7 @@ pub(crate) fn attach() {
     // The images the EXE carries come in with the program (tools/scenes.py `preload` and `boot`).
     let (pre, boot) = (&raw const __scene_preloaded as u32, &raw const __scene_boot_id as u32);
     // SAFETY: see the statics.
-    unsafe { RESIDENT = bit(pre) | bit(boot) };
+    unsafe { RESIDENT = pre | bit(boot) };
     if magic == BLOCK_MAGIC && inverse == !BLOCK_MAGIC && flags & 1 != 0 {
         // SAFETY: see the static.
         unsafe { ENTERED_BY_CORE = true };
@@ -354,7 +354,7 @@ pub(crate) fn attach() {
     block_u16(0x06, 0x100);
     block_u32(0x0C, psx_io::disc_base::lba_offset());
     block_u32(0x10, u32::from(psx_io::disc_base::cdda_track_base()));
-    block_u16(OFF_CURRENT, pre as u16);
+    block_u16(OFF_CURRENT, pre.trailing_zeros() as u16 % 32);
     block_u16(OFF_PREVIOUS, 0xFFFF);
     block_u32(0xFC, !BLOCK_MAGIC);
 }
@@ -393,6 +393,19 @@ const MAX_ROWS: usize = 8;
 // SAFETY: foreground-only static.
 static mut RESIDENT: u32 = 0;
 
+/// The resident scenes whose rows' ranges overlap `row`'s (the rows the table has).
+fn overlapped(row: &Row) -> u32 {
+    let mut out = 0;
+    for id in 1..MAX_ROWS {
+        // SAFETY: see the statics.
+        let r = unsafe { ROWS[id] };
+        if r.sectors != 0 && r.t_addr < row.t_addr + row.t_size && row.t_addr < r.t_addr + r.t_size {
+            out |= bit(id as u32);
+        }
+    }
+    out
+}
+
 fn bit(scene: u32) -> u32 {
     if scene == 0 || scene >= 32 { 0 } else { 1 << scene }
 }
@@ -407,7 +420,7 @@ extern "C" {
     /// program without images).
     static __scene_region_start: u8;
     static __scene_region_end: u8;
-    /// The scene id of the image the EXE carries in the region (0: none), an absolute symbol.
+    /// The images the EXE carries in the region, one bit a scene id (0: none), an absolute symbol.
     static __scene_preloaded: u8;
     /// The scene id of the boot image the EXE carries for the start of the heap (0: none).
     static __scene_boot_id: u8;
@@ -424,7 +437,26 @@ fn word_fnv(words: &[u32]) -> u32 {
 
 /// Read the scene table: the first sector of `\SCENES.IMG`, whose image rows count their LBAs from
 /// the file's start (tools/scenes.py; the core's table, at a fixed LBA, will carry disc LBAs).
+/// The scene table's rows as the build wrote them into the program (tools/scenes.py `embed`, after the
+/// disc's layout is known): word 0 "PSQT", word 1 the row count, then the rows in the table's format with
+/// disc LBAs. With them the first switch reads no table. The core reads its own table; this goes with
+/// the shim.
+#[no_mangle]
+static mut PSYQ_SCENE_ROWS: [u32; 2 + 16 * MAX_ROWS] = {
+    let mut t = [0u32; 2 + 16 * MAX_ROWS];
+    t[0] = u32::from_le_bytes(*b"PSQT");
+    t
+};
+
 fn read_table() -> u32 {
+    // SAFETY: see the statics; written by the build, read here only.
+    let embedded = unsafe { &*(&raw const PSYQ_SCENE_ROWS) };
+    if embedded[0] == u32::from_le_bytes(*b"PSQT") && embedded[1] != 0 {
+        rows_from(&embedded[2..], embedded[1] as usize, 0);
+        // SAFETY: see the statics.
+        unsafe { TABLE_READ = true };
+        return 0;
+    }
     let Some((base, _)) = crate::cd::find_file(b"\\SCENES.IMG;1") else {
         return STAGE_READ_FAILED;
     };
@@ -439,8 +471,16 @@ fn read_table() -> u32 {
     if row_bytes != 64 || count > 31 || word_fnv(&sector[16..16 + count * 16]) != sector[5] {
         return STAGE_TABLE_MAGIC;
     }
+    rows_from(&sector[16..], count, base);
+    // SAFETY: see the statics.
+    unsafe { TABLE_READ = true };
+    0
+}
+
+/// Keep the image rows (kind 1) of `count` table rows, their LBAs counted from `base`.
+fn rows_from(words: &[u32], count: usize, base: u32) {
     for id in 0..count.min(MAX_ROWS) {
-        let r = &sector[16 + id * 16..32 + id * 16];
+        let r = &words[id * 16..id * 16 + 16];
         if r[0] & 0xFFFF != id as u32 {
             continue;
         }
@@ -448,9 +488,6 @@ fn read_table() -> u32 {
         // SAFETY: see the statics.
         unsafe { ROWS[id] = if (r[0] >> 16) & 0xFF == 1 { row } else { NO_ROW } };
     }
-    // SAFETY: see the statics.
-    unsafe { TABLE_READ = true };
-    0
 }
 
 /// Make scene image `scene` (a kind 1 row) the current one, loading it into its fixed range while the
@@ -514,8 +551,8 @@ pub extern "C" fn core_load_image(scene: u32) -> u32 {
         return result;
     }
     psx_rt::cache::flush_instruction_cache();
-    // SAFETY: see the statics. The region holds one image at a time.
-    unsafe { RESIDENT = bit(scene) };
+    // SAFETY: see the statics. The image replaces whatever it overlaps (`overlap`: every other region image).
+    unsafe { RESIDENT = (RESIDENT & !overlapped(&row)) | bit(scene) };
     entered(scene);
     0
 }

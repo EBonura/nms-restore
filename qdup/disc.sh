@@ -69,4 +69,7 @@ python3 -I "$root/tools/qdup_dat.py" "$data" "$out/QDUP.DAT" --list "$out/QDUP.D
 
 cargo build -q --release --locked $offline --manifest-path "$psoxide/tools/mkisopsx/Cargo.toml" \
 	--target-dir "$root/build/mkiso-target"
-"$root/build/mkiso-target/release/mkisopsx" --exe "$out/qdup.exe" --out "$out/qdup.bin" --gate-file "$root/psx-gate.toml" ${MKISO_DIAG:+--diag} --volume QDUP --file "$out/SCENES.IMG" --file "$out/QDUP.DAT"
+"$root/build/mkiso-target/release/mkisopsx" --exe "$out/qdup.exe" --out "$out/qdup.bin" --gate-file "$root/psx-gate.toml" ${MKISO_DIAG:+--diag} --volume QDUP --file "$out/SCENES.IMG" --file "$out/QDUP.DAT" > "$out/mkisopsx.log" 2>&1 || { cat "$out/mkisopsx.log"; exit 1; }
+cat "$out/mkisopsx.log"
+# RESTORE: PLATFORM. The program carries the scene rows with SCENES.IMG at LBA 1024 (build.sh): the disc must agree.
+grep -q "^SCENES.IMG: LBA ${SCENES_LBA:-1024}," "$out/mkisopsx.log" || { echo "SCENES.IMG is not at LBA ${SCENES_LBA:-1024}"; exit 1; }
