@@ -9,7 +9,8 @@ kept and the PlayStation Museum preserved.
 What NMS left unfinished was completed from their own PC and Saturn versions
 of the game. Where no version had something, the game says so (touching a
 survivor shows "RESCUE NOT AVAILABLE": no version ever implemented rescues).
-Every change is listed in the restoration's README.
+Every change is listed in the restoration's README:
+https://github.com/EBonura/nms-restore
 
 To play:
   - Boot 360x.cue in a PS1 emulator (DuckStation, PCSX-Redux, PSoXide), or

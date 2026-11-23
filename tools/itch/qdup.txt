@@ -11,7 +11,8 @@ for the PC version, so the PlayStation renderer is new, drawing NMS's own
 table models, palettes and camera code. Pick one after START; L2 and R2
 together switch views during play. The cue stick and aim line in the 2D view
 are also new, because the 1996 build gave no way to see where you aimed.
-Every change is listed in the restoration's README.
+Every change is listed in the restoration's README:
+https://github.com/EBonura/nms-restore
 
 Game types: UK pool, 9-ball and US 8-ball, against a friend or the computer.
 

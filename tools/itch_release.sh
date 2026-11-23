@@ -10,7 +10,7 @@
 # test run. Its provenance file names the commit it came from and the sha256 of every file, and
 # this script refuses to stage it unless:
 #   - the provenance names this repository and a clean tree,
-#   - that commit is on origin/main,
+#   - that commit is on origin/main (or ITCH_SOURCE_COMMIT names the one it was squashed into),
 #   - the .bin on disk has the sha256 the provenance names.
 #
 # The staged folder (build/itch/<game>-<version>/) holds the .bin, a .cue pointing at it, the
@@ -52,9 +52,18 @@ want=$(jq -r --arg f "$name.bin" '.files[$f]' "$provenance")
 [[ $repository == EBonura/nms-restore ]] || { echo "provenance names $repository" >&2; exit 1; }
 [[ $dirty == false ]] || { echo "the installed disc was built from a dirty tree" >&2; exit 1; }
 
+# A disc installed before the history was squashed (2026-11-23) names a commit that is no longer
+# on main. ITCH_SOURCE_COMMIT names the main commit to credit instead; it must be on main, and
+# the provenance's sha256 check below still ties the release to the tested bytes.
 git -C "$repo" fetch -q origin main
-git -C "$repo" merge-base --is-ancestor "$commit" FETCH_HEAD ||
-  { echo "commit $commit is not on origin/main" >&2; exit 1; }
+if ! git -C "$repo" merge-base --is-ancestor "$commit" FETCH_HEAD 2>/dev/null; then
+  [[ -n ${ITCH_SOURCE_COMMIT:-} ]] ||
+    { echo "commit $commit is not on origin/main (set ITCH_SOURCE_COMMIT to the main commit it was squashed into)" >&2; exit 1; }
+  git -C "$repo" merge-base --is-ancestor "$ITCH_SOURCE_COMMIT" FETCH_HEAD ||
+    { echo "ITCH_SOURCE_COMMIT $ITCH_SOURCE_COMMIT is not on origin/main" >&2; exit 1; }
+  echo "note: installed from ${commit:0:12}, which is not on main; crediting $ITCH_SOURCE_COMMIT" >&2
+  commit=$(git -C "$repo" rev-parse "$ITCH_SOURCE_COMMIT")
+fi
 
 have=$(shasum -a 256 "$bin" | cut -d' ' -f1)
 [[ $have == "$want" ]] || { echo "$bin: sha256 $have, provenance says $want" >&2; exit 1; }
