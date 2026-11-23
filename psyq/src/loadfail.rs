@@ -10,7 +10,7 @@
 //! stops there. One look at the console says what went wrong. It draws once and then spins with
 //! no interrupt, DMA or drive use, so nothing it relies on can fail after it.
 
-use crate::cd::{last_failure, STEP_PREPARE, STEP_SECTOR, STEP_SEEK};
+use crate::core_shim::{last_failure, STEP_PREPARE, STEP_SECTOR, STEP_SEEK};
 use crate::gpu::{DispEnv, DrawEnv, Rect};
 
 /// The screen's text: at most 36 characters a line (8-pixel glyphs from x 16).

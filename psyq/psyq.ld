@@ -7,17 +7,24 @@
  * (the header's end is `__exe_head_start + EXE_HEAD_BYTES`, as `.` inside a section is an absolute
  * address to lld and an offset to GNU ld; the output format is the linker's default),
  * with the RAM size a parameter: --defsym=RAM_SIZE=0x800000 for the dev
- * kit's 8 MB, which NMS's 1996 builds were linked for, or 0x200000 for a
- * retail console. The stack starts 100h below the top of RAM.
+ * kit's 8 MB, which NMS's 1996 builds were linked for, or the default for a
+ * console: the RAM below the SDK scene core's window (0x801FD700..0x801FFF00,
+ * its handoff block above it to 0x80200000), 0x1FD800 (RESTORE: PLATFORM).
+ * The stack starts 100h below the top, at 0x801FD700, where `__core_boot`
+ * (src/boot.rs) puts it first thing.
+ *
+ * A program with scene images links -T its images' script (tools/scenes.py)
+ * -T psyq.ld: the images share one region after .data, and are not in the EXE.
  *
  * NMS's code is compiled with -G0, so nothing is addressed from $gp.
  * `objcopy -O binary` of the header, .text and .data is the EXE; qdup/build.sh
  * pads it to whole 800h-byte sectors.
  */
 ENTRY(_start)
+__initial_pc = __core_boot;
 
 RAM_BASE       = 0x80000000;
-RAM_SIZE       = DEFINED(RAM_SIZE) ? RAM_SIZE : 0x200000;
+RAM_SIZE       = DEFINED(RAM_SIZE) ? RAM_SIZE : 0x1FD800;
 LOAD_ADDR      = 0x80010000;
 EXE_HEAD_BYTES = 0x800;
 STACK_INIT     = RAM_BASE + RAM_SIZE - 0x100;
@@ -33,7 +40,7 @@ SECTIONS {
         LONG(0x45584520);                   /* " EXE" */
         LONG(0);
         LONG(0);
-        LONG(DEFINED(__initial_pc) ? __initial_pc : _start);   /* initial PC (psyq-boot.ld: its mover first) */
+        LONG(DEFINED(__initial_pc) ? __initial_pc : _start);   /* initial PC: __core_boot, then _start */
         LONG(0);                            /* initial GP: unused */
         LONG(LOAD_ADDR);                    /* destination */
         LONG(__image_end - __text_start);   /* bytes after the header */
@@ -88,8 +95,7 @@ SECTIONS {
         . = ALIGN(4);
         __data_end = .;
     }
-    /* with psyq-boot.ld the boot-only sections follow .data in the file */
-    __load_end  = DEFINED(__boot_start) ? __boot_lma + (__boot_load_end - __boot_start) : __data_end;
+    __load_end  = __data_end;
     __image_end = __text_start + ((__load_end - __text_start + EXE_HEAD_BYTES - 1) & ~(EXE_HEAD_BYTES - 1));
 
     .bss (NOLOAD) : {
@@ -101,8 +107,10 @@ SECTIONS {
         __bss_end = .;
     }
 
-    /* the end of .bss, not `.`: under ld.lld the overlay psyq-boot.ld INSERTs after .bss moves `.` past it */
     __heap_start = __bss_end;
+    /* a program without scene images (tools/scenes.py) has an empty region */
+    PROVIDE(__scene_region_start = 0);
+    PROVIDE(__scene_region_end = 0);
     __heap_end   = STACK_INIT - STACK_RESERVE;
     ASSERT(__bss_end <= STACK_INIT - STACK_RESERVE, "program does not fit below the stack reserve")
 

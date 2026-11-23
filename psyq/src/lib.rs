@@ -9,9 +9,9 @@
 //! own 1996 build observably did (see `psyq/README.md`), never from Sony's
 //! code, headers or documentation.
 //!
-//! The program image is psx-rt's: its `_start` clears `.bss`, sets the
-//! machine to a known state and calls [`main`], which hands over to the
-//! game's `main` (compiled as `nms_main`).
+//! The program image is psx-rt's: `__core_boot` (boot.rs) moves the stack under the scene core's
+//! window, psx-rt's `_start` clears `.bss`, sets the machine to a known state and calls [`main`],
+//! which hands over to the game's `main` (compiled as `nms_main`).
 //!
 //! What is not implemented is a stub that says so once on the debug console
 //! (`psyq: STUB name`), so a run shows which ones the game reached.
@@ -28,6 +28,7 @@ extern crate escher;
 mod console;
 mod card;
 mod cd;
+mod core_shim;
 mod path;
 mod boot;
 mod fmv;
@@ -41,6 +42,7 @@ mod libm;
 mod loadfail;
 mod pcdrv;
 mod pmd;
+mod scenes;
 mod snd;
 mod splash;
 mod stubs;
@@ -54,6 +56,8 @@ extern "C" {
 #[no_mangle]
 pub fn main() {
     console::puts("psyq: PSoXide Psy-Q layer v0\n");
+    // RESTORE: PLATFORM. The handoff block the scene core will write before `_start` (core_shim.rs).
+    core_shim::attach();
     // SAFETY: the game's entry point, called once on the one thread there is.
     unsafe { nms_main() };
     console::puts("psyq: the game's main returned\n");

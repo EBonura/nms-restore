@@ -1,0 +1,37 @@
+# 360X's scene images (R2), read by tools/scenes.py (format in its header). RESTORE: PLATFORM.
+# docs/DECISIONS.md, "Scene images": the base keeps every variable (each object's .data and .bss) and
+# all code a screen in play can reach; an image changes only where NMS's flow already loads its
+# screen's files from the CD (the front end to the briefing, game over or QUIT back to the menus).
+#
+# The region is shared by the three images and is as large as the largest, so the RAM the split
+# gives back is the smaller of FRONT and MISSION: MISSION is only as large as it needs to be (at
+# least FRONT), and every byte of it is read at the Load_Level switch.
+
+region 0x1000 0x000
+
+# The boot scene: the splash (the SDK's, with the PSX Archive credit) and the film player, which
+# only the start of the game uses. Loaded once, then overwritten by the language screen.
+image 1 BOOT
+layer .boot_only .boot_only.* .text.FmvPlay .text.FmvMemoryBytes .text.*psx_fmv* .rodata.*psx_fmv* .bss.*psx_fmv*
+layer .text.*psx_splash* .rodata.*psx_splash*
+entry PsxSplash FmvPlay FmvMemoryBytes
+
+# The front end: language, title and attract loop, main menu with the memory card, planet select,
+# high-score entry.
+image 2 FRONT
+objects LANGUAGE TITLE SHIPDEMO HIGH CREDITS OPTIONS LOADSAVE PLANETS
+entry Select_Language Title_Screen Ship_Description High_Scores Display_Credits Game_Options Show_Planets Warp_To_Planet Check_High_Score
+
+# The mission: briefing, the mission, status: the code only a mission runs (the scroller, controls,
+# weapons, panel, level and map loaders). LEVEL.C and FIRE.C are built with -ffunction-sections so that
+# Init_Newgame (the front-end flow calls it, MAIN.C) and Reset_Weapon_Ammo (MAIN.C calls it at power-on)
+# stay in the base. PROCESS, SPRITE2 and PARTICLE stay in the base: the front end's star fields use
+# PARTICLE, which calls SPRITE2.
+image 3 MISSION
+except LEVEL Init_Newgame
+except FIRE Reset_Weapon_Ammo
+objects CONTROL SCROLLER LOADDATA PANEL
+entry Load_Level Exit_Level
+# MAIN.C's mission loop (MAIN.C:220-395) calls the mission's functions directly; it runs only after
+# Load_Level has loaded MISSION, and leaves it only through Check_High_Score or Game_Options (FRONT).
+allow MAIN MISSION

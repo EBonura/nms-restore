@@ -72,6 +72,9 @@ status=0
 for f in $cfiles; do
 	fopt=""
 	case " $X360_O0 " in *" $f "*) fopt=-O0 ;; esac
+	# RESTORE: PLATFORM. The disc build's scene images (360x/scenes.txt) take LEVEL.C's functions one by one:
+	# its own sections for each, so Init_Newgame can stay in the base; FIRE.C's too, for Reset_Weapon_Ammo. Nothing else about the code changes.
+	case "$ram $f" in "cd LEVEL"|"cd FIRE") fopt="$fopt -ffunction-sections" ;; esac
 	if ! mipsel-none-elf-gcc $CFLAGS $X360_CFLAGS $fopt -c "$src/$f.C" -o "$obj/$f.o" 2> "$obj/$f.err"; then
 		echo "FAILED: $f.C ($(grep -c 'error' "$obj/$f.err") errors, $obj/$f.err)"
 		status=1
@@ -91,38 +94,38 @@ objs="$obj/INCBINS.o"
 for f in $cfiles; do objs="$objs $obj/$f.o"; done
 case $ram in
 	devkit) ramsize=0x800000 ;;
-	# 2 MB: 16 KB kept for the stack, not the layer's 32 KB: the heap needs the
-	# room (docs/DECISIONS.md, 360X's missions). The stack was measured at 1.3 KB (boot,
+	# A console's 2 MB less the SDK scene core's window and handoff block at the top (psyq/psyq.ld:
+	# PSYQ_RAM_SIZE, 0x1FD800 by default). 16 KB kept for the stack, not the layer's 32 KB: the heap
+	# needs the room (docs/DECISIONS.md, 360X's missions). The stack was measured at 1.3 KB (boot,
 	# film, menus, Mission 1 with firing and pause).
-	retail|cd) ramsize=0x200000; stack="--defsym=STACK_RESERVE_OVERRIDE=0x4000" ;;
+	retail|cd) ramsize=${PSYQ_RAM_SIZE:-0x1FD800}; stack="--defsym=STACK_RESERVE_OVERRIDE=0x4000" ;;
 	*) echo "unknown RAM size $ram"; exit 1 ;;
 esac
+# RESTORE: PLATFORM. The disc build splits the program into a resident base and scene images
+# (360x/scenes.txt, tools/scenes.py): their linker script goes first, each screen's entry function is
+# wrapped so that a call loads its image, and the images are cut into SCENES.IMG for the disc.
+scenes=""
+if [ "$ram" = cd ]; then
+	python3 -I "$root/tools/scenes.py" ld "$here/scenes.txt" "$out/scenes.ld" "$obj"
+	python3 -I "$root/tools/scenes.py" wrap "$here/scenes.txt" "$obj/scenes_wrap.s"
+	mipsel-none-elf-as -march=r3000 -mabi=32 -msoft-float -G0 -o "$obj/scenes_wrap.o" "$obj/scenes_wrap.s"
+	objs="$objs $obj/scenes_wrap.o"
+	scenes="-T $out/scenes.ld $(python3 -I "$root/tools/scenes.py" flags "$here/scenes.txt")"
+fi
 link() {	# link [more ld arguments]
-	"$root/psyq/lld.sh" --defsym=RAM_SIZE=$ramsize $stack "$@" -T "$root/psyq/psyq.ld" --gc-sections -Map "$out/360x.map" \
+	"$root/psyq/lld.sh" --defsym=RAM_SIZE=$ramsize $stack "$@" $scenes -T "$root/psyq/psyq.ld" --gc-sections -Map "$out/360x.map" \
 		-u _start -o "$out/360x.elf" $objs "$root/build/psyq${PSYQ_TEST_CD_FAULT:+-tcd}/libpsyq.a"
 }
-sym() { mipsel-none-elf-nm "$out/360x.elf" | awk -v s="$1" '$3==s {print "0x" $1}'; }
 case $ram in
 	cd)
-		# The film player is boot-only memory (psyq/psyq-boot.ld): it runs from the
-		# start of the heap and the heap takes its 25 KB back after the film. A first
-		# link finds where .data and .bss end; the second puts it there.
-		# 360X never calls FntLoad (the layer's debug font), so the font code the splash draws its line with
-		# is boot-only too; a program that does call it must not have these two lines (check-boot.sh fails).
-		# psx_vram::upload_16bpp (out of line since SDK 2830eea7) is called by FontAtlas::upload alone here, so it is boot-only too.
-		sed 's|/\* BOOT_EXTRA \*/|*(.text.*FontAtlas6upload* .text.*FontAtlas9draw_text* .text.*psx_vram12upload_16bpp*)|' "$root/psyq/psyq-boot.ld" > "$out/psyq-boot.ld"
-		boot="-u __boot_entry -T $out/psyq-boot.ld"
-		link $boot --defsym=BOOT_VMA=0x80180000 --defsym=BOOT_LMA=0x80180000
-		vma=$(sym __bss_end); lma=$(sym __data_end)
-		link $boot --defsym=BOOT_VMA=$vma --defsym=BOOT_LMA=$lma
-		[ "$(sym __bss_end)" = "$vma" ] && [ "$(sym __data_end)" = "$lma" ] || { echo "boot-only link: .data or .bss moved between the two links"; exit 1; }
-		bootsec="-j .boot"
-		# RESTORE: PLATFORM. The heap takes the boot-only memory back after the film and the splash:
-		# nothing outside it may call into it except their entry points.
-		"$root/psyq/check-boot.sh" "$out/360x.elf" FmvPlay FmvMemoryBytes PsxSplash || { echo "boot-only link: the code above would run after the heap took its memory back"; exit 1; } ;;
-	*) link; bootsec="" ;;
+		link
+		# RESTORE: PLATFORM. No code may refer into an image that may not be loaded.
+		python3 -I "$root/tools/scenes.py" check "$here/scenes.txt" "$out/360x.elf" "$out/360x.map" $objs \
+			"$root/build/psyq${PSYQ_TEST_CD_FAULT:+-tcd}/libpsyq.a"
+		python3 -I "$root/tools/scenes.py" pack "$here/scenes.txt" "$out/360x.elf" "$out/SCENES.IMG" --list "$out/SCENES.IMG.txt" ;;
+	*) link ;;
 esac
-mipsel-none-elf-objcopy -O binary -j .ps_exe_head -j .text -j .data $bootsec "$out/360x.elf" "$out/360x.exe"
+mipsel-none-elf-objcopy -O binary -j .ps_exe_head -j .text -j .data "$out/360x.elf" "$out/360x.exe"
 size=$(wc -c < "$out/360x.exe" | tr -d ' ')
 pad=$(( (2048 - size % 2048) % 2048 ))
 [ $pad = 0 ] || head -c $pad /dev/zero >> "$out/360x.exe"
