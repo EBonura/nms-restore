@@ -30,6 +30,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
 pool=$here/POOL2
 ram=${1:-devkit}
+. "$root/psyq/core-window.sh"
 out=${QDUP_OUT:-$root/build/qdup}
 src=$out/src
 obj=$out/obj
@@ -63,8 +64,8 @@ CFLAGS="-march=r3000 -mabi=32 -msoft-float -mno-abicalls -fno-pic -G0 -O0 -g
 case $ram in
 	devkit) ramsize=0x800000 ;;
 	# RESTORE: PLATFORM. A console's 2 MB less the SDK scene core's window and handoff block at the top
-	# (psyq/psyq.ld; PSYQ_RAM_SIZE overrides). RAM.C's heap ends 16 KB under the stack top that gives.
-	retail|cd) ramsize=${PSYQ_RAM_SIZE:-0x1FD800}; CFLAGS="$CFLAGS -DPSYQ_RAM_SIZE=$ramsize" ;;
+	# (psyq/core-window.sh). RAM.C's heap ends 16 KB under the stack top that gives.
+	retail|cd) ramsize=$core_ram_size; CFLAGS="$CFLAGS -DPSYQ_RAM_SIZE=$ramsize" ;;
 	*) echo "unknown RAM size $ram"; exit 1 ;;
 esac
 case $ram in

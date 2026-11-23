@@ -8,10 +8,11 @@
  * address to lld and an offset to GNU ld; the output format is the linker's default),
  * with the RAM size a parameter: --defsym=RAM_SIZE=0x800000 for the dev
  * kit's 8 MB, which NMS's 1996 builds were linked for, or the default for a
- * console: the RAM below the SDK scene core's window (0x801FD700..0x801FFF00,
- * its handoff block above it to 0x80200000), 0x1FD800 (RESTORE: PLATFORM).
- * The stack starts 100h below the top, at 0x801FD700, where `__core_boot`
- * (src/boot.rs) puts it first thing.
+ * console: the RAM below the SDK scene core's window (RESTORE: PLATFORM; the
+ * build scripts pass psyq/core-window.sh's value, 0x1FE000 today, which this
+ * default repeats: window 0x801FDF00..0x801FFF00, its handoff block above it
+ * to 0x80200000). The stack starts 100h below the top, at 0x801FDF00 today,
+ * where `__core_boot` (src/boot.rs) puts it first thing.
  *
  * A program with scene images links -T its images' script (tools/scenes.py)
  * -T psyq.ld: the images share one region after .data, and are not in the EXE.
@@ -24,7 +25,7 @@ ENTRY(_start)
 __initial_pc = __core_boot;
 
 RAM_BASE       = 0x80000000;
-RAM_SIZE       = DEFINED(RAM_SIZE) ? RAM_SIZE : 0x1FD800;
+RAM_SIZE       = DEFINED(RAM_SIZE) ? RAM_SIZE : 0x1FE000;
 LOAD_ADDR      = 0x80010000;
 EXE_HEAD_BYTES = 0x800;
 STACK_INIT     = RAM_BASE + RAM_SIZE - 0x100;

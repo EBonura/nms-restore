@@ -27,6 +27,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
 srcdir=$here/SOURCE
 ram=${1:-devkit}
+. "$root/psyq/core-window.sh"
 out=${X360_OUT:-$root/build/360x}
 data=${X360_DATA:-$root/build/originals/360x}
 src=$out/src
@@ -95,10 +96,10 @@ for f in $cfiles; do objs="$objs $obj/$f.o"; done
 case $ram in
 	devkit) ramsize=0x800000 ;;
 	# A console's 2 MB less the SDK scene core's window and handoff block at the top (psyq/psyq.ld:
-	# PSYQ_RAM_SIZE, 0x1FD800 by default). 16 KB kept for the stack, not the layer's 32 KB: the heap
+	# psyq/core-window.sh). 16 KB kept for the stack, not the layer's 32 KB: the heap
 	# needs the room (docs/DECISIONS.md, 360X's missions). The stack was measured at 1.3 KB (boot,
 	# film, menus, Mission 1 with firing and pause).
-	retail|cd) ramsize=${PSYQ_RAM_SIZE:-0x1FD800}; stack="--defsym=STACK_RESERVE_OVERRIDE=0x4000" ;;
+	retail|cd) ramsize=$core_ram_size; stack="--defsym=STACK_RESERVE_OVERRIDE=0x4000" ;;
 	*) echo "unknown RAM size $ram"; exit 1 ;;
 esac
 # RESTORE: PLATFORM. The disc build splits the program into a resident base and scene images
