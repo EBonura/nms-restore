@@ -18,6 +18,7 @@ The restored games are released together with PSX Archive.
 | Rebuilt from source | Yes, no Sony code | Yes, no Sony code |
 | Retail console, 2 MB | Fits; boots from a CD image | Fits; boots from a CD image; all nine missions play (chosen on the planet select) |
 | Memory card | Not used by the game | High scores save and load |
+| Real hardware | Runs on a PlayStation console from a burned disc | Runs on a PlayStation console from a burned disc |
 
 NMS's full 3D pool table (the "Escher" renderer) was written for the DOS (PC CD-ROM) version, and its PS1 entry points were left empty. NMS did try a 3D table on the PS1 earlier: `GLENN/POOL.C` ("NMS - 3D - POOL, Comenced 29/04/96, Glenn Benson") draws `models/pmd/uktable2.pmd` with `RotPMD`, and `GLENN/POOL.CPE` (10 Jul) and `PPP.CPE` (4 Jun) are table viewers with no game logic. The 3D view in `escher/` is new work for the restoration, not a port of that viewer. The 2D view is NMS's own.
 
