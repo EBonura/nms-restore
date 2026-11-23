@@ -34,7 +34,7 @@ void main(void)
 	// RESTORE: owner's decision (2026-11-13: "Standard splash, new line"). The game opens with the standard
 	// PSoXide studio splash, the line reading "Rebuilt with PSoXide", before its title picture. NMS's game
 	// had none. It comes first, before grab_available_ram_for_us takes the whole heap and clears it: the
-	// disc build keeps the splash in boot-only memory (psyq/psyq-boot.ld) that the block then covers, so
+	// disc build keeps the splash in a scene image the front end's then replaces (qdup/scenes.txt), so
 	// the splash costs the heap nothing, and nothing allocates before it returns. Cross, Circle or Start
 	// skips it (port 1, read through the layer's own pad buffer, as InitSystem's InitPAD has not run).
 	// The video mode is the one InitVideo sets later; InitVideo draws the screen after the splash.

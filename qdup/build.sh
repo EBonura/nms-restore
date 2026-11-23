@@ -61,6 +61,13 @@ CFLAGS="-march=r3000 -mabi=32 -msoft-float -mno-abicalls -fno-pic -G0 -O0 -g
 	-Wno-comment -Wno-unused -Wno-parentheses"
 
 case $ram in
+	devkit) ramsize=0x800000 ;;
+	# RESTORE: PLATFORM. A console's 2 MB less the SDK scene core's window and handoff block at the top
+	# (psyq/psyq.ld; PSYQ_RAM_SIZE overrides). RAM.C's heap ends 16 KB under the stack top that gives.
+	retail|cd) ramsize=${PSYQ_RAM_SIZE:-0x1FD800}; CFLAGS="$CFLAGS -DPSYQ_RAM_SIZE=$ramsize" ;;
+	*) echo "unknown RAM size $ram"; exit 1 ;;
+esac
+case $ram in
 	cd) CFLAGS="$CFLAGS -DCDMASTER=1 -DFINAL" ;;
 esac
 
@@ -72,6 +79,12 @@ status=0
 for f in $cfiles; do
 	opt=
 	case $f in fixball|fixmath) opt=-O2 ;; esac
+	# RESTORE: PLATFORM. The disc build's scene images (qdup/scenes.txt) take single functions of these four
+	# files: their own sections for each. GAMETYPE.C's tables get their own sections too, so the option screen's
+	# reads of its ball positions and palettes are told apart from the game's switch tables (tools/scenes.py
+	# check). Nothing else about the code changes.
+	case "$ram $f" in "cd psx"|"cd common"|"cd menu"|"cd gfx") opt="$opt -ffunction-sections" ;; esac
+	case "$ram $f" in "cd gametype") opt="$opt -ffunction-sections -fdata-sections" ;; esac
 	if ! mipsel-none-elf-gcc $CFLAGS $opt $QDUP_CFLAGS -c "$src/$f.c" -o "$obj/$f.o" 2> "$obj/$f.err"; then
 		echo "FAILED: $f.c ($(grep -c 'error' "$obj/$f.err") errors, $obj/$f.err)"
 		status=1
@@ -103,40 +116,45 @@ done
 objs=""
 for f in $cfiles $sfiles; do objs="$objs $obj/$f.o"; done
 objs="$objs $newfiles"
-case $ram in
-	devkit) ramsize=0x800000 ;;
-	retail|cd) ramsize=0x200000 ;;
-	*) echo "unknown RAM size $ram"; exit 1 ;;
-esac
+# RESTORE: PLATFORM. The disc build splits the program into a resident base and scene images
+# (qdup/scenes.txt, tools/scenes.py): their linker script goes first, each screen's entry function is
+# wrapped so that a call loads its image, and the images are cut into SCENES.IMG for the disc.
+scenes=""
+if [ "$ram" = cd ]; then
+	python3 -I "$root/tools/scenes.py" ld "$here/scenes.txt" "$out/scenes.ld" "$obj"
+	python3 -I "$root/tools/scenes.py" wrap "$here/scenes.txt" "$obj/scenes_wrap.s"
+	mipsel-none-elf-as -march=r3000 -mabi=32 -msoft-float -G0 -o "$obj/scenes_wrap.o" "$obj/scenes_wrap.s"
+	objs="$objs $obj/scenes_wrap.o"
+	scenes="-T $out/scenes.ld $(python3 -I "$root/tools/scenes.py" flags "$here/scenes.txt")"
+fi
 link() {	# link [more ld arguments]
-	"$root/psyq/lld.sh" --defsym=RAM_SIZE=$ramsize "$@" -T "$root/psyq/psyq.ld" --gc-sections -Map "$out/qdup.map" \
+	"$root/psyq/lld.sh" --defsym=RAM_SIZE=$ramsize "$@" $scenes -T "$root/psyq/psyq.ld" --gc-sections -Map "$out/qdup.map" \
 		-u _start -o "$out/qdup.elf" $objs $libs "$root/build/psyq${PSYQ_TEST_CD_FAULT:+-tcd}/libpsyq.a"
 }
-sym() { mipsel-none-elf-nm "$out/qdup.elf" | awk -v s="$1" '$3==s {print "0x" $1}'; }
 case $ram in
 	cd)
-		# RESTORE: PLATFORM. The boot splash is boot-only memory (psyq/psyq-boot.ld): it runs first thing in
-		# main, before grab_available_ram_for_us takes the whole heap and clears it, so the heap block gets its
-		# memory back. A first link finds where .data and .bss end; the second puts the splash there.
-		# psx_rt's settle_channel (out of line since SDK a222c8613) is called once per DMA channel by
-		# set_entry_state, at start-up, before main: boot-only too (the font code is not: QD Up calls FntLoad).
-		sed 's|/\* BOOT_EXTRA \*/|*(.text.*settle_channel*)|' "$root/psyq/psyq-boot.ld" > "$out/psyq-boot.ld"
-		boot="-u __boot_entry -T $out/psyq-boot.ld"
-		link $boot --defsym=BOOT_VMA=0x80180000 --defsym=BOOT_LMA=0x80180000
-		vma=$(sym __bss_end); lma=$(sym __data_end)
-		link $boot --defsym=BOOT_VMA=$vma --defsym=BOOT_LMA=$lma
-		[ "$(sym __bss_end)" = "$vma" ] && [ "$(sym __data_end)" = "$lma" ] || { echo "boot-only link: .data or .bss moved between the two links"; exit 1; }
-		bootsec="-j .boot"
-		"$root/psyq/check-boot.sh" "$out/qdup.elf" PsxSplash $(mipsel-none-elf-nm "$out/qdup.elf" | awk '$3 ~ /settle_channel/ {print $3}') || { echo "boot-only link: the code above would run after the heap took its memory back"; exit 1; } ;;
-	*) link; bootsec="" ;;
+		link
+		# RESTORE: PLATFORM. No code may refer into an image that may not be loaded.
+		python3 -I "$root/tools/scenes.py" check "$here/scenes.txt" "$out/qdup.elf" "$out/qdup.map" $objs \
+			"$root/build/psyq${PSYQ_TEST_CD_FAULT:+-tcd}/libpsyq.a"
+		python3 -I "$root/tools/scenes.py" cut "$here/scenes.txt" "$out/qdup.elf" "$out" ;;
+	*) link ;;
 esac
-mipsel-none-elf-objcopy -O binary -j .ps_exe_head -j .text -j .data $bootsec "$out/qdup.elf" "$out/qdup.exe"
+mipsel-none-elf-objcopy -O binary -j .ps_exe_head -j .text -j .data "$out/qdup.elf" "$out/qdup.exe"
 # whole 800h-byte sectors, as the header's size says
 size=$(wc -c < "$out/qdup.exe" | tr -d ' ')
 pad=$(( (2048 - size % 2048) % 2048 ))
 [ $pad = 0 ] || head -c $pad /dev/zero >> "$out/qdup.exe"
 # The layer is built with every delay-slot filler search on (psyq/build.sh): reroute what it leaves, prove none remains.
 "$root/psyq/hazard.sh" "$out/qdup.exe" "$out/qdup.map"
+if [ "$ram" = cd ]; then
+	# RESTORE: PLATFORM. The images' layer code too (the splash's), through the program's trampolines; then
+	# the images go into SCENES.IMG with the table.
+	for f in "$out"/SCENES.*.bin; do
+		"$root/psyq/hazard.sh" --image "$out/qdup.exe" "$out/qdup.map" "$f" "${f%.bin}.map"
+	done
+	python3 -I "$root/tools/scenes.py" pack "$here/scenes.txt" "$out" "$out/SCENES.IMG" --list "$out/SCENES.IMG.txt"
+fi
 # RESTORE: PLATFORM. A disc's executable carries the gate's receipt (sdk/docs/GATE.md): psx-gate over the
 # layer, then the stamp, as the last change to the file.
 [ "$ram" = cd ] && "$root/psyq/stamp.sh" "$out/qdup.exe"

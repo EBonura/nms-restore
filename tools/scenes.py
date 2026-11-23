@@ -275,13 +275,13 @@ def readelf_objects(paths):
                 m = re.match(r'^\s*\[\s*(\d+)\]\s+(\S+)', line)
                 if m:
                     sections[int(m.group(1))] = m.group(2)
-            symbols = []
+            symbols = {}
             for line in Y.get(key, []):
-                m = re.match(r'^\s*(\d+):\s+([0-9a-f]+)\s+\d+\s+(\S+)\s+(\S+)\s+\S+\s+(\S+)\s*(\S*)', line)
+                m = re.match(r'^\s*(\d+):\s+([0-9a-f]+)\s+\S+\s+(\S+)\s+(\S+)\s+\S+\s+(\S+)\s*(\S*)', line)
                 if m:
                     ndx = int(m.group(5)) if m.group(5).isdigit() else m.group(5)
                     name = m.group(6) or (sections.get(ndx, '') if m.group(3) == 'SECTION' else '')
-                    symbols.append((name, ndx, m.group(3), m.group(4)))
+                    symbols[int(m.group(1))] = (name, ndx, m.group(3), m.group(4))
             relocs, cur = {}, None
             for line in R.get(key, []):
                 m = re.match(r"^Relocation section '\.rel(?:a)?(\S+)'", line)
@@ -331,7 +331,7 @@ def cmd_check(scenes, elf, mapfile, objpaths):
                 placed[(key, sec)] = consts.get(key, BASE)
     defs = {}           # global symbol -> node that defines it
     for key, (sections, symbols, relocs) in objs.items():
-        for name, ndx, typ, bind in symbols:
+        for name, ndx, typ, bind in symbols.values():
             if bind in ('GLOBAL', 'WEAK') and isinstance(ndx, int) and name and (key, sections.get(ndx)) in placed:
                 defs.setdefault(name, (key, sections[ndx]))
     edges = {}          # node -> [(target node, symbol name)]
@@ -343,7 +343,7 @@ def cmd_check(scenes, elf, mapfile, objpaths):
                 continue        # not linked (--gc-sections), or not loaded (debug)
             out = edges.setdefault(src, [])
             for si in refs:
-                if si >= len(symbols):
+                if si not in symbols:
                     continue
                 name, ndx, typ, bind = symbols[si]
                 if isinstance(ndx, int) and ndx in sections:
@@ -364,6 +364,7 @@ def cmd_check(scenes, elf, mapfile, objpaths):
     for im in images:
         y = im.name
         seen = set(roots) | {n for n, p in placed.items() if p not in (BASE, y)}
+        parent = {}
         todo = list(seen)
         while todo:
             n = todo.pop()
@@ -375,10 +376,15 @@ def cmd_check(scenes, elf, mapfile, objpaths):
                     stem = n[0][:-2] if n[0].endswith('.o') else n[0]
                     if placed[n] == BASE and ((fn, y) in allowed or (stem, y) in allowed):
                         continue
+                    path, p = [], n
+                    while p in parent and len(path) < 6:
+                        p = parent[p]
+                        path.append('%s(%s)' % p)
                     errors.append(f'{n[0]}({n[1]}) in {placed[n]}, which runs while {y} may not be loaded, '
-                                  f'refers to {name} in {y}')
+                                  f'refers to {name} in {y}' + (' (reached from ' + ' <- '.join(path) + ')' if path else ''))
                 elif t not in seen:
                     seen.add(t)
+                    parent[t] = n
                     todo.append(t)
     for im in images:
         for fn in im.entries:
