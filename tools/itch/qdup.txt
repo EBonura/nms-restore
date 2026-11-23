@@ -1,0 +1,34 @@
+QD Up (PlayStation)  -  version @VERSION@
+==========================================
+
+QD Up is a pool game by NMS Software. BMG Interactive was due to publish it
+in 1996, and it was never released. This disc is rebuilt from NMS's own
+September 1996 source, which the PlayStation Museum preserved.
+
+The disc has two views of the same game. 2D is the top-down table NMS's
+PlayStation build drew. 3D is restoration work: NMS wrote their 3D table only
+for the PC version, so the PlayStation renderer is new, drawing NMS's own
+table models, palettes and camera code. Pick one after START; L2 and R2
+together switch views during play. The cue stick and aim line in the 2D view
+are also new, because the 1996 build gave no way to see where you aimed.
+Every change is listed in the restoration's README.
+
+Game types: UK pool, 9-ball and US 8-ball, against a friend or the computer.
+
+To play:
+  - Boot qdup.cue in a PS1 emulator (DuckStation, PCSX-Redux, PSoXide), or
+  - burn it to a CD-R and play it on a console that runs CD-Rs.
+  In play: Left and Right aim. Hold Cross, then press Down and Up to strike.
+  Square with Up/Down sets the cue height, Circle with the D-pad adds spin,
+  Triangle with the D-pad moves the ball in hand. L2 undoes the last shot,
+  R2 replays it, Start pauses. The game shows these hints as you play.
+
+This game and 360X are also on the PSoXide Demo Disc:
+https://bonnie-studios.itch.io/psoxide-demo-disc
+
+Released together with PSX Archive (the PlayStation Museum), who preserved
+the source and the original builds.
+Restoration and the PSoXide SDK: Manny, Bonnie Studios.
+https://bonnie-studios.itch.io
+
+Built from nms-restore @COMMIT@. SHA256SUMS.txt has the file checksums.

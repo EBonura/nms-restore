@@ -1,0 +1,37 @@
+360X (PlayStation)  -  version @VERSION@
+=========================================
+
+360X is a cave-flying shooter by NMS Software. BMG Interactive was due to
+publish it in 1996, and it was never released. This disc is rebuilt from
+NMS's own July 1996 PlayStation source, which lead programmer Paul Griffiths
+kept and the PlayStation Museum preserved.
+
+What NMS left unfinished was completed from their own PC and Saturn versions
+of the game. Where no version had something, the game says so (touching a
+survivor shows "RESCUE NOT AVAILABLE": no version ever implemented rescues).
+Every change is listed in the restoration's README.
+
+To play:
+  - Boot 360x.cue in a PS1 emulator (DuckStation, PCSX-Redux, PSoXide), or
+  - burn it to a CD-R and play it on a console that runs CD-Rs.
+  Pick a mission on the planet select with Left and Right. High scores save
+  to a memory card.
+  Controls (type A): Left/Right turn, Cross thrust, Square or Circle fire,
+  Triangle grab a pod, R2 brake, L1/R1 change weapon, Start pause, Select
+  menu. Pausing shows them on screen.
+
+Credits (from the game's own credits screen, Saturn version, 1996):
+  Programming: Pratik Patel, Paul Griffiths, Phillip Trelford
+  Art: Ian Margetts, Colin Dempsey
+  Sound and music: The Music Bods
+  Executive producer: Richard Chappells
+
+This game and QD Up are also on the PSoXide Demo Disc:
+https://bonnie-studios.itch.io/psoxide-demo-disc
+
+Released together with PSX Archive (the PlayStation Museum), who preserved
+the source and the original builds.
+Restoration and the PSoXide SDK: Manny, Bonnie Studios.
+https://bonnie-studios.itch.io
+
+Built from nms-restore @COMMIT@. SHA256SUMS.txt has the file checksums.
