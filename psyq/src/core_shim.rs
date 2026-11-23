@@ -324,8 +324,12 @@ pub(crate) fn attach() {
     block_u16(0x06, 0x100);
     block_u32(0x0C, psx_io::disc_base::lba_offset());
     block_u32(0x10, u32::from(psx_io::disc_base::cdda_track_base()));
-    // The boot scene's image comes in with the program when the EXE carries it (tools/scenes.py `preload`).
-    block_u16(OFF_CURRENT, &raw const __scene_preloaded as u16);
+    // The images the EXE carries come in with the program (tools/scenes.py `preload` and `boot`): the
+    // program starts in the boot scene, with the front end's image already in the region.
+    let (pre, boot) = (&raw const __scene_preloaded as u32, &raw const __scene_boot_id as u32);
+    // SAFETY: see the statics.
+    unsafe { RESIDENT = bit(pre) | bit(boot) };
+    block_u16(OFF_CURRENT, if boot != 0 { boot } else { pre } as u16);
     block_u16(OFF_PREVIOUS, 0xFFFF);
     block_u32(0xFC, !BLOCK_MAGIC);
 }
@@ -360,6 +364,13 @@ struct Row {
 }
 
 const MAX_ROWS: usize = 8;
+/// The scenes whose images are in RAM now, one bit each (bit 0, the program, is never set).
+// SAFETY: foreground-only static.
+static mut RESIDENT: u32 = 0;
+
+fn bit(scene: u32) -> u32 {
+    if scene == 0 || scene >= 32 { 0 } else { 1 << scene }
+}
 const NO_ROW: Row = Row { lba: 0, sectors: 0, t_addr: 0, t_size: 0, fnv: 0, tries: 0 };
 // SAFETY (both): foreground-only statics.
 static mut ROWS: [Row; MAX_ROWS] = [NO_ROW; MAX_ROWS];
@@ -373,6 +384,8 @@ extern "C" {
     static __scene_region_end: u8;
     /// The scene id of the image the EXE carries in the region (0: none), an absolute symbol.
     static __scene_preloaded: u8;
+    /// The scene id of the boot image the EXE carries for the start of the heap (0: none).
+    static __scene_boot_id: u8;
 }
 
 /// Word FNV-1a (CORE-ABI.md: offset basis 0x811C9DC5, prime 0x01000193, a word at a step).
@@ -415,12 +428,25 @@ fn read_table() -> u32 {
     0
 }
 
-/// Load scene image `scene` (a kind 1 row) into its fixed range while the program keeps running:
-/// read its sectors, check its word FNV (a bad one is read again, up to the row's attempts), flush
-/// the instruction cache, and record the switch in the handoff block. 0, or a stage code (nothing
-/// is run from the range then). Not in the core's ABI yet: asked for.
+/// Make scene image `scene` (a kind 1 row) the current one, loading it into its fixed range while the
+/// program keeps running unless it is in RAM already: read its sectors, check its word FNV (a bad one
+/// is read again, up to the row's attempts), flush the instruction cache. The switch is recorded in
+/// the handoff block. Entering any scene but the boot one gives up the boot image (the heap takes its
+/// memory). 0, or a stage code (nothing is run from the range then). Not in the core's ABI yet: asked
+/// for.
 #[no_mangle]
 pub extern "C" fn core_load_image(scene: u32) -> u32 {
+    let boot = &raw const __scene_boot_id as u32;
+    // SAFETY: see the statics.
+    unsafe {
+        if scene != boot {
+            RESIDENT &= !bit(boot);
+        }
+        if RESIDENT & bit(scene) != 0 {
+            entered(scene);
+            return 0;
+        }
+    }
     // SAFETY: see the statics.
     if unsafe { CLIENT } {
         return STAGE_CLIENT;
@@ -457,6 +483,8 @@ pub extern "C" fn core_load_image(scene: u32) -> u32 {
         return result;
     }
     psx_rt::cache::flush_instruction_cache();
+    // SAFETY: see the statics. The region holds one image at a time.
+    unsafe { RESIDENT = bit(scene) };
     entered(scene);
     0
 }

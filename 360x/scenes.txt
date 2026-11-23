@@ -10,15 +10,16 @@
 region 0x1000 0x000
 
 # The boot scene: the splash (the SDK's, with the PSX Archive credit) and the film player, which
-# only the start of the game uses. Loaded once, then overwritten by the language screen.
-image 1 BOOT preload
+# only the start of the game uses. The EXE carries it; it runs at the start of the heap, which the game
+# fills from the top down (JALLOC.C), as psyq-boot.ld's overlay did. No read before the splash.
+image 1 BOOT boot
 layer .boot_only .boot_only.* .text.FmvPlay .text.FmvMemoryBytes .text.*psx_fmv* .rodata.*psx_fmv* .bss.*psx_fmv*
 layer .text.PsxSplash .text.*psx_splash* .rodata.*psx_splash*
 entry PsxSplash FmvPlay FmvMemoryBytes
 
-# The front end: language, title and attract loop, main menu with the memory card, planet select,
+# The front end (the EXE carries it too, so the first screen needs no read): language, title and attract loop, main menu with the memory card, planet select,
 # high-score entry.
-image 2 FRONT
+image 2 FRONT preload
 objects LANGUAGE TITLE SHIPDEMO HIGH CREDITS OPTIONS PLANETS
 # LOADSAVE's strings stay in the base: please_w[] (LOADSAVE.C:59) points at them and Loading_Message
 # (GENERAL.C:1447) prints it under every load, the mission's included.

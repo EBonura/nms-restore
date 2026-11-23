@@ -117,6 +117,10 @@ SECTIONS {
     PROVIDE(__scene_region_start = 0);
     PROVIDE(__scene_region_end = 0);
     PROVIDE(__scene_preloaded = 0);
+    PROVIDE(__scene_boot_id = 0);
+    PROVIDE(__scene_boot_lma = 0);
+    PROVIDE(__scene_boot_vma = 0);
+    PROVIDE(__scene_boot_size = 0);
     __heap_end   = STACK_INIT - STACK_RESERVE;
     ASSERT(__bss_end <= STACK_INIT - STACK_RESERVE, "program does not fit below the stack reserve")
 

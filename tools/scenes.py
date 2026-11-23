@@ -20,10 +20,15 @@ SCENES.TXT, one directive a line, `#` starts a comment:
     region ALIGN OFFSET        the region starts at the first address after .data that is OFFSET
                                past a multiple of ALIGN (the I-cache knob: the region's code keeps
                                its place in the 4 KB cache whatever the base grows or shrinks to)
-    image ID NAME [preload]    a new image; ID is its scene id (its row in the table). `preload`
-                               (the first image only, the boot scene): the EXE carries it in the
-                               region too, so the BIOS loads it with the program and it is the
-                               current scene from the start (no read, no seek before the splash)
+    image ID NAME [preload|boot]  a new image; ID is its scene id (its row in the table).
+                               `preload` (one region image, the front end): the EXE carries it in
+                               the region, so the BIOS loads it with the program and the first
+                               screen needs no read. `boot` (one image, the splash and film): it
+                               runs at the start of the heap, which takes it back later, as
+                               psyq-boot.ld's overlay did; the EXE carries it after the preloaded
+                               image and `__core_boot` (psyq/src/boot.rs) moves it up before
+                               `_start`. It is valid until the first entry into another image;
+                               its entries may run only before that (the program's start)
     objects NAME...            NMS objects (NAME.o) whose code and constant data go in the image
                                (.text*, .rodata*): their .data and .bss stay in the base, so a
                                reload never resets a variable
@@ -89,9 +94,10 @@ def parse(path):
             region = (int(args[0], 0), int(args[1], 0))
         elif kind == 'image':
             images.append(Image(int(args[0]), args[1]))
-            images[-1].preload = args[2:] == ['preload']
-            if images[-1].preload and len(images) != 1:
-                sys.exit(f'{path}:{n}: only the first image can be preloaded')
+            images[-1].preload = 'preload' in args[2:]
+            images[-1].boot = 'boot' in args[2:]
+            if sum(i.preload for i in images) > 1 or sum(i.boot for i in images) > 1:
+                sys.exit(f'{path}:{n}: one preloaded image and one boot image at most')
         elif kind == 'objects':
             images[-1].objects += args
         elif kind == 'functions':
@@ -135,7 +141,7 @@ def cmd_ld(scenes, out, objdir):
          'SECTIONS {',
          '    __scene_data_end = ADDR(.data) + SIZEOF(.data);',
          '    __scene_region_start = __scene_data_end + ((%#x - __scene_data_end) & %#x);' % (offset, align - 1)]
-    for im in images:
+    def body(im, base):
         pats = []
         for o in im.objects + im.code:
             pats.append('        *-%s.o(.text .text.*)' % o)
@@ -149,22 +155,37 @@ def cmd_ld(scenes, out, objdir):
             pats.append('        *-%s.o(.rodata .rodata.*)' % o)
         if layer_rest:
             pats.append('        *libpsyq.a:*(%s)' % ' '.join(layer_rest))
-        w += ['    .scene_%s __scene_region_start : AT(__scene_region_start) {' % im.name,
-              '        __scene_%s_start = .;' % im.name]
-        w += pats
-        w += ['        . = ALIGN(4);',
-              '        __scene_%s_end = .;' % im.name,
-              '        . = __scene_region_start + ((. - __scene_region_start + %d) & ~%d);' % (SECTOR - 1, SECTOR - 1),
-              '    }']
-    size = '0'
-    for im in images:
-        size = 'MAX(%s, SIZEOF(.scene_%s))' % (size, im.name)
+        return (['        __scene_%s_start = .;' % im.name] + pats +
+                ['        . = ALIGN(4);',
+                 '        __scene_%s_end = .;' % im.name,
+                 '        . = %s + ((. - %s + %d) & ~%d);' % (base, base, SECTOR - 1, SECTOR - 1),
+                 '    }'])
+    region = [im for im in images if not im.boot]
+    boot = [im for im in images if im.boot]
     pre = [im for im in images if im.preload]
+    for im in region:
+        w += ['    .scene_%s __scene_region_start : AT(__scene_region_start) {' % im.name] + body(im, '__scene_region_start')
+    size = '0'
+    for im in region:
+        size = 'MAX(%s, SIZEOF(.scene_%s))' % (size, im.name)
     w += ['    __scene_preloaded = %d;' % (pre[0].id if pre else 0)]
     w += ['    . = __scene_region_start + %s;' % size,
           '    __scene_region_end = .;',
           '}',
           'INSERT AFTER .data;', '']
+    if boot:
+        im = boot[0]
+        # stored after the preloaded image in the EXE (or at the region's start), run at the start of the heap
+        lma = '__scene_region_start' + (' + SIZEOF(.scene_%s)' % pre[0].name if pre else '')
+        w += ['SECTIONS {',
+              '    __scene_boot_vma = ALIGN(ADDR(.bss) + SIZEOF(.bss), 16);',
+              '    __scene_boot_lma = %s;' % lma,
+              '    .scene_%s __scene_boot_vma : AT(__scene_boot_lma) {' % im.name] + body(im, '__scene_boot_vma')
+        w += ['    __scene_boot_id = %d;' % im.id,
+              '    __scene_boot_size = SIZEOF(.scene_%s);' % im.name,
+              '    ASSERT(__scene_boot_lma + __scene_boot_size <= __scene_boot_vma, "the boot image would be moved over itself")',
+              '}',
+              'INSERT AFTER .bss;', '']
     open(out, 'w').write('\n'.join(w))
 
 
@@ -445,7 +466,7 @@ def cmd_cut(scenes, elf, outdir):
         data = open(base + '.bin', 'rb').read()
         data += b'\0' * ((-len(data)) % SECTOR)
         start = syms['__scene_%s_start' % im.name]
-        if start != region[0] or start + len(data) > region[1]:
+        if not im.boot and (start != region[0] or start + len(data) > region[1]):
             sys.exit(f'scenes.py cut: {im.name} is not inside the region')
         open(base + '.bin', 'wb').write(data)
         image_map(os.path.splitext(elf)[0] + '.map', im.name, base + '.map')
@@ -506,25 +527,31 @@ def cmd_patch(exe, mapfile, blob, blobmap, tools):
 
 
 def cmd_splice(scenes, outdir, exe):
-    """Put the preloaded image (patched, from cmd_cut/cmd_patch) into the EXE at its place in the region,
-    after the program's load, and grow the header's size to cover it."""
+    """Put the preloaded image and then the boot image (patched, from cmd_cut/cmd_patch) into the EXE
+    after the program's load: the preloaded one at its place in the region, the boot one right after
+    it (`__core_boot` moves it up), and grow the header's size to cover them."""
     _, images, _ = parse(scenes)
-    pre = [im for im in images if im.preload]
-    if not pre:
-        return
-    base = os.path.join(outdir, 'SCENES.%s' % pre[0].name)
-    data = open(base + '.bin', 'rb').read()
-    start = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)
     prog = bytearray(open(exe, 'rb').read())
     load = struct.unpack_from('<I', prog, 0x18)[0]
-    at = 0x800 + start - load
-    if at < len(prog.rstrip(b'\0')) or at < 0x800:
-        sys.exit('scenes.py splice: the region starts inside the program')
-    prog = prog[:at].ljust(at, b'\0') + data
+    end = len(prog.rstrip(b'\0'))
+    for im in [i for i in images if i.preload] + [i for i in images if i.boot]:
+        base = os.path.join(outdir, 'SCENES.%s' % im.name)
+        data = open(base + '.bin', 'rb').read()
+        run = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)
+        at = 0x800 + (run if im.preload else boot_lma(outdir, exe)) - load
+        if at < end:
+            sys.exit(f'scenes.py splice: {im.name} would be stored inside the program')
+        prog = prog[:at].ljust(at, b'\0') + data
+        end = len(prog)
+        print(f'scenes: {im.name} carried in the EXE at {at - 0x800 + load:#x} ({len(data)} bytes)')
     prog += b'\0' * ((-len(prog)) % SECTOR)
     struct.pack_into('<I', prog, 0x1C, len(prog) - 0x800)
     open(exe, 'wb').write(prog)
-    print(f'scenes: {pre[0].name} preloaded in the EXE at {start:#x} ({len(data)} bytes)')
+
+
+def boot_lma(outdir, exe):
+    syms = elf_symbols(os.path.splitext(exe)[0] + '.elf')
+    return syms['__scene_boot_lma']
 
 
 def cmd_pack(scenes, outdir, out, listing):
