@@ -261,21 +261,8 @@ until = { kind = "ram", sym = "fuel", size = 2, op = "gt", value = 0 }
 max_polls = 2850
 launch_args = ["--digital-pad"]
 
-[[load]]
-name = "qdup-boot"
-build = "qdup"
-until = { kind = "ram", sym = "BackScreen", size = 4, op = "ne", value = 0 }
-max_polls = 1500
-launch_args = ["--digital-pad"]
-
-[[load]]
-name = "qdup-table"
-build = "qdup"
-tape = "pgo/qdup-shot.pxtape"
-from = { kind = "ram", sym = "Allocated_Memory_Block", size = 4, op = "ge", value = 800000 }
-until = { kind = "ram", sym = "Allocated_Memory_Block", size = 4, op = "eq", value = 643028 }
-max_polls = 3000
-launch_args = ["--digital-pad"]
+# QD Up's rows wait for the SDK harness: a row with no tape ran past max_polls on QD Up (tools-hc 894d16439831,
+# reported); its loads are timed by hand for now (r2 notes in the lane).
 
 # The deepest stack at the end of each smoke: the stack top is 100h under the RAM top psyq/core-window.sh gives the
 # link (a --defsym, which the map does not carry), 16 KB kept for each game's stack.

@@ -17,9 +17,10 @@ u_int32_t_core core_pause(void);
 /* psx_core_client_attach / _detach: a stream client (the film) holds the drive meanwhile. */
 u_int32_t_core core_client_attach(void);
 void core_client_detach(void);
-/* Not in the core's ABI yet (asked for): load the scene image of table row `scene` into its fixed
-   range in the running program, check its word FNV, flush the I-cache, record the switch. */
-u_int32_t_core core_load_image(u_int32_t_core scene);
+/* psx_core_load_image (core v2): load overlay image `image` (its row in the program's table copy
+   `table`) into its fixed range in the running program unless it is loaded, check its word FNV, flush
+   the I-cache, update the loaded mask (handoff 0x74), and return on the caller's stack. */
+u_int32_t_core core_load_image(u_int32_t_core image, const unsigned int *table);
 /* The handoff block's current scene (0: the program, before any image). */
 u_int32_t_core core_current_scene(void);
 

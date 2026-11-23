@@ -18,7 +18,7 @@ pub extern "C" fn PsyqSceneEnter(scene: u32) {
     if core_current_scene() == scene {
         return;
     }
-    let step: &[u8] = match core_load_image(scene) {
+    let step: &[u8] = match core_load_image(scene, crate::core_shim::table()) {
         0 => return,
         STAGE_READ_FAILED => b"SCENE IMAGE READ\0",
         STAGE_CHECKSUM => b"SCENE IMAGE CHECKSUM\0",

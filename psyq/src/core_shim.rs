@@ -356,7 +356,13 @@ pub(crate) fn attach() {
     block_u32(0x10, u32::from(psx_io::disc_base::cdda_track_base()));
     block_u16(OFF_CURRENT, pre.trailing_zeros() as u16 % 32);
     block_u16(OFF_PREVIOUS, 0xFFFF);
+    block_u32(0x74, pre | bit(boot));
     block_u32(0xFC, !BLOCK_MAGIC);
+}
+
+/// The program's RAM copy of the scene table, for `core_load_image`.
+pub(crate) fn table() -> *const u32 {
+    (&raw const PSYQ_SCENE_ROWS).cast()
 }
 
 /// The scene the handoff block says is current (0 the program itself, before any image).
@@ -368,6 +374,8 @@ pub extern "C" fn core_current_scene() -> u32 {
 
 /// Record a switch to `scene` (the core does this at every switch).
 fn entered(scene: u32) {
+    // SAFETY: see the statics. The loaded mask (handoff block v2, 0x74).
+    block_u32(0x74, unsafe { RESIDENT });
     block_u16(OFF_PREVIOUS, core_current_scene() as u16);
     block_u16(OFF_CURRENT, scene as u16);
     // SAFETY: as block_u16.
@@ -490,14 +498,16 @@ fn rows_from(words: &[u32], count: usize, base: u32) {
     }
 }
 
-/// Make scene image `scene` (a kind 1 row) the current one, loading it into its fixed range while the
+/// `psx_core_load_image(image_index, table_ptr)` (core v2, accepted by the SDK lane; slot address to
+/// come): `scene` is the image's row in the table, `_table` the program's RAM copy of the table (today
+/// the rows the build wrote into PSYQ_SCENE_ROWS, which this reads itself). Make scene image `scene` the current one, loading it into its fixed range while the
 /// program keeps running unless it is in RAM already: read its sectors, check its word FNV (a bad one
 /// is read again, up to the row's attempts), flush the instruction cache. The switch is recorded in
 /// the handoff block. Entering any scene but the boot one gives up the boot image (the heap takes its
 /// memory). 0, or a stage code (nothing is run from the range then). Not in the core's ABI yet: asked
 /// for.
 #[no_mangle]
-pub extern "C" fn core_load_image(scene: u32) -> u32 {
+pub extern "C" fn core_load_image(scene: u32, _table: *const u32) -> u32 {
     let boot = &raw const __scene_boot_id as u32;
     // SAFETY: see the statics.
     unsafe {
