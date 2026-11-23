@@ -1,0 +1,27 @@
+# QD Up: the title says LOADING while the option screen's files load, then PRESS START in the same place
+# (new/viewchoice.c Title_Loading, Title_Press_Start).
+name = "qdup-title-loading"
+title = "QD Up: LOADING on the title, then PRESS START"
+disc = "build/qdup-cd/qdup.cue"
+symbols = "build/qdup-cd/qdup.map"
+pad = "digital"
+
+[[step]]
+label = "LOADING is drawn (after the boot: before it the counter holds whatever RAM held)"
+wait_until = { kind = "expr", expr = "u32(__psx_rt_vblank_count) >= 60 && u32(title_loading) == 1" }
+timeout = 4000
+
+[[step]]
+checkpoint = "loading"
+golden = false
+assert = [{ kind = "ram", sym = "title_loading", size = 4, op = "eq", value = 1 }, { kind = "ram", sym = "title_prompts", size = 4, op = "eq", value = 0 }]
+
+[[step]]
+label = "the loads are done: PRESS START"
+wait_until = { kind = "ram", sym = "title_prompts", size = 4, op = "eq", value = 1 }
+timeout = 4000
+
+[[step]]
+checkpoint = "press-start"
+golden = false
+assert = [{ kind = "ram", sym = "title_prompts", size = 4, op = "eq", value = 1 }]

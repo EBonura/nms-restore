@@ -1,0 +1,200 @@
+# 360X pad button icons (new work, owner's request 2026-11-22: "real pictures of the controller
+# buttons" on the pause screen). Drawn for this game, in the style of its medium font: 1-pixel
+# strokes with a dark outline, glyphs on rows 4 to 14 of a 16-row cell.
+#
+# tools/x360_padicons.py turns this file into the header the game includes (360x/build.sh runs it).
+# The game writes the icons into the unused bottom quarter of its font page (FONTS.TIM rows 192 to
+# 255) before that page goes to VRAM, and draws them with their own palette (below).
+#
+# Palette: one character per colour index, then r g b (0 to 255). Index 0 is transparent.
+palette
+. 0 0 0 0
+k 1 32 32 32
+w 2 248 248 248
+b 3 64 64 64
+g 4 72 216 176
+r 5 248 96 104
+u 6 120 168 248
+p 7 240 144 216
+l 8 152 152 152
+
+# Each icon: "icon NAME", then 16 rows of the same width (the cell's rows 0 to 15).
+icon TRIANGLE
+.............
+.............
+.............
+....kkkkk....
+..kkbbbbbkk..
+.kbbbbgbbbbk.
+.kbbbgbgbbbk.
+kbbbbgbgbbbbk
+kbbbgbbbgbbbk
+kbbbgbbbgbbbk
+kbbgbbbbbgbbk
+kbbgggggggbbk
+.kbbbbbbbbbk.
+.kbbbbbbbbbk.
+..kkbbbbbkk..
+....kkkkk....
+
+icon CIRCLE
+.............
+.............
+.............
+....kkkkk....
+..kkbbbbbkk..
+.kbbbbbbbbbk.
+.kbbbrrrbbbk.
+kbbbrbbbrbbbk
+kbbrbbbbbrbbk
+kbbrbbbbbrbbk
+kbbrbbbbbrbbk
+kbbbrbbbrbbbk
+.kbbbrrrbbbk.
+.kbbbbbbbbbk.
+..kkbbbbbkk..
+....kkkkk....
+
+icon CROSS
+.............
+.............
+.............
+....kkkkk....
+..kkbbbbbkk..
+.kbbbbbbbbbk.
+.kbbubbbubbk.
+kbbbbububbbbk
+kbbbbbubbbbbk
+kbbbbububbbbk
+kbbbubbbubbbk
+kbbubbbbbubbk
+.kbbbbbbbbbk.
+.kbbbbbbbbbk.
+..kkbbbbbkk..
+....kkkkk....
+
+icon SQUARE
+.............
+.............
+.............
+....kkkkk....
+..kkbbbbbkk..
+.kbbbbbbbbbk.
+.kbbbbbbbbbk.
+kbbbpppppbbbk
+kbbbpbbbpbbbk
+kbbbpbbbpbbbk
+kbbbpbbbpbbbk
+kbbbpppppbbbk
+.kbbbbbbbbbk.
+.kbbbbbbbbbk.
+..kkbbbbbkk..
+....kkkkk....
+
+icon DPAD_LR
+.............
+.............
+.............
+....kkkkk....
+....kbbbk....
+....kbbbk....
+....kbbbk....
+kkkkkbbbkkkkk
+kbwbbbbbbbwbk
+kwwbbbbbbbwwk
+kbwbbbbbbbwbk
+kkkkkbbbkkkkk
+....kbbbk....
+....kbbbk....
+....kbbbk....
+....kkkkk....
+
+icon L1
+...............
+...............
+...............
+...............
+..kkkkkkkkkkk..
+.kbbbbbbbbbbbk.
+kbbbbbbbbbbbbbk
+kbbbwbbbbwbbbbk
+kbbbwbbbwwbbbbk
+kbbbwbbbbwbbbbk
+kbbbwbbbbwbbbbk
+kbbbwwwbwwwbbbk
+kbbbbbbbbbbbbbk
+kbbbbbbbbbbbbbk
+kkkkkkkkkkkkkkk
+...............
+
+icon R1
+...............
+...............
+...............
+...............
+..kkkkkkkkkkk..
+.kbbbbbbbbbbbk.
+kbbbbbbbbbbbbbk
+kbbbwwbbbwbbbbk
+kbbbwbwbwwbbbbk
+kbbbwwbbbwbbbbk
+kbbbwbwbbwbbbbk
+kbbbwbwbwwwbbbk
+kbbbbbbbbbbbbbk
+kbbbbbbbbbbbbbk
+kkkkkkkkkkkkkkk
+...............
+
+icon R2
+...............
+...............
+...............
+...............
+..kkkkkkkkkkk..
+.kbbbbbbbbbbbk.
+kbbbbbbbbbbbbbk
+kbbbwwbbwwbbbbk
+kbbbwbwbbbwbbbk
+kbbbwwbbbwbbbbk
+kbbbwbwbwbbbbbk
+kbbbwbwbwwwbbbk
+kbbbbbbbbbbbbbk
+kbbbbbbbbbbbbbk
+kkkkkkkkkkkkkkk
+...............
+
+icon START
+.........................
+.........................
+.........................
+.........................
+.........................
+..kkkkkkkkkkkkkkkkkkkkk..
+.kbbbbbbbbbbbbbbbbbbbbbk.
+kbbbwwbwwwbbwbbwwbbwwwbbk
+kbbwbbbbwbbwbwbwbwbbwbbbk
+kbbbwbbbwbbwwwbwwbbbwbbbk
+kbbbbwbbwbbwbwbwbwbbwbbbk
+kbbwwbbbwbbwbwbwbwbbwbbbk
+.kbbbbbbbbbbbbbbbbbbbbbk.
+..kkkkkkkkkkkkkkkkkkkkk..
+.........................
+.........................
+
+icon SELECT
+.............................
+.............................
+.............................
+.............................
+.............................
+..kkkkkkkkkkkkkkkkkkkkkkkkk..
+.kbbbbbbbbbbbbbbbbbbbbbbbbbk.
+kbbbwwbwwwbwbbbwwwbbwwbwwwbbk
+kbbwbbbwbbbwbbbwbbbwbbbbwbbbk
+kbbbwbbwwbbwbbbwwbbwbbbbwbbbk
+kbbbbwbwbbbwbbbwbbbwbbbbwbbbk
+kbbwwbbwwwbwwwbwwwbbwwbbwbbbk
+.kbbbbbbbbbbbbbbbbbbbbbbbbbk.
+..kkkkkkkkkkkkkkkkkkkkkkkkk..
+.............................
+.............................

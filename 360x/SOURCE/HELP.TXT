@@ -1,0 +1,282 @@
+
+GENERAL RULES OF 'C'
+
+
+Always put ; after every command which usually means every line
+
+Warning!!! C is case sensitive, therefore Main & main are different variables
+
+/* = start of REM'ed block
+*/ = end of REM'ed block
+
+
+// = REM for the rest of that line (PC only)
+
+
+Instructions can be grouped using { and }, so that on an IF statement
+it will automatically do all the instructions enclosed in the { } 
+
+'A'		/* means ASC("A") i.e. A=65  */
+*A		/* pointer i.e. location in memory address A */
+&A		/* address which holds value of A
+
+;------------------
+BITS
+        31098 7654  23210 9876  1543211098  7654 3210
+32 bit   0000 0000|  0000 0000|  0000 0000| 0000 0000
+
+                            16   3184 2152  1631 8421 
+                            35   2610 0015  2426    
+                            15   7399 4226  8        
+                            03   6826 84              
+                            76   84          
+                            2             
+                                           
+
+
+
+VARIABLE TYPES:-
+
+#define maxballs 10	/* defines an assembly variable N.B. no ; on end of line*/
+
+
+ *** PSX
+{
+u_ means unsigned (positive numbers only)
+
+u_char	hits;		/* 8 bit unsigned - defines variable to hold values 0 to 255 */
+char	speed;		/* 8 bit signed -defines variable to hold values -128 to 127 */  
+
+u_short	counter;		/* 16 bit unsigned */
+short	bspeed;		/* 16 bit signed */
+
+u_long	score;		/* 32 bit unsigned */
+long	xvel			/* 32 bit signed */
+
+}
+
+ *** PC
+{
+
+BOOL	flag;		/* 1 bit, i.e. 0 or 1 */
+char	speed;		/* 8 bit     is this signed or unsigned????? */
+INT		bspeed;		/* 16 bit                " ???? */
+long INT	score;		/* 32 bit */
+FLOAT	xpos;		/* 32 bit floating point */
+DOUBLE	accspeed;		/* 64 bit floating point */
+LONG DOUBLE	wibble;	/* 80 bit floating point */
+
+}
+
+STRUCT allows multiple variables - see later
+UNION is similar to STRUCT - see later
+
+
+;-----------------------
+
+All variables must be declared before use:-
+    
+char	hits;
+
+within the code it can then be given a value:-
+
+hits=0;
+
+special case:- when defining a local variable i.e. within { } you can:-
+
+char	hits=0;
+
+;------------------------
+
+
+All variables are assumed to be local to that function (Routine), unless
+you put them at 'base level' i.e. no with in any routines OR you put the
+word EXTERN which will find the value from where it's been used elsewhere.
+????
+
+;-------------------------
+
+ARITHMETIC EXPRESSIONS
++			/* 
+-			/*
+*			/*
+/			/* 
+% or MOD		/* 
+! or NOT		/*
+| or OR		/*
+& or AND		/*
+^ or XOR or EOR /*
+
+&variable	/* means the location of that variable
+
+
+
+;-----------------------------------------------------------------------------------
+Symbols  
+% is MOD
+& is AND
+|  OR
+!  NOT
+^  XOR
+== is equal ?
+!= not equal
+>  bigger than
+<  smaller than
+>> Shift right
+<< Shift left
+
+
+? is like an on goto, between :'ed instructions
+: see above  .e.g.  counter%2? drawrect():drawcirc();
+. sub part of variable struct.  i.e  Coord.X  and Coord.Y
+-> pointer when sending an address of a variable
+* pointer
+&var address of var
+
+set TABS to 5 10 15 20 25 30 35 40
+
+CLUT - Colour Look Up Table
+
+keep all STRUCTures  CAPITAL  variables lower case.
+
+
+primitives are
+BLK_FILL
+;-----------------------------------------------------------------------------------
+;warning INT's and WORD's are sometimes 16bit and sometimes 32bit!
+when defining variables
+
+u_char	;is 8 bit
+u_short	;is 16 bit
+u_long	;is 32 bit
+
+char	;is 8 bit   + & -
+short	;is 16 bit  + & -
+long     ;is 32 bit  + & -
+
+;-----------------------------------------------------------------------------------
+SPRITES
+28 sprites with full background 64*96  320*240
+22 4 sided polygons +back       64*96  320*240
+12 4 polys when magnified by 2
+22 4 sided polys rotated  i.e. took no extra time to rotate!
+16 colour sprites are faster
+MAX sprite size 256x256
+MAX poly4  size 128*128
+sprites can not be scaled,translucent,rotated or flipped!
+
+Major sprite/poly (concept) Bug discovered.
+The demos and the books lead you into a method whereby all sprites primatives are 
+precreated. Then to print the sprite all you need to do is poke the x,y of the 
+relevent sprite primitive and call print_sprite. Unfortunately, when I added the 
+Z buffering routine, If a sprite is added to the list, only a pointer to its primitive
+is added, therefore if you try the print the same frame twice at different coords
+only the last coord will be used! Creating sprite primitives everytime you add a sprite
+is a slow process(But saves memory). Therefore I have opted to Precreate all score
+panel sprites(as sprites,FAST) and print them direct(not via Z buffer list). Then
+all in game sprites are defined as polygons(slow by flipable,scalable,rotatable) and
+its primitive created there and then (slower but saves memory, and its possible to
+Z buffer!).
+THEREFORE  Print_Sprite    -prints pre_chopped SPRITE primitives immediately
+		  Print_Poly      -adds POLY definitions to a z buffered list, printed later  
+
+
+ARRAYS
+u_char	var[2];	only defines var[0] & var[1]  NOT var[2]
+u_char	var[3];={1,2,3}; defines a variable, good for little tables!
+
+;-----------------------------------------------------------------------------------
+PadInit	;(controller type-0)  type of controller 0=pad
+;-----------------------------------------------------------------------------------
+ResetGraph	;(mode -0) call with 0 ; just needed to reset polygon chip (graphic engine)
+;-----------------------------------------------------------------------------------
+SetGraphDebug   ;(mode -0) sets error checking on polygon coords
+;-----------------------------------------------------------------------------------
+SetDefDrawEnv	;(&DRAWENV,x,y,width,height) ;sets up a drawing window
+;-----------------------------------------------------------------------------------
+SetDefDispEnv	;(&DISPENV,x,y,width,height) ;sets up a display window
+;-----------------------------------------------------------------------------------
+SetBlockFill	;(&primitive) initialise BLK_FILL struct.  primitive
+;-----------------------------------------------------------------------------------
+setRGB0	;(&primitive, 0, 0, 0); &primitive,R,G,B  (0-31) sets colours in primitive
+;-----------------------------------------------------------------------------------
+setXY0	;(&primitive, x, y); sets x & y of primitive
+;-----------------------------------------------------------------------------------
+setWH	;(&primitive, w, h); sets width and height of primitive
+;-----------------------------------------------------------------------------------
+SetPolyFT4	;(&primitive)  ; initialises 4 sided polygon
+;-----------------------------------------------------------------------------------
+SetShadeTex	;(&primitive, dis/en); 0-disable 1-enable  texture mapping
+;-----------------------------------------------------------------------------------
+SetSemiTrans	;(&primitive, dis/en); 0-disable 1-enable  translucent  
+;-----------------------------------------------------------------------------------
+SetDispMask(1)	;(en/dis)  0-disable  1-enable  DISPLAY   (masking)
+;-----------------------------------------------------------------------------------
+LoadTPage	;(&texture,type,trans,x,y,w,h)  ;load a texture into VRAM
+	;type 0-16col   1-256col  2-16,384 cols
+;-----------------------------------------------------------------------------------
+LoadClut	;(color table,x,y); loads clut at x,y in VRAM
+;-----------------------------------------------------------------------------------
+PadRead	;(controller number 0/1);  returns INT as below
+PAD          delevopment type                         final type
+          __*N2*__      __*L3*__               _N3_O1_      _L2_M0_                                
+         /   	    \____/        \             /       \____/       \                        
+        /   A12            E4    \           /   A12          E4    \               
+       /     	           G7  P5   \         /                        \                
+       \  C15  D13     I9  F6     /        /  C15   D13     G7  P5    \               
+        \                 J10    /        /                            \               
+         \  B14  K8  H11	   /        /       B14  K8 H11  F6        \               
+          \____________________/        /       ______________           \                    
+                                       /_______/              \___________\
+PAD0   PAD1  DEBOUNCE1   DEBOUNCE2
+#define PADLup     ((PadIdentifier==0)?(1<<12):(1<<28))
+#define PADLdown   ((PadIdentifier==0)?(1<<14):(1<<30))
+#define PADLleft   ((PadIdentifier==0)?(1<<15):(1<<31))
+#define PADLright  ((PadIdentifier==0)?(1<<13):(1<<29))
+#define PADRup     ((PadIdentifier==0)?(1<< 4):(1<<20))
+#define PADRdown   ((PadIdentifier==0)?(1<< 6):(1<<22))
+#define PADRleft   ((PadIdentifier==0)?(1<< 7):(1<<23))
+#define PADRright  ((PadIdentifier==0)?(1<< 5):(1<<21))
+#define PADi       ((PadIdentifier==0)?(1<< 9):(1<<25))
+#define PADj       ((PadIdentifier==0)?(1<<10):(1<<26))
+#define PADselect  ((PadIdentifier==0)?(1<< 8):(1<<24))
+#define PADl       ((PadIdentifier==0)?(1<< 3):(1<<19))
+#define PADm       ((PadIdentifier==0)?(1<< 1):(1<<17))
+#define PADn       ((PadIdentifier==0)?(1<< 2):(1<<18))
+#define PADo       ((PadIdentifier==0)?(1<< 0):(1<<16))
+#define PADh       ((PadIdentifier==0)?(1<<11):(0))
+;-----------------------------------------------------------------------------------
+PutDrawEnv	;(&ENV) ;drawing enviroment struct. make this the drawing screen
+	;frame%2? &draw[0]:&draw[1]); (frame MOD 2) take first or second
+;-----------------------------------------------------------------------------------
+PutDispEnv	;(&ENV) ;make this the display screen
+;-----------------------------------------------------------------------------------
+DrawPrim	;(&primitive) draw this primative NOW
+;-----------------------------------------------------------------------------------
+SetUV4	;(&primitive,u,v,u1,v1,u2,v2,u3,v3) set the x & y coords of where
+	;the sprite comes from. i.e. its original size, all corners
+;-----------------------------------------------------------------------------------
+setXYWH	;(&primitive,x,y,w,h) set x,y,width and height on screen of primitive
+;-----------------------------------------------------------------------------------
+VSync	;(0) wait for frame flyback
+;-----------------------------------------------------------------------------------
+limitRange      ;(&var,min,max); 
+;-----------------------------------------------------------------------------------
+GsInitGraph	;(x res,y res,interlace 0/2,dither 0/1,vram 0/1)
+;----------------------------------------------------------------------------------
+POKE	;int pointer=(int *)firo; define pointer to point at firo
+PEEK obvious	;*pointer=0xffff;       ; do the poke
+
+Code below pokes colour 0 of TIM file;
+u_short		*pointer;
+	pointer=(u_short *)&timscreen+38/2; /* warning The +38/2 is because the + is taken as
+	*pointer++=0;				number of words to add because the pointer is a word
+
+;-----------------------------------------------------------------------------------
+rand	;returns a random INT (0-32767)
+;-----------------------------------------------------------------------------------
+MALLOC		heaptest=(u_long *)malloc(1);
+			test1=(u_long)heaptest;
+			free(heaptest);
+
+

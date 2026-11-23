@@ -1,0 +1,270 @@
+# 360X: QUIT on the pause menu goes to the main menu (owner's decision 2026-11-18; GENERAL.C quittomenu, MAIN.C). Before, QUIT cost a
+# life and the mission reloaded through its briefing (craftremaining 5 -> 4). Now the game ends (craftremaining 0) and the option
+# menu runs (Option_Menu: Down moves its selection).
+name = "x360-quit-menu"
+title = "360X: QUIT goes to the main menu"
+disc = "build/360x-cd/360x.cue"
+symbols = "build/360x-cd/360x.map"
+pad = "digital"
+
+# Boot: tests/smoke-x360.toml's closed-loop route to Mission 1.
+[[step]]
+label = "the film plays and the title loop runs"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 100 }
+timeout = 3000
+
+[[step]]
+checkpoint = "title"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "gamecycle"
+size = 4
+op = "ge"
+value = 100
+[[step.assert]]
+kind = "ram"
+sym = "craftremaining"
+size = 2
+op = "eq"
+value = 0
+
+[[step]]
+label = "Start at the title screen (selectno INTOTITLE, 241)"
+press = ["start"]
+hold_until = { kind = "ram", sym = "selectno", size = 1, op = "eq", value = 241 }
+timeout = 600
+
+[[step]]
+label = "the screen changes (gamecycle restarts)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "lt", value = 40 }
+timeout = 600
+
+[[step]]
+label = "the next screen has run for a while (gamecycle restarts on every screen)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 60 }
+timeout = 600
+
+[[step]]
+label = "Start again leaves the title for the game (selectno INTOGAME, 240)"
+press = ["start"]
+hold_until = { kind = "ram", sym = "selectno", size = 1, op = "eq", value = 240 }
+timeout = 600
+
+[[step]]
+label = "the screen changes (gamecycle restarts)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "lt", value = 40 }
+timeout = 600
+
+[[step]]
+label = "the next screen has run for a while (gamecycle restarts on every screen)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 60 }
+timeout = 600
+
+[[step]]
+press = ["start"]
+hold_until = { kind = "ram", sym = "craftremaining", size = 2, op = "eq", value = 5 }
+timeout = 900
+
+[[step]]
+checkpoint = "new-game"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "craftremaining"
+size = 2
+op = "eq"
+value = 5
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2050"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2050 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2060 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2250"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2250 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2260 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2450"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2450 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2460 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2650"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2650 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2660 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2850"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2850 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2860 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 3050"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 3050 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 3060 }
+timeout = 300
+
+[[step]]
+label = "Mission 1 loads and starts (Init_Level sets the fuel)"
+wait_until = { kind = "ram", sym = "fuel", size = 2, op = "gt", value = 0 }
+timeout = 2500
+
+[[step]]
+label = "the mission runs"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 40 }
+timeout = 600
+
+[[step]]
+label = "Select opens the pause menu"
+press = ["select"]
+hold_until = { kind = "ram", sym = "whichmenu", size = 1, op = "eq", value = 1 }
+timeout = 120
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "Pad1", size = 2, op = "eq", value = 0 }
+timeout = 120
+
+[[step]]
+label = "Down to item 1"
+press = ["down"]
+hold_until = { kind = "ram", sym = "menuselection", size = 1, op = "eq", value = 1 }
+timeout = 120
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "Pad1", size = 2, op = "eq", value = 0 }
+timeout = 120
+
+[[step]]
+label = "Down to item 2"
+press = ["down"]
+hold_until = { kind = "ram", sym = "menuselection", size = 1, op = "eq", value = 2 }
+timeout = 120
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "Pad1", size = 2, op = "eq", value = 0 }
+timeout = 120
+
+[[step]]
+label = "Down to item 3"
+press = ["down"]
+hold_until = { kind = "ram", sym = "menuselection", size = 1, op = "eq", value = 3 }
+timeout = 120
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "Pad1", size = 2, op = "eq", value = 0 }
+timeout = 120
+
+[[step]]
+label = "Down to item 4"
+press = ["down"]
+hold_until = { kind = "ram", sym = "menuselection", size = 1, op = "eq", value = 4 }
+timeout = 120
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "Pad1", size = 2, op = "eq", value = 0 }
+timeout = 120
+
+[[step]]
+checkpoint = "quit-selected"
+golden = false
+
+[[step]]
+label = "Cross on QUIT"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "whichmenu", size = 1, op = "eq", value = 0 }
+timeout = 120
+
+[[step]]
+label = "the game ends: no ships left"
+wait_until = { kind = "ram", sym = "craftremaining", size = 2, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the main loop skips the title (selectno INTOGAME, 240)"
+wait_until = { kind = "ram", sym = "selectno", size = 1, op = "eq", value = 240 }
+timeout = 1200
+
+[[step]]
+label = "the option menu starts (Game_Options sets selectno 0)"
+wait_until = { kind = "ram", sym = "selectno", size = 1, op = "eq", value = 0 }
+timeout = 1500
+
+[[step]]
+label = "it has faded in"
+wait_until = { kind = "ram", sym = "fade", size = 1, op = "eq", value = 128 }
+timeout = 600
+
+[[step]]
+checkpoint = "main-menu"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "craftremaining"
+size = 2
+op = "eq"
+value = 0
+[[step.assert]]
+kind = "ram"
+sym = "selectno"
+size = 1
+op = "eq"
+value = 0
+
+[[step]]
+label = "Down moves the option menu's selection"
+press = ["down"]
+hold_until = { kind = "ram", sym = "selectno", size = 1, op = "eq", value = 1 }
+timeout = 120
+
+[[step]]
+checkpoint = "main-menu-down"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "selectno"
+size = 1
+op = "eq"
+value = 1

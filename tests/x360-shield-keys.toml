@@ -1,0 +1,186 @@
+# 360X: NMS's shield test keys are off on the disc build (PANEL.C, finalmaster; owner's standing rule, debug features off). Before,
+# holding L1 drained the shields one point a frame (and R1 refilled them). L1 and R1 still step the weapon down and up.
+name = "x360-shield-keys"
+title = "360X: L1 and R1 change the weapon, not the shields"
+disc = "build/360x-cd/360x.cue"
+symbols = "build/360x-cd/360x.map"
+pad = "digital"
+
+# Boot: tests/smoke-x360.toml's closed-loop route to Mission 1.
+[[step]]
+label = "the film plays and the title loop runs"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 100 }
+timeout = 3000
+
+[[step]]
+checkpoint = "title"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "gamecycle"
+size = 4
+op = "ge"
+value = 100
+[[step.assert]]
+kind = "ram"
+sym = "craftremaining"
+size = 2
+op = "eq"
+value = 0
+
+[[step]]
+label = "Start at the title screen (selectno INTOTITLE, 241)"
+press = ["start"]
+hold_until = { kind = "ram", sym = "selectno", size = 1, op = "eq", value = 241 }
+timeout = 600
+
+[[step]]
+label = "the screen changes (gamecycle restarts)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "lt", value = 40 }
+timeout = 600
+
+[[step]]
+label = "the next screen has run for a while (gamecycle restarts on every screen)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 60 }
+timeout = 600
+
+[[step]]
+label = "Start again leaves the title for the game (selectno INTOGAME, 240)"
+press = ["start"]
+hold_until = { kind = "ram", sym = "selectno", size = 1, op = "eq", value = 240 }
+timeout = 600
+
+[[step]]
+label = "the screen changes (gamecycle restarts)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "lt", value = 40 }
+timeout = 600
+
+[[step]]
+label = "the next screen has run for a while (gamecycle restarts on every screen)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 60 }
+timeout = 600
+
+[[step]]
+press = ["start"]
+hold_until = { kind = "ram", sym = "craftremaining", size = 2, op = "eq", value = 5 }
+timeout = 900
+
+[[step]]
+checkpoint = "new-game"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "craftremaining"
+size = 2
+op = "eq"
+value = 5
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2050"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2050 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2060 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2250"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2250 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2260 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2450"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2450 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2460 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2650"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2650 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2660 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2850"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2850 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2860 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 3050"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 3050 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 3060 }
+timeout = 300
+
+[[step]]
+label = "Mission 1 loads and starts (Init_Level sets the fuel)"
+wait_until = { kind = "ram", sym = "fuel", size = 2, op = "gt", value = 0 }
+timeout = 2500
+
+[[step]]
+label = "the mission runs"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 40 }
+timeout = 600
+
+[[step]]
+label = "R1 steps the weapon up"
+press = ["r1"]
+hold_until = { kind = "ram", sym = "weapontype", size = 2, op = "eq", value = 1 }
+timeout = 60
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "Pad1", size = 2, op = "eq", value = 0 }
+timeout = 120
+
+[[step]]
+label = "L1 held: the weapon steps down, the shields stay"
+press = ["l1"]
+hold_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 200 }
+timeout = 900
+
+[[step]]
+checkpoint = "after-l1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "weapontype"
+size = 2
+op = "eq"
+value = 0
+[[step.assert]]
+kind = "ram"
+sym = "shields"
+size = 2
+op = "eq"
+value = 127
+note = "FULLSHIELDS: L1 no longer drains them"

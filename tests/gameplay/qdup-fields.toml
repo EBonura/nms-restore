@@ -1,0 +1,179 @@
+# QD Up's option screen draws both of its fields: the run for tests/gameplay/qdup-fields.sh (not a gate journey of its own:
+# the check compares the two fields of the frames this journey's checkpoints save). Title (PRESS START), option screen
+# (Start), the caption changes (Up), the second row (Cross) and the NOT AVAILABLE panel (Cross on the speaker), which
+# closes after 100 frames; after each change two checkpoints one field apart. Then back to the first row (Circle), START
+# (Down), the 2D or 3D choice (Cross: drawn on both display pages and then left alone) and PLEASE WAIT (Cross: drawn twice,
+# then the game loads with the 256-line mode on show and the picture left in VRAM).
+name = "qdup-fields"
+title = "QD Up option screen: both fields hold the same picture"
+disc = "build/qdup-cd/qdup.cue"
+symbols = "build/qdup-cd/qdup.map"
+pad = "digital"
+
+[[step]]
+label = "the title is up (PRESS START drawn)"
+wait_until = { kind = "ram", sym = "title_prompts", size = 4, op = "ge", value = 1 }
+timeout = 4000
+
+[[step]]
+label = "settle: the game clock reaches 600"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 600 }
+timeout = 4000
+
+[[step]]
+checkpoint = "title"
+golden = false
+
+[[step]]
+label = "the game clock reaches 1000"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1000 }
+timeout = 4000
+
+[[step]]
+label = "Start leaves the title for the option screen"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1010 }
+timeout = 300
+
+[[step]]
+label = "settle: the game clock reaches 1120"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1120 }
+timeout = 4000
+
+[[step]]
+checkpoint = "entry-0"
+golden = false
+
+[[step]]
+label = "one field later"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1121 }
+timeout = 100
+
+[[step]]
+checkpoint = "entry-1"
+golden = false
+
+[[step]]
+label = "Up: OPTIONS, the caption changes"
+press = ["up"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 3 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 3 }
+timeout = 600
+
+[[step]]
+label = "settle: the game clock reaches 1230"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1230 }
+timeout = 4000
+
+[[step]]
+checkpoint = "caption-0"
+golden = false
+
+[[step]]
+label = "one field later"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1231 }
+timeout = 100
+
+[[step]]
+checkpoint = "caption-1"
+golden = false
+
+[[step]]
+label = "Cross opens the second row"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "opt_level", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the game clock reaches 1400"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1400 }
+timeout = 4000
+
+[[step]]
+label = "Cross on the speaker: NOT AVAILABLE"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "not_built_timer", size = 4, op = "gt", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the panel closes"
+wait_until = { kind = "ram", sym = "not_built_timer", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "settle: the game clock reaches 1600"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1600 }
+timeout = 4000
+
+[[step]]
+checkpoint = "closed-0"
+golden = false
+
+[[step]]
+label = "one field later"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1601 }
+timeout = 100
+
+[[step]]
+checkpoint = "closed-1"
+golden = false
+
+[[step]]
+label = "Circle goes back to the first row"
+press = ["circle"]
+hold_until = { kind = "ram", sym = "opt_level", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Down: START"
+press = ["down"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 4 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Cross on START opens the 2D or 3D choice"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "choosing", size = 1, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "settle: the choice is drawn on both pages and left alone"
+wait = 30
+
+[[step]]
+checkpoint = "choice"
+golden = false
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Cross confirms: PLEASE WAIT, then the 256-line mode while the game loads"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "screen_height", size = 4, op = "eq", value = 256 }
+timeout = 1200
+
+[[step]]
+checkpoint = "wait"
+golden = false

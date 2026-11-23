@@ -1,0 +1,740 @@
+# QD Up's option screen shows two chevrons around the value of every row that Left and Right change (owner's decision
+# 2026-11-20, new/viewchoice.c): the balls, table, players and baize rows; the options, start, speaker, pad, card and
+# trophy rows have none. The second page no longer says CIRCLE GOES BACK, and Circle still goes back. The route walks
+# the first page up from START, steps every value of each adjustable row (two checkpoints one field apart for each, for
+# tests/gameplay/qdup-options.sh), then the second page's baize colours; every wait is on a game variable.
+name = "qdup-options"
+title = "QD Up option screen: chevrons on the adjustable rows, no CIRCLE GOES BACK, Circle still goes back"
+disc = "build/qdup-cd/qdup.cue"
+symbols = "build/qdup-cd/qdup.map"
+pad = "digital"
+
+[[step]]
+label = "the game clock reaches 1000"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1000 }
+timeout = 4000
+
+[[step]]
+label = "Start leaves the title for the option screen"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1010 }
+timeout = 300
+
+[[step]]
+label = "the option screen is up with START under the cursor"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 4 }
+timeout = 4000
+
+[[step]]
+label = "the caption follows the cursor (start)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 4 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "start-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "start-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 0
+note = "the caption has 0 chevron bars"
+
+[[step]]
+label = "Up: OPTIONS"
+press = ["up"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 3 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (options)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 3 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "options-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "options-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 0
+note = "the caption has 0 chevron bars"
+
+[[step]]
+label = "Up: PLAYERS"
+press = ["up"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 2 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (players-2players)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 2 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "players-2players-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "players-2players-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step]]
+label = "Right: the computer"
+press = ["right"]
+hold_until = { kind = "ram", sym = "PlayType", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (players-computer)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 2 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "players-computer-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "players-computer-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step]]
+label = "Up: TABLE"
+press = ["up"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (table-uk)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "table-uk-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "table-uk-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step]]
+label = "Right: US table"
+press = ["right"]
+hold_until = { kind = "ram", sym = "TableType", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (table-us)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "table-us-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "table-us-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step]]
+label = "Right: coffin"
+press = ["right"]
+hold_until = { kind = "ram", sym = "TableType", size = 4, op = "eq", value = 2 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (table-coffin)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "table-coffin-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "table-coffin-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step]]
+label = "Right: square"
+press = ["right"]
+hold_until = { kind = "ram", sym = "TableType", size = 4, op = "eq", value = 3 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (table-square)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "table-square-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "table-square-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step]]
+label = "Up: BALLS"
+press = ["up"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (balls-ukpool)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "balls-ukpool-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "balls-ukpool-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step]]
+label = "Right: US 8 ball"
+press = ["right"]
+hold_until = { kind = "ram", sym = "BallType", size = 4, op = "eq", value = 2 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (balls-us8)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "balls-us8-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "balls-us8-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step]]
+label = "Right: 9 ball"
+press = ["right"]
+hold_until = { kind = "ram", sym = "BallType", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (balls-9ball)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "balls-9ball-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "balls-9ball-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step]]
+label = "Down: TABLE"
+press = ["down"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Down: PLAYERS"
+press = ["down"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 2 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Down: OPTIONS"
+press = ["down"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 3 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Cross opens the second page"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "opt_level", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Down: BAIZE"
+press = ["down"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 6 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (baize-blue)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 6 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "baize-blue-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "baize-blue-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step.assert]]
+kind = "pixels"
+color = [0, 66, 181]
+color_tol = 14
+region = { x = 14, y = 280, w = 126, h = 70 }
+min_count = 1000
+note = "the rotating table icon carries the chosen baize colour"
+
+[[step]]
+label = "Right: green"
+press = ["right"]
+hold_until = { kind = "ram", sym = "BaizeType", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (baize-green)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 6 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "baize-green-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "baize-green-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step.assert]]
+kind = "pixels"
+color = [0, 115, 0]
+color_tol = 14
+region = { x = 14, y = 280, w = 126, h = 70 }
+min_count = 1000
+note = "the rotating table icon carries the chosen baize colour"
+
+[[step]]
+label = "Right: red"
+press = ["right"]
+hold_until = { kind = "ram", sym = "BaizeType", size = 4, op = "eq", value = 2 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (baize-red)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 6 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "baize-red-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "baize-red-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 4
+note = "the caption has 4 chevron bars"
+
+[[step.assert]]
+kind = "pixels"
+color = [148, 0, 16]
+color_tol = 14
+region = { x = 14, y = 280, w = 126, h = 70 }
+min_count = 1000
+note = "the rotating table icon carries the chosen baize colour"
+
+[[step]]
+label = "Up: SPEAKER"
+press = ["up"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 5 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (speaker)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 5 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "speaker-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "speaker-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 0
+note = "the caption has 0 chevron bars"
+
+[[step]]
+label = "Circle goes back to the first page"
+press = ["circle"]
+hold_until = { kind = "ram", sym = "opt_level", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the caption follows the cursor (back)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 3 }
+timeout = 600
+
+[[step]]
+label = "settle: the caption has been drawn four times for these values, on both pages"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "back-0"
+golden = false
+
+[[step]]
+label = "one field later: the next pass"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 5 }
+timeout = 600
+
+[[step]]
+checkpoint = "back-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_chevrons"
+size = 4
+op = "eq"
+value = 0
+note = "the caption has 0 chevron bars"
+

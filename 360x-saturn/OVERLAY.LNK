@@ -1,0 +1,68 @@
+;
+;	360X Saturn Psylink File
+;
+
+	org	$06004000
+
+text	group
+bss	group	bss
+uncached_data	group	cache($20000000)
+l1	group	file("intro.bin")
+l2	group	over(l1),file("game.bin")
+;l3	group	over(l1),file("playanim.bin");
+
+	section	.text,text
+	section	.data,text
+	section	.bss,bss
+	section .ctors,text
+	section .dtors,text
+	section	uncached,uncached_data
+
+
+	include main.obj		;	the main code stub
+	include shcode\address.o	;	is within these 
+	include vcd\file_io.obj		;	object files
+	include bupram\bupram.obj	;
+        include workarea.obj		;
+        include shcode\main.o		;
+
+	include	vdp\intro1.obj		;	the intro code is here
+	include	vdp\intro2.obj		;
+	
+;	include vdp\playanim.obj	;	web player
+;	include shcode\flic.o		;	web player
+;       include shcode\bits.o		;	web player
+
+	include	pad\readpad.obj		;	the game code is in the 
+        include vdp\vdp1_1.obj		;	following files
+        include vdp\vdp1_2.obj
+	include	vdp\vdp1_3.obj
+	include	vdp\vdp2_1.obj
+	include logic\random.obj
+	include logic\level.obj
+	include logic\sprite.obj
+	include	logic\process.obj
+        include logic\particle.obj
+        include logic\control.obj
+        include logic\firecode.obj
+        include logic\glow.obj
+	include	shcode\maths.o
+	include	shcode\bit2raw.o
+	include	shcode\runlen.o
+        include shcode\memset.o
+        include shcode\coll.o
+        include shcode\scroll.o
+	include	game.obj
+
+        inclib  c:\sgl2.1\lib\libsgl.lib	;the libraries
+	inclib	c:\sbl6\lib\sega_cdc.lib
+	inclib	c:\sbl6\lib\sega_gfs.lib
+        inclib  c:\sbl6\lib\sega_snd.lib
+	inclib	c:\gnush\lib\libgcc.lib
+	inclib	c:\gnush\lib\libc.lib
+;        inclib  c:\gnush\lib\libm.lib           
+	inclib	c:\gnush\lib\libsn.lib
+
+	regs	pc=SGL_Start
+
+

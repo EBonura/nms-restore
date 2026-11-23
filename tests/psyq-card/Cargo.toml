@@ -1,0 +1,12 @@
+# Host test, its own workspace: the layer's memory-card directory functions against the SDK's
+# DirOptions::BIOS forms (see src/main.rs). Run: tests/psyq-card/run.sh
+[package]
+name = "psyq-card-test"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+psx-mc = { path = "../../build/psoxide/sdk/crates/psx-mc", default-features = false }
+
+[workspace]

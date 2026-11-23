@@ -1,0 +1,85 @@
+play_one_frame
+	ÃÄÄÄÄÄÄ set_target_for_white
+	³		ÃÄÄÄÄÄÄ reset_aiming_variables
+	³		³		ÀÄÄÄÄÄÄ reset_fouls
+	³		ÃÄÄÄÄÄÄ Move_Camera_Position
+	³		³		ÃÄÄÄÄÄÄ E_EaseCamera
+	³		³		ÀÄÄÄÄÄÄ E_PositionCamera
+	³		ÃÄÄÄÄÄÄ setup_default_camera_position
+	³		³		ÃÄÄÄÄÄÄ E_EaseCamera
+	³		³		ÃÄÄÄÄÄÄ E_PositionCamera
+	³		³		ÀÄÄÄÄÄÄ E_UpdateCamera
+	³		ÃÄÄÄÄÄÄ players_shot
+	³		³		ÃÄÄÄÄÄÄ get_pad
+	³		³		ÃÄÄÄÄÄÄ Show_Replay
+	³		³		³		ÃÄÄÄÄÄÄ Move_Camera_Position
+	³		³		³		ÃÄÄÄÄÄÄ reset_fouls
+	³		³		³		ÃÄÄÄÄÄÄ hit_ball
+	³		³		³		ÃÄÄÄÄÄÄ Save_Shot_Room
+	³		³		³		ÃÄÄÄÄÄÄ any_balls_moving
+	³		³		³		ÃÄÄÄÄÄÄ update_fouls
+	³		³		³		ÀÄÄÄÄÄÄ update_all_balls
+	³		³		ÃÄÄÄÄÄÄ update_english_on_cue_ball
+	³		³		³		ÃÄÄÄÄÄÄ E_FinishedEase
+	³		³		³		ÃÄÄÄÄÄÄ check_ball_hypot
+	³		³		³		ÀÄÄÄÄÄÄ reset_tracking_lines
+	³		³		ÃÄÄÄÄÄÄ show_game_controls
+	³		³		ÃÄÄÄÄÄÄ quit_game_screen
+	³		³		ÃÄÄÄÄÄÄ Re_Draw_Screen
+	³		³		ÃÄÄÄÄÄÄ quit_frame_screen
+	³		³		ÀÄÄÄÄÄÄ reset_fouls
+	³		ÃÄÄÄÄÄÄ computer_shot
+	³		³		ÃÄÄÄÄÄÄ setup_ai_camera
+	³		³		ÃÄÄÄÄÄÄ E_FinishedEase
+	³		³		ÃÄÄÄÄÄÄ setup_draw_3d_cue
+	³		³		ÃÄÄÄÄÄÄ Select_Ball_To_Pot
+	³		³		ÀÄÄÄÄÄÄ get_best_shot
+	³		ÀÄÄÄÄÄÄ  hit_ball
+	³				ÃÄÄÄÄÄÄ rotate2
+	³				ÀÄÄÄÄÄÄ multiply4x1
+	ÃÄÄÄÄÄÄ Show_Shot
+	³		ÃÄÄÄÄÄÄ any_balls_moving
+	³		ÃÄÄÄÄÄÄ quit_frame_screen
+	³		³		ÀÄÄÄÄÄÄ quit_game_control
+	³		ÃÄÄÄÄÄÄ Re_Draw_Screen
+	³		³		ÃÄÄÄÄÄÄ setup_felt_palette
+	³		³		ÀÄÄÄÄÄÄ Render
+	³		ÃÄÄÄÄÄÄ update_all_balls
+	³		³		ÃÄÄÄÄÄÄ get_max_time_step
+	³		³		ÃÄÄÄÄÄÄ ball_collision2
+	³		³		ÃÄÄÄÄÄÄ get_new_screen_pos
+	³		³		ÃÄÄÄÄÄÄ update_ball_movement
+	³		³		ÀÄÄÄÄÄÄ check_cussions_float
+	³		ÀÄÄÄÄÄÄ show_game_controls
+	³				ÃÄÄÄÄÄÄ setup_controls
+	³				ÃÄÄÄÄÄÄ control options
+	³				ÀÄÄÄÄÄÄ Re_Draw_Screen
+	ÃÄÄÄÄÄÄ update_fouls
+	³		ÃÄÄÄÄÄÄ update_all_balls
+	³		³		ÃÄÄÄÄÄÄ get_max_time_step
+	³		³		ÃÄÄÄÄÄÄ ball_collision2
+	³		³		ÃÄÄÄÄÄÄ get_new_screen_pos
+	³		³		ÃÄÄÄÄÄÄ update_ball_movement
+	³		³		ÀÄÄÄÄÄÄ check_cussions_float
+	³		ÃÄÄÄÄÄÄ uk_pool_foul
+	³		ÃÄÄÄÄÄÄ us_8ball_foul
+	³		ÃÄÄÄÄÄÄ us_pool_foul
+	³		ÃÄÄÄÄÄÄ continious_foul
+	³		ÃÄÄÄÄÄÄ speed_pool_foul
+	³		ÃÄÄÄÄÄÄ killer_pool_foul
+	³		ÃÄÄÄÄÄÄ uk_pool_foul
+	³		ÃÄÄÄÄÄÄ check_all_fouls
+	³		ÀÄÄÄÄÄÄ reset_fouls
+	ÀÄÄÄÄÄÄ end_of_frame_control
+			ÃÄÄÄÄÄÄ show_replay
+			³		ÃÄÄÄÄÄÄ Move_Camera_Position
+			³		ÃÄÄÄÄÄÄ reset_fouls
+			³		ÃÄÄÄÄÄÄ hit_ball
+			³		ÃÄÄÄÄÄÄ Save_shot_room
+			³		ÃÄÄÄÄÄÄ any_balls_moving
+			³		ÃÄÄÄÄÄÄ update_fouls
+			³		ÀÄÄÄÄÄÄ update_all_balls
+			ÃÄÄÄÄÄÄ show_game_controls
+			ÀÄÄÄÄÄÄ get_pad
+
+

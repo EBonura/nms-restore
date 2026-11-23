@@ -1,0 +1,1251 @@
+Name = LIBAPI.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+C57      20-11-95 18:05:30 InitHeap 
+C58      20-11-95 18:05:30 _exit 
+C65      20-11-95 18:05:32 LoadTest 
+C66      20-11-95 18:05:32 Load 
+C67      20-11-95 18:05:32 Exec 
+C68      20-11-95 18:05:32 FlushCache 
+C73      20-11-95 18:05:32 GPU_cw 
+C81      20-11-95 18:05:32 LoadExec 
+C82      20-11-95 18:05:34 GetSysSp 
+C112     20-11-95 18:05:34 _bu_init 
+C113     20-11-95 18:05:34 _96_init 
+C114     20-11-95 18:05:34 _96_remove 
+C156     20-11-95 18:05:34 SetConf 
+C157     20-11-95 18:05:34 GetConf 
+C159     20-11-95 18:05:36 SetMem 
+C160     20-11-95 18:05:36 _boot 
+C161     20-11-95 18:05:36 SystemError 
+C167     20-11-95 18:05:36 bufs_cb_0 
+C168     20-11-95 18:05:36 bufs_cb_1 
+C169     20-11-95 18:05:36 bufs_cb_2 
+C170     20-11-95 18:05:38 bufs_cb_3 
+C174     20-11-95 18:05:40 bufs_cb_4 
+A07      20-11-95 18:05:40 DeliverEvent 
+A08      20-11-95 18:05:40 OpenEvent 
+A09      20-11-95 18:05:42 CloseEvent 
+A10      20-11-95 18:05:42 WaitEvent 
+A11      20-11-95 18:05:42 TestEvent 
+A12      20-11-95 18:05:42 EnableEvent 
+A13      20-11-95 18:05:42 DisableEvent 
+A14      20-11-95 18:05:42 OpenTh 
+A15      20-11-95 18:05:44 CloseTh 
+A16      20-11-95 18:05:44 ChangeTh 
+A18      20-11-95 18:05:44 InitPAD 
+A19      20-11-95 18:05:44 StartPAD 
+A20      20-11-95 18:05:44 StopPAD 
+A21      20-11-95 18:05:44 PAD_init 
+A22      20-11-95 18:05:46 PAD_dr 
+A23      20-11-95 18:05:46 ReturnFromException 
+A24      20-11-95 18:05:46 ResetEntryInt 
+A25      20-11-95 18:05:46 HookEntryInt 
+A32      20-11-95 18:05:46 UnDeliverEvent 
+A36      20-11-95 18:05:46 EnterCriticalSection 
+A37      20-11-95 18:05:50 ExitCriticalSection 
+A38      20-11-95 18:05:50 Exception 
+A39      20-11-95 18:05:50 SetSp 
+A40      20-11-95 18:05:50 SwEnterCriticalSection 
+A41      20-11-95 18:05:50 SwExitCriticalSection 
+A50      20-11-95 18:05:50 open 
+A51      20-11-95 18:05:52 lseek 
+A52      20-11-95 18:05:52 read 
+A53      20-11-95 18:05:52 write 
+A54      20-11-95 18:05:52 close 
+A55      20-11-95 18:05:52 ioctl 
+A64      20-11-95 18:05:52 cd 
+A65      20-11-95 18:05:54 format 
+A66      20-11-95 18:05:54 firstfile 
+A67      20-11-95 18:05:54 nextfile 
+A68      20-11-95 18:05:54 rename 
+A69      20-11-95 18:05:54 delete 
+A70      20-11-95 18:05:56 undelete 
+A71      20-11-95 18:05:56 AddDrv 
+A72      20-11-95 18:05:56 DelDrv 
+A81      20-11-95 18:05:56 Krom2RawAdd 
+A84      20-11-95 18:06:00 _get_errno 
+A85      20-11-95 18:06:00 _get_error 
+A91      20-11-95 18:06:00 ChangeClearPAD 
+A94      20-11-95 18:06:00 GetGp 
+A95      20-11-95 18:06:00 GetSp 
+A96      20-11-95 18:06:02 GetCr 
+A97      20-11-95 18:06:02 GetSr 
+L02      20-11-95 18:06:02 SysEnqIntRP 
+L03      20-11-95 18:06:02 SysDeqIntRP 
+L10      20-11-95 18:06:02 ChangeClearRCnt 
+COUNTER  20-11-95 18:06:06 StopRCnt ResetRCnt StartRCnt GetRCnt SetRCnt 
+
+Name = LIBC.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+A56      22-11-95 13:30:02 exit 
+A58      22-11-95 13:30:02 getc 
+A59      22-11-95 13:30:02 putc 
+A60      22-11-95 13:30:02 getchar 
+A61      22-11-95 13:30:04 putchar 
+A62      22-11-95 13:30:04 gets 
+A63      22-11-95 13:30:04 puts 
+C10      22-11-95 13:30:04 todigit 
+C11      22-11-95 13:30:04 atof 
+C12      22-11-95 13:30:06 strtoul 
+C13      22-11-95 13:30:06 strtol 
+C14      22-11-95 13:30:06 abs 
+C15      22-11-95 13:30:06 labs 
+C16      22-11-95 13:30:08 atoi 
+C17      22-11-95 13:30:08 atol 
+C18      22-11-95 13:30:08 atob 
+C19      22-11-95 13:30:08 setjmp 
+C20      22-11-95 13:30:10 longjmp 
+C21      22-11-95 13:30:10 strcat 
+C22      22-11-95 13:30:10 strncat 
+C23      22-11-95 13:30:10 strcmp 
+C24      22-11-95 13:30:12 strncmp 
+C25      22-11-95 13:30:12 strcpy 
+C26      22-11-95 13:30:12 strncpy 
+C27      22-11-95 13:30:12 strlen 
+C28      22-11-95 13:30:14 index 
+C29      22-11-95 13:30:14 rindex 
+C30      22-11-95 13:30:14 strchr 
+C31      22-11-95 13:30:14 strrchr 
+C32      22-11-95 13:30:16 strpbrk 
+C33      22-11-95 13:30:16 strspn 
+C34      22-11-95 13:30:16 strcspn 
+C35      22-11-95 13:30:16 strtok 
+C36      22-11-95 13:30:18 strstr 
+C37      22-11-95 13:30:18 toupper 
+C38      22-11-95 13:30:18 tolower 
+C39      22-11-95 13:30:18 bcopy 
+C40      22-11-95 13:30:18 bzero 
+C41      22-11-95 13:30:20 bcmp 
+C42      22-11-95 13:30:20 memcpy 
+C43      22-11-95 13:30:20 memset 
+C45      22-11-95 13:30:20 memcmp 
+C46      22-11-95 13:30:22 memchr 
+C47      22-11-95 13:30:22 rand 
+C48      22-11-95 13:30:22 srand 
+C49      22-11-95 13:30:22 qsort 
+C50      22-11-95 13:30:24 strtod 
+C51      22-11-95 13:30:24 malloc 
+C52      22-11-95 13:30:24 free 
+C53      22-11-95 13:30:24 lsearch 
+C54      22-11-95 13:30:26 bsearch 
+C55      22-11-95 13:30:26 calloc 
+C56      22-11-95 13:30:26 realloc 
+CTYPE0   22-11-95 13:30:28 _ctype_ 
+SPRINTF  22-11-95 13:30:30 sprintf 
+ITOA     22-11-95 13:30:28 itoa 
+MEMMOVE  22-11-95 13:30:30 memmove 
+
+Name = LIBC2.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+ABS      04-12-95 13:38:56 abs labs 
+ATOI     04-12-95 13:38:56 atoi atol 
+BCOPY    04-12-95 13:38:58 bcopy bzero bcmp 
+CTYPE    04-12-95 13:38:58 tolower toupper _ctype_ 
+GETC     04-12-95 13:39:00 getc 
+GETCHAR  04-12-95 13:39:02 getchar 
+GETS     04-12-95 13:39:02 gets 
+MEMCHR   04-12-95 13:39:04 memchr 
+MEMCMP   04-12-95 13:39:04 memcmp 
+MEMCPY   04-12-95 13:39:06 memcpy 
+MEMMOVE  04-12-95 13:39:06 memmove 
+MEMSET   04-12-95 13:39:08 memset 
+PUTC     04-12-95 13:39:10 putc 
+PUTCHAR  04-12-95 13:39:10 putchar 
+QSORT    04-12-95 13:39:12 qsort 
+RAND     04-12-95 13:39:14 srand rand 
+SEARCH   04-12-95 13:39:14 bsearch lsearch 
+STRCAT   04-12-95 13:39:16 strcat 
+STRCHR   04-12-95 13:39:16 strchr 
+STRCMP   04-12-95 13:39:18 strcmp 
+STRCPY   04-12-95 13:39:18 strcpy 
+STRCSPN  04-12-95 13:39:20 strcspn 
+STRINGS  04-12-95 13:39:22 index rindex 
+STRLEN   04-12-95 13:39:22 strlen 
+STRNCAT  04-12-95 13:39:24 strncat 
+STRNCMP  04-12-95 13:39:26 strncmp 
+STRNCPY  04-12-95 13:39:26 strncpy 
+STRPBRK  04-12-95 13:39:28 strpbrk 
+STRRCHR  04-12-95 13:39:28 strrchr 
+STRSPN   04-12-95 13:39:32 strspn 
+STRSTR   04-12-95 13:39:34 strstr 
+STRTOD   04-12-95 13:39:36 strtod atof 
+STRTOK   04-12-95 13:39:36 strtok 
+STRTOL   04-12-95 13:39:38 atob strtol 
+STRTOUL  04-12-95 13:39:40 strtoul 
+TODIGIT  04-12-95 13:39:40 todigit 
+PRINTF   04-12-95 13:39:42 printf 
+PRNT     04-12-95 13:39:44 prnt 
+SPRINTF  04-12-95 13:39:48 sprintf 
+ITOA     04-12-95 13:39:48 itoa 
+PUTS     04-12-95 13:39:50 puts 
+SETJMP   04-12-95 13:39:50 setjmp longjmp 
+EXIT     04-12-95 13:39:50 exit 
+MALLOC   04-12-95 13:39:50 malloc free calloc realloc 
+
+Name = LIBCARD.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+C112     22-11-95 13:22:32 _bu_init 
+C171     22-11-95 13:22:34 _card_info 
+C172     22-11-95 13:22:34 _card_load 
+C173     22-11-95 13:22:34 _card_auto 
+A74      22-11-95 13:22:28 InitCARD 
+A75      22-11-95 13:22:28 StartCARD 
+A76      22-11-95 13:22:30 StopCARD 
+A78      22-11-95 13:22:30 _card_write 
+A79      22-11-95 13:22:30 _card_read 
+A80      22-11-95 13:22:30 _new_card 
+A88      22-11-95 13:22:32 _card_chan 
+A92      22-11-95 13:22:32 _card_status 
+A93      22-11-95 13:22:32 _card_wait 
+CARD     22-11-95 13:22:34 _card_clear 
+
+Name = LIBCD.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+TOC      04-12-95 13:40:20 CdGetToc2 CdGetToc 
+CDROM    04-12-95 13:40:18 Stframe_no StFinalSector Stsector_offset StRgb24 
+                           StEmu_Idx StSetRing StFunc1 StFunc2 StCdIntrFlag 
+                           StRingIdx1 StRingIdx2 StRingIdx3 StStartFrame 
+                           StCHANNEL StEmu_Addr StEndFrame StSTART_FLAG 
+                           StRingAddr StRingBase StRingSize CChannel 
+EVENT    04-12-95 13:40:22 CdInit 
+SYS      04-12-95 13:40:24 CdComstr CdRead CdStatus CdIntstr CdDataCallback 
+                           CdReadCallback CdGetSector CdSync CdSyncCallback 
+                           CdLastCom CdControl CdReady CdFlush 
+                           CdReadyCallback CdReset CdSetDebug CdDataSync 
+                           CdReadSync CdIntToPos CdPosToInt CdControlB 
+                           CdControlF CdMix 
+BIOS     04-12-95 13:40:32 CD_nopen CD_flush CD_com CD_vol CD_pos CD_datasync 
+                           CD_readsync CD_cbread CD_initintr CD_cbsync 
+                           CD_comstr CD_status CD_intstr CD_mode CD_init 
+                           CD_sync CD_set_test_parmnum CD_getsector 
+                           CD_status1 CD_cbready CD_cw CD_initvol CD_debug 
+                           CD_readm CD_ready CD_shell 
+ISO9660  04-12-95 13:40:34 CdSearchFile 
+CDREAD2  04-12-95 13:40:36 StMode CdRead2 
+C_002    04-12-95 13:40:36 Stframe_no StFinalSector Stsector_offset 
+                           StClearRing StRgb24 StEmu_Idx StFunc1 StCdIntrFlag 
+                           StFunc2 StRingIdx1 StRingIdx2 StRingIdx3 
+                           StStartFrame StCHANNEL StEmu_Addr StEndFrame 
+                           StSTART_FLAG StRingAddr StRingBase StRingSize 
+                           CChannel 
+C_003    04-12-95 13:40:38 Stframe_no StFinalSector Stsector_offset 
+                           StUnSetRing StRgb24 StEmu_Idx StFunc1 StFunc2 
+                           StCdIntrFlag StRingIdx1 StRingIdx2 StRingIdx3 
+                           StStartFrame StCHANNEL StEmu_Addr StEndFrame 
+                           StSTART_FLAG StRingAddr StRingBase StRingSize 
+                           CChannel 
+C_004    04-12-95 13:40:38 Stframe_no StFinalSector Stsector_offset StRgb24 
+                           StEmu_Idx StFunc1 StFunc2 StCdIntrFlag 
+                           data_ready_callback StRingIdx1 StRingIdx2 
+                           StRingIdx3 StStartFrame StCHANNEL StEmu_Addr 
+                           StEndFrame StSTART_FLAG StRingAddr StRingBase 
+                           StRingSize CChannel 
+C_005    04-12-95 13:40:40 Stframe_no StFinalSector Stsector_offset StRgb24 
+                           StSetStream StEmu_Idx StFunc1 StFunc2 StCdIntrFlag 
+                           StRingIdx1 StRingIdx2 StRingIdx3 StCHANNEL 
+                           StStartFrame StEmu_Addr StEndFrame StSTART_FLAG 
+                           StRingAddr StRingBase StRingSize CChannel 
+C_006    04-12-95 13:40:42 Stframe_no StFinalSector Stsector_offset StRgb24 
+                           StEmu_Idx StFunc1 StFunc2 StCdIntrFlag StRingIdx1 
+                           StRingIdx2 StRingIdx3 StSetEmulate StStartFrame 
+                           StCHANNEL StEmu_Addr StEndFrame StSTART_FLAG 
+                           StRingAddr StRingBase StRingSize CChannel 
+C_007    04-12-95 13:40:42 Stframe_no StFinalSector Stsector_offset StRgb24 
+                           StEmu_Idx StFunc1 StFunc2 StCdIntrFlag StRingIdx1 
+                           StRingIdx2 StRingIdx3 StStartFrame StCHANNEL 
+                           StEmu_Addr StEndFrame StSTART_FLAG StRingAddr 
+                           StRingBase StFreeRing StRingSize CChannel 
+C_008    04-12-95 13:40:44 Stframe_no StFinalSector Stsector_offset StRgb24 
+                           StEmu_Idx StFunc1 StFunc2 StCdIntrFlag StRingIdx1 
+                           StRingIdx2 StRingIdx3 StStartFrame StCHANNEL 
+                           init_ring_status StEmu_Addr StEndFrame 
+                           StSTART_FLAG StRingAddr StRingBase StRingSize 
+                           CChannel 
+C_009    04-12-95 13:40:46 Stframe_no StFinalSector Stsector_offset StRgb24 
+                           StEmu_Idx StFunc1 StFunc2 StCdIntrFlag StGetNext 
+                           StRingIdx1 StRingIdx2 StRingIdx3 StStartFrame 
+                           StCHANNEL StEmu_Addr StEndFrame StSTART_FLAG 
+                           StRingAddr StRingBase StRingSize CChannel 
+C_010    04-12-95 13:40:46 Stframe_no StFinalSector Stsector_offset StRgb24 
+                           StEmu_Idx StSetMask StFunc1 StFunc2 StCdIntrFlag 
+                           StRingIdx1 StRingIdx2 StRingIdx3 StStartFrame 
+                           StCHANNEL StEmu_Addr StEndFrame StSTART_FLAG 
+                           StRingAddr StRingBase StRingSize CChannel 
+C_011    04-12-95 13:40:50 Stframe_no StFinalSector StCdInterrupt 
+                           Stsector_offset StRgb24 StEmu_Idx debug_cause 
+                           StFunc1 StCdIntrFlag StFunc2 StRingIdx1 StRingIdx2 
+                           StRingIdx3 StStartFrame StCHANNEL StEmu_Addr 
+                           StEndFrame StSTART_FLAG StRingAddr StRingBase 
+                           StRingSize CChannel 
+C_012    04-12-95 13:40:52 Stframe_no StFinalSector Stsector_offset StRgb24 
+                           StEmu_Idx StFunc1 StFunc2 StCdIntrFlag 
+                           StSetChannel StRingIdx1 StRingIdx2 StRingIdx3 
+                           StCHANNEL StStartFrame StEmu_Addr StEndFrame 
+                           StSTART_FLAG StRingAddr StRingBase StRingSize 
+                           CChannel 
+C_013    04-12-95 13:40:52 Stframe_no StFinalSector Stsector_offset StRgb24 
+                           StEmu_Idx StFunc1 StFunc2 StCdIntrFlag StRingIdx1 
+                           StRingIdx2 StRingIdx3 StStartFrame StCHANNEL 
+                           StEmu_Addr StEndFrame StSTART_FLAG StRingAddr 
+                           StRingBase StGetNextS StRingSize CChannel 
+
+Name = LIBCOMB.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+L25      22-11-95 13:24:34 _ioabort 
+COMB     22-11-95 13:24:34 ChangeClearSIO AddCOMB DelCOMB _comb_control 
+
+Name = LIBETC.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+PAD      04-12-95 13:41:08 PadIdentifier PadRead PadInit PadStop 
+VSYNC    04-12-95 13:41:10 Hcount VSync 
+INTR     04-12-95 13:41:12 VSyncCallback ResetCallback GetIntrMask 
+                           SetIntrMask VSyncCallbacks StopCallback 
+                           InterruptCallback DMACallback CheckCallback 
+                           RestartCallback 
+INTR_VB  04-12-95 13:41:14 Vcount startIntrVSync 
+INTR_DMA 04-12-95 13:41:16 startIntrDMA 
+VMODE    04-12-95 13:41:16 GetVideoMode SetVideoMode 
+HWCONFIG 04-12-95 13:41:18 get_hwconfig 
+
+Name = LIBGPU.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+SYS      04-12-95 13:41:52 SetGraphDebug _qlog SetDrawOffset SetGraphQueue 
+                           DrawPrim _qout DrawSync SetDrawArea 
+                           DrawSyncCallback SetDrawMode SetDispMask ClearOTag 
+                           LoadImage MoveImage SetPriority ClearOTagR _qin 
+                           _que GetGraphType ClearImage SetTexWindow 
+                           GetDrawEnv GetDispEnv GPU_printf SetDrawEnv 
+                           StoreImage PutDrawEnv PutDispEnv ResetGraph GetODE 
+                           GetGraphDebug DrawOTag SetGraphReverse 
+EXT      01-12-95 13:00:16 LoadClut LoadTPage SetDefDrawEnv SetDefDispEnv 
+EXTA     04-12-95 13:41:36 GetTPageA get_addr get_cell LoadTPageA 
+FONT     01-12-95 13:00:22 FntFlush FntPrint Font FntLoad FntOpen SetDumpFnt 
+FONTTEX  01-12-95 13:00:24 
+KPRINTF  01-12-95 13:00:28 KanjiFntFlush KanjiFntPrint PutKanji txyuv 
+                           KanjiFont KanjiFntLoad KanjiFntOpen kanjiclut 
+KROM2TIM 01-12-95 13:00:30 GetTimSize Krom2Tim 
+OTAG     01-12-95 13:00:34 DumpOTag CheckPrim DrawOTagIO 
+PRIM     04-12-95 13:41:40 SetSprt8 AddPrims SetTile16 SetLineF2 SetLineG2 
+                           SetLineF3 DumpClut SetLineG3 SetLineF4 SetLineG4 
+                           TermPrim NextPrim SetSprt16 SetShadeTex SetPolyF3 
+                           SetPolyG3 SetPolyF4 SetPolyG4 DumpDrawEnv 
+                           DumpDispEnv SetDrawMove DumpTPage IsEndPrim 
+                           MargePrim SetPolyFT3 SetPolyGT3 SetPolyFT4 
+                           SetBlockFill SetPolyGT4 AddPrim CatPrim GetClut 
+                           SetTile SetSemiTrans SetSprt SetTile1 GetTPage 
+                           SetTile8 
+TMD      01-12-95 13:00:54 ReadTMD ReadTIM OpenTMD OpenTIM 
+KTRANS   01-12-95 13:00:58 Krom2RawAdd2 kanjitrans hankanjitrans 
+BREAK    04-12-95 13:41:54 BreakDraw 
+
+Name = LIBGS.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+2D_BG0   04-12-95 13:42:30 GsSortBg 
+2D_BG1   04-12-95 13:42:34 GsSortFastBg 
+2D_BG2   04-12-95 13:42:36 GsInitFixBg16 GsSortFixBg16 
+2D_BG3   04-12-95 13:42:40 GsInitFixBg32 GsSortFixBg32 
+2D_COM0  04-12-95 13:42:44 _mk_xpndsp _mk_normsp _mk_spr_packet 
+2D_COM1  04-12-95 13:42:46 _make_packet 
+2D_LIN0  04-12-95 13:42:48 GsSortLine 
+2D_LIN1  04-12-95 13:42:50 GsSortGLine 
+2D_BOX0  04-12-95 13:42:54 GsSortBoxFill 
+2D_PRIM  04-12-95 13:42:56 GsSortPoly 
+2D_SP0   04-12-95 13:43:00 GsSortSprite 
+2D_SP1   04-12-95 13:43:06 GsSortFastSprite 
+2D_SP2   04-12-95 13:43:08 GsSortFlipSprite 
+2D_SP4   04-12-95 13:43:12 GsInitFastSpriteArray GsSortFastSpriteArray 
+                           GsInitFastSprite2 GsSortFastSprite2 
+                           GsSetFastSpriteArray 
+2D_SP0A  04-12-95 13:43:14 GsSortSpriteA 
+2D_SP1A  04-12-95 13:43:18 GsSortFastSpriteA 
+ANIM     04-12-95 13:43:20 GsSetTodUserFunc GsSetTodPacket GsInitAnim 
+                           GsSetTodFrame 
+ANIM2    04-12-95 13:43:24 GsInitAnim2 GsSetTodFrame2 GsSetTodUserFunc2 
+                           GsSetTodPacket2 
+GS_001   04-12-95 13:43:26 PSDOFSX PSDOFSY GsInitGraph GsSortClear PSDBASEX 
+                           CLIP2 PSDBASEY GsInitGraph2 GsDSTACK POSITION 
+                           PSDIDX PSDCNT GsDRAWENV GsDISPENV PSDGPU GsORGOFSX 
+                           GsORGOFSY 
+GS_002   04-12-95 13:43:30 PSDOFSX PSDOFSY CLIP2 PSDBASEX PSDBASEY 
+                           GsSetDrawBuffOffset GsDSTACK POSITION 
+                           GsGetActiveBuff PSDIDX PSDCNT GsDRAWENV PSDGPU 
+                           GsDISPENV GsORGOFSX GsORGOFSY 
+RST      04-12-95 13:44:18 GsLSMATRIX GsInitCoordinate GsGetObjMatrix 
+                           GsSetRefView GsGetObjLw GsGetObjLight 
+GS_003   04-12-95 13:43:32 PSDOFSX PSDOFSY CLIP2 PSDBASEX PSDBASEY GsDSTACK 
+                           POSITION GsSetDrawBuffClip PSDIDX PSDCNT GsDRAWENV 
+                           GsDISPENV PSDGPU GsORGOFSX GsORGOFSY 
+GS_004   04-12-95 13:43:34 PSDOFSX PSDOFSY GsSetOffset CLIP2 PSDBASEX 
+                           PSDBASEY GsDSTACK POSITION PSDIDX PSDCNT GsDRAWENV 
+                           PSDGPU GsDISPENV GsORGOFSX GsORGOFSY 
+GS_005   04-12-95 13:43:40 PSDOFSX PSDOFSY CLIP2 PSDBASEX PSDBASEY GsSetClip 
+                           GsDSTACK POSITION PSDIDX PSDCNT GsDRAWENV 
+                           GsDISPENV PSDGPU GsORGOFSX GsORGOFSY 
+GS_006   04-12-95 13:43:44 PSDOFSX PSDOFSY CLIP2 PSDBASEX PSDBASEY GsDSTACK 
+                           POSITION PSDIDX PSDCNT GsDRAWENV GsDISPENV PSDGPU 
+                           GsORGOFSX GsORGOFSY GsSetClip2D 
+GS_007   04-12-95 13:43:46 PSDOFSX PSDOFSY CLIP2 PSDBASEX PSDBASEY GsDSTACK 
+                           POSITION PSDIDX PSDCNT GsInitVcount GsDRAWENV 
+                           GsDISPENV PSDGPU GsORGOFSX GsORGOFSY 
+GS_008   04-12-95 13:43:48 PSDOFSX PSDOFSY GsGetVcount CLIP2 PSDBASEX 
+                           PSDBASEY GsDSTACK POSITION PSDIDX PSDCNT GsDRAWENV 
+                           GsDISPENV PSDGPU GsORGOFSX GsORGOFSY 
+GS_009   04-12-95 13:43:50 GsClearVcount PSDOFSX PSDOFSY CLIP2 PSDBASEX 
+                           PSDBASEY GsDSTACK POSITION PSDIDX PSDCNT GsDRAWENV 
+                           GsDISPENV PSDGPU GsORGOFSX GsORGOFSY 
+GS_010   04-12-95 13:43:52 PSDOFSX PSDOFSY CLIP2 PSDBASEX PSDBASEY 
+                           GsSwapDispBuff GsDSTACK POSITION PSDIDX PSDCNT 
+                           GsDRAWENV GsDISPENV PSDGPU GsORGOFSX GsORGOFSY 
+GS_011   04-12-95 13:43:54 PSDOFSX PSDOFSY CLIP2 PSDBASEX PSDBASEY GsDSTACK 
+                           POSITION GsClearDispArea PSDIDX PSDCNT GsDRAWENV 
+                           GsDISPENV PSDGPU GsORGOFSX GsORGOFSY 
+GS_012   04-12-95 13:43:58 PSDOFSX PSDOFSY CLIP2 PSDBASEX PSDBASEY GsDSTACK 
+                           POSITION GsSetClip2 PSDIDX PSDCNT GsDRAWENV 
+                           GsDISPENV PSDGPU GsORGOFSX GsORGOFSY 
+GS_013   04-12-95 13:44:00 PSDOFSX PSDOFSY CLIP2 PSDBASEX PSDBASEY GsDSTACK 
+                           POSITION PSDIDX PSDCNT GsDRAWENV GsDISPENV PSDGPU 
+                           GsORGOFSX GsORGOFSY GsSetOrign 
+IDCTL    04-12-95 13:44:02 GsSearchTMDByID GsRemoveObj GsInitObjTable 
+                           GsCreateNewObj GsSearchObjByID 
+IDCTL2   04-12-95 13:44:04 GsRemoveObj2 GsInitObjTable2 GsCreateNewObj2 
+                           GsSearchObjByID2 
+MATRIX   04-12-95 13:44:16 GsMulCoord0 GsMulCoord2 GsMulCoord3 GsSetLsMatrix 
+                           print_vector print_matrix GsSetLightMatrix 
+                           GsSetLightMatrix2 GsInitCoordinate2 
+                           GsInitCoord2param DSTACK 
+SORT     04-12-95 13:44:24 gte_gouraud_mat_fog3 gte_flat_mat3 
+                           gte_texture_flat_mat_fog3 Gslight_normal_fog 
+                           gte_gouraud_mat3 Gslight_mate_fog 
+                           gte_texture_gouraud_mat_fog3 gte_texture_flat_mat3 
+                           GsLinkObject gte_flat_mat_fog3 GsSortObject 
+                           Gslight_normal GsLIGHT_FUNC GsLinkObject2 
+                           Gslight_mate gte_texture_gouraud_mat3 
+                           GsSortObject2 
+GS_101   04-12-95 13:44:26 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near _LC 
+                           GsSetNearClip 
+GS_102   04-12-95 13:44:28 HWD0 GsIDMATRIX VWD0 GsCLIP3far GsIDMATRIX2 
+                           GsSetFarClip GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_103   04-12-95 13:44:32 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near 
+                           GsDefDispBuff _LC 
+GS_104   04-12-95 13:44:34 HWD0 GsIDMATRIX VWD0 GsCLIP3far GsIDMATRIX2 
+                           GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near GsInit3D 
+                           _LC 
+GS_105   04-12-95 13:44:36 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsMapModelingData GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_106   04-12-95 13:44:38 GsSetProjection HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 
+                           GsCLIP3far GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_107   04-12-95 13:44:40 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsSetFlatLight GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_108   04-12-95 13:44:44 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsSetLightMode GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_109   04-12-95 13:44:52 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near _LC 
+                           GsSetFogParam 
+GS_110   04-12-95 13:44:54 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsSetAmbient GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_111   04-12-95 13:44:56 GsDrawOt HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 
+                           GsCLIP3far GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_112   04-12-95 13:44:58 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsDrawOtIO GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_113   04-12-95 13:45:02 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsClearOt GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near 
+                           _LC 
+GS_114   04-12-95 13:45:04 HWD0 GsIDMATRIX VWD0 GsSortOt GsIDMATRIX2 
+                           GsCLIP3far GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_115   04-12-95 13:45:06 HWD0 GsIDMATRIX VWD0 gte_apply_matrixl GsIDMATRIX2 
+                           GsCLIP3far gte_apply_matrixll GsLIGHTWSMATRIX 
+                           GsLIGHT_MODE GsCLIP3near _LC 
+GS_116   04-12-95 13:45:08 HWD0 GsIDMATRIX VWD0 gte_copy_matrix GsIDMATRIX2 
+                           GsCLIP3far GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_117   04-12-95 13:45:10 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near _LC 
+                           gte_rotate_x_matrix 
+GS_118   04-12-95 13:45:14 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near _LC 
+                           gte_rotate_y_matrix 
+GS_119   04-12-95 13:45:16 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near _LC 
+                           gte_rotate_z_matrix 
+GS_120   04-12-95 13:45:28 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           gte_scale_matrix GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_121   04-12-95 13:45:30 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           gte_init GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near 
+                           _LC 
+GS_122   04-12-95 13:45:32 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsGetTimInfo GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_123   04-12-95 13:45:34 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near _LC 
+                           Gssub_make_matrix 
+GS_124   04-12-95 13:45:36 GsSetWorkBase HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 
+                           GsCLIP3far GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_125   04-12-95 13:45:38 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near _LC 
+                           GsGetWorkBase 
+GS_126   04-12-95 13:45:42 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 GsCLIP3far 
+                           GsCutOt GsLIGHTWSMATRIX GsLIGHT_MODE GsCLIP3near 
+                           _LC 
+GS_127   04-12-95 13:45:44 GsDefDispBuff2 HWD0 GsIDMATRIX VWD0 GsIDMATRIX2 
+                           GsCLIP3far GsLIGHTWSMATRIX GsLIGHT_MODE 
+                           GsCLIP3near _LC 
+GS_131   04-12-95 13:45:46 GsWSMATRIX GsWSMATRIX_ORG GsSetRefView2 
+GS_132   04-12-95 13:45:48 GsWSMATRIX GsWSMATRIX_ORG GsSetView2 
+GS_133   04-12-95 13:45:52 GsWSMATRIX GsWSMATRIX_ORG GsGetLw 
+GS_134   04-12-95 13:46:02 GsWSMATRIX GsWSMATRIX_ORG GsGetLs 
+GS_135   04-12-95 13:46:04 GsGetLws GsWSMATRIX GsWSMATRIX_ORG 
+GS_136   04-12-95 13:46:06 GsScaleScreen GsWSMATRIX GsWSMATRIX_ORG 
+PRESET   04-12-95 13:46:10 GsPresetObject GsLinkObject5 
+PRESET2  04-12-95 13:46:18 GsSortObject5 
+PRESET3  04-12-95 13:46:24 GsSortObject5J GsFCALL5 
+PRESET4  04-12-95 13:46:48 dmyGsPrstG3LFG dmyGsPrstF4LFG dmyGsTMDfastTG4NL 
+                           dmyGsPrstG4LFG dmyGsPrstF3GNL dmyGsPrstG3GNL 
+                           dmyGsPrstTF3NL dmyGsPrstTG3NL dmyGsPrstTF4NL 
+                           dmyGsPrstTG4NL dmyGsTMDfastF3GLFG 
+                           dmyGsTMDfastG3GLFG dmyGsTMDfastTF3LFG 
+                           dmyGsTMDfastTG3LFG dmyGsTMDfastTF4LFG 
+                           dmyGsTMDdivF3NL dmyGsTMDfastTG4LFG dmyGsTMDdivG3NL 
+                           dmyGsTMDdivF4NL dmyGsTMDdivG4NL dmyGsTMDdivTF3L 
+                           dmyGsTMDdivTG3L dmyGsTMDdivTF4L dmyGsPrstF3GLFG 
+                           dmyGsTMDdivTNF3 dmyGsTMDdivTG4L dmyGsPrstG3GLFG 
+                           dmyGsTMDdivTNG3 dmyGsTMDdivTNF4 dmyGsTMDdivTNG4 
+                           dmyGsPrstTF3LFG dmyGsPrstTG3LFG dmyGsPrstTF4LFG 
+                           dmyGsPrstTG4LFG dmyGsTMDfastF3L dmyGsTMDfastG3L 
+                           dmyGsTMDfastF4L dmyGsTMDfastNF3 dmyGsTMDfastG4L 
+                           dmyGsTMDfastNG3 dmyGsTMDfastNF4 dmyGsTMDfastNG4 
+                           dmyGsPrstF3L dmyGsPrstG3L dmyGsPrstF4L 
+                           dmyGsPrstNF3 dmyGsPrstG4L dmyGsPrstNG3 
+                           dmyGsPrstNF4 dmyGsPrstNG4 dmyGsTMDdivF3LFG 
+                           dmyGsTMDdivG3LFG dmyGsTMDdivF4LFG dmyGsTMDdivG4LFG 
+                           dmyGsTMDdivTF3NL dmyGsTMDdivTG3NL dmyGsTMDdivTF4NL 
+                           dmyGsTMDdivTG4NL dmyGsTMDfastF3GL dmyGsTMDfastG3GL 
+                           dmyGsTMDfastF3NL dmyGsTMDfastG3NL dmyGsTMDfastF4NL 
+                           dmyGsTMDfastG4NL dmyGsTMDfastTF3L dmyGsTMDfastTG3L 
+                           dmyGsTMDfastTF4L dmyGsTMDfastTNF3 dmyGsTMDfastTG4L 
+                           dmyGsTMDfastTNG3 dmyGsTMDfastTNF4 dmyGsTMDfastTNG4 
+                           dmyGsPrstF3GL dmyGsPrstG3GL dmyGsPrstF3NL 
+                           dmyGsPrstG3NL dmyGsPrstF4NL dmyGsPrstG4NL 
+                           dmyGsPrstTF3L dmyGsPrstTG3L dmyGsPrstTF4L 
+                           dmyGsPrstTNF3 dmyGsPrstTG4L dmyGsPrstTNG3 
+                           dmyGsPrstTNF4 dmyGsPrstTNG4 dmyGsTMDdivTF3LFG 
+                           dmyGsTMDdivTG3LFG dmyGsTMDdivTF4LFG 
+                           dmyGsTMDdivTG4LFG dmyGsTMDfastF3LFG 
+                           dmyGsTMDfastG3LFG dmyGsTMDfastF4LFG 
+                           dmyGsTMDfastG4LFG dmyGsTMDdivF3L dmyGsTMDfastF3GNL 
+                           dmyGsTMDdivG3L dmyGsTMDdivF4L dmyGsTMDfastG3GNL 
+                           dmyGsTMDdivNF3 dmyGsTMDdivG4L dmyGsTMDdivNG3 
+                           dmyGsTMDdivNF4 dmyGsTMDdivNG4 dmyGsTMDfastTF3NL 
+                           dmyGsPrstF3LFG dmyGsTMDfastTG3NL dmyGsTMDfastTF4NL 
+GLOBAL   04-12-95 13:46:52 GsBACKC GsADIVH GsLIOFF GsLMODE GsADIVW GsLIGNR 
+                           GsADIVZ GsTRATE GsZOVER GsOUT_PACKET_P GsMATE_C 
+                           GsDISPON GsTON GsNDIV 
+PMD      04-12-95 13:46:54 GsLinkObject3 GsSortObject3 
+OBJT     04-12-95 13:46:56 GsLinkObject4 
+OBJT2    04-12-95 13:47:00 GsSortObject4 
+OBJT3    04-12-95 13:47:16 GsSortObject4J GsFCALL4 
+DATG4_00 04-12-95 13:47:22 GsA4divTG4L 
+DATG4_01 04-12-95 13:47:28 GsA4divTG4LFG 
+DATG4_02 04-12-95 13:47:34 GsA4divTG4NL 
+DATG4_03 04-12-95 13:47:40 GsA4divTNG4 
+DAFT4_00 04-12-95 13:47:46 GsA4divTF4L 
+DAFT4_01 04-12-95 13:48:02 GsA4divTF4LFG 
+DAFT4_02 04-12-95 13:48:08 GsA4divTF4NL 
+DAFT4_03 04-12-95 13:48:14 GsA4divTNF4 
+DAG4_00  04-12-95 13:48:20 GsA4divG4L 
+DAG4_01  04-12-95 13:48:26 GsA4divG4LFG 
+DAG4_02  04-12-95 13:48:42 GsA4divG4NL 
+DAG4_03  04-12-95 13:48:48 GsA4divNG4 
+DAF4_00  04-12-95 13:48:54 GsA4divF4L 
+DAF4_01  04-12-95 13:49:00 GsA4divF4LFG 
+DAF4_02  04-12-95 13:49:06 GsA4divF4NL 
+DAF4_03  04-12-95 13:49:22 GsA4divNF4 
+DATG3_00 04-12-95 13:49:28 GsA4divTG3L 
+DATG3_01 04-12-95 13:49:34 GsA4divTG3LFG 
+DATG3_02 04-12-95 13:49:40 GsA4divTG3NL 
+DATG3_03 04-12-95 13:51:46 GsA4divTNG3 
+DAG3_00  04-12-95 13:52:24 GsA4divG3L 
+DAG3_01  04-12-95 13:51:56 GsA4divG3LFG 
+DAG3_02  04-12-95 13:52:02 GsA4divG3NL 
+DAG3_03  04-12-95 13:52:08 GsA4divNG3 
+DAG3GF00 04-12-95 13:52:10 GsTMDfastG3GL 
+DAG3GF01 04-12-95 13:53:38 GsTMDfastG3GLFG 
+DAG3GF02 04-12-95 13:53:00 GsTMDfastG3GNL 
+DAG3GP00 04-12-95 13:53:02 GsPrstG3GL 
+DAG3GP01 04-12-95 13:52:42 GsPrstG3GLFG 
+DAG3GP02 04-12-95 13:52:44 GsPrstG3GNL 
+DAFT3_00 04-12-95 13:53:08 GsA4divTF3L 
+DAFT3_01 04-12-95 13:53:40 GsA4divTF3LFG 
+DAFT3_02 04-12-95 13:53:18 GsA4divTF3NL 
+DAFT3_03 04-12-95 13:53:42 GsA4divTNF3 
+DAF3_00  04-12-95 13:54:14 GsA4divF3L 
+DAF3_01  04-12-95 13:53:52 GsA4divF3LFG 
+DAF3_02  04-12-95 13:53:58 GsA4divF3NL 
+DAF3_03  04-12-95 13:54:20 GsA4divNF3 
+DAF3GF00 04-12-95 13:54:24 GsTMDfastF3GL 
+DAF3GF01 04-12-95 13:54:28 GsTMDfastF3GLFG 
+DAF3GF02 04-12-95 13:54:32 GsTMDfastF3GNL 
+DAF3GP00 04-12-95 13:59:50 GsPrstF3GL 
+DAF3GP01 04-12-95 14:01:54 GsPrstF3GLFG 
+DAF3GP02 04-12-95 13:59:52 GsPrstF3GNL 
+
+Name = LIBGTE.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+GEO      29-11-95 11:39:32 RotMatrix_C RotMatrixZYX_C RotMatrixYXZ_C rsin_tbl 
+                           EigenMatrix MatrixNormal_0 MatrixNormal_1 
+                           MatrixNormal_2 RotMatrixX_C RotMatrixY_C 
+                           RotMatrixZ_C rcos rsin sin_1 IsIdMatrix 
+FOG_00   29-11-95 11:39:32 SetFogFar 
+FOG_01   29-11-95 11:39:34 SetFogNear 
+FOG_02   29-11-95 11:39:36 SetFogNearFar 
+COR_00   29-11-95 19:04:10 RotMatrixC 
+COR_01   29-11-95 11:39:38 H_cor_tbl csincos 
+COR_02   29-11-95 11:39:44 ccos 
+COR_03   29-11-95 11:39:46 csin_1 csin 
+COR_04   29-11-95 11:39:48 H_ln_tbl cln cln_1 
+COR_05   29-11-95 11:39:50 csqrt csqrt_1 
+COR_06   29-11-95 11:39:52 catan K_cor_tbl 
+SPL      29-11-95 11:39:56 SubPol3 SubPol4 
+MSC00    29-11-95 11:40:02 InitGeom 
+MSC01    29-11-95 11:40:02 SquareRoot0 SquareRoot12 
+MSC02    29-11-95 11:40:04 InvSquareRoot VectorNormal VectorNormalS 
+                           VectorNormalSS MatrixNormal 
+MSC03    29-11-95 11:40:04 InterpolShort 
+MSC04    29-11-95 11:40:04 InterpolByte 
+MSC05    29-11-95 11:40:06 gteMIMefunc 
+MSC06    29-11-95 11:40:12 LoadAverage12 LoadAverage0 LoadAverageShort12 
+                           LoadAverageShort0 LoadAverageByte LoadAverageCol 
+MSC07    29-11-95 11:40:12 p2otz 
+MSC08    29-11-95 11:40:14 otz2p 
+MTX      29-11-95 11:40:16 MulMatrix MulMatrix2 ApplyMatrix ApplyMatrixSV 
+                           TransMatrix ScaleMatrix SetRotMatrix 
+                           SetLightMatrix SetColorMatrix SetTransMatrix 
+MTX_00   29-11-95 11:40:16 MulMatrix0 MulRotMatrix MulRotMatrix0 CompMatrix 
+                           ApplyMatrixLV ApplyRotMatrix PushMatrix PopMatrix 
+                           ReadLightMatrix ReadColorMatrix ReadRotMatrix 
+                           ScaleMatrixL SetMulMatrix 
+MTX_01   29-11-95 11:40:18 ApplyRotMatrixLV 
+MTX_02   29-11-95 11:40:24 SetMulRotMatrix 
+REG00    29-11-95 11:40:24 SetRGBcd 
+REG01    29-11-95 11:40:24 ReadSZfifo3 ReadSZfifo4 ReadSXSYfifo ReadRGBfifo 
+                           ReadGeomOffset ReadGeomScreen 
+REG02    29-11-95 11:40:26 ReadOTZ ReadIR0 ReadIR123 ReadSZ2 ReadMac0 
+                           ReadMAC123 ReadORGB ReadLZC ReadFLAG 
+REG03    29-11-95 11:40:26 SetVertex0 SetVertex1 SetVertex2 SetVertexTri 
+                           SetRGBfifo SetIR123 SetIR0 SetBackColor 
+                           SetFarColor SetSZfifo3 SetSZfifo4 SetSXSYfifo 
+                           SetRii SetMAC123 SetData32 SetGeomOffset 
+                           SetGeomScreen SetDQA SetDQB 
+SMP      29-11-95 11:40:26 RotTransPers RotTransPers3 RotTrans LocalLight 
+                           DpqColor NormalColor NormalColor3 NormalColorDpq 
+                           NormalColorDpq3 NormalColorCol NormalColorCol3 
+                           ColorDpq ColorCol NormalClip NormalClipS 
+                           AverageSZ3 AverageSZ4 
+SMP_00   29-11-95 11:40:34 LightColor DpqColorLight DpqColor3 Intpl Square12 
+                           Square0 AverageZ3 AverageZ4 OuterProduct12 
+                           OuterProduct0 Lzc 
+SMP_01   29-11-95 11:40:34 RotTransSV SquareSS12 SquareSS0 SquareSL12 
+                           SquareSL0 
+CMB_00   29-11-95 11:40:36 RotTransPers4 
+CMB_01   29-11-95 11:40:36 RotAverage3 
+CMB_02   29-11-95 11:40:36 RotAverage4 
+CMB_03   29-11-95 11:40:38 RotNclip 
+CMB_04   29-11-95 11:40:46 RotNclip3 
+CMB_05   29-11-95 11:40:46 RotNclip4 
+CMB_06   29-11-95 11:40:48 RotAverageNclip3 
+CMB_07   29-11-95 11:40:48 RotAverageNclip4 
+CMB_08   29-11-95 11:40:48 RotAverageNclipColorDpq3 
+CMB_09   29-11-95 11:40:50 RotAverageNclipColorCol3 
+CMB_10   29-11-95 11:40:58 ColorMatDpq 
+CMB_11   29-11-95 11:40:58 ColorMatCol 
+CMB_12   29-11-95 11:41:00 RotColorDpq 
+CMB_13   29-11-95 11:41:00 RotColorDpq3 
+CMB_14   29-11-95 11:41:00 RotColorMatDpq 
+CMB_15   29-11-95 11:41:00 RotAverageNclip3_1 
+CMB_16   29-11-95 12:32:06 RotTransPersN 
+CMB_17   29-11-95 12:32:06 RotTransPers3N 
+CMB_18   29-11-95 12:32:06 RotAverageNclipColorDpq3_1 
+TMD      29-11-95 12:32:08 gte_scope_f3 gte_scope_tf3 gte_scope_g3 
+                           gte_scope_tg3 gte_flat3 gte_texture_flat3 
+                           gte_gouraud3 gte_texture_gouraud3 gte_flat_fog3 
+                           gte_texture_flat_fog3 gte_gouraud_fog3 
+                           gte_texture_gouraud_fog3 gte_scope_tf4 
+                           gte_scope_tf4_B 
+NOM      29-11-95 12:32:08 RotTransPers_nom RotTransPers3_nom RotTrans_nom 
+                           RotTransPers4_nom RotAverage3_nom RotNclip3_nom 
+                           RotAverageNclip3_nom RotAverageNclipColorDpq3_nom 
+                           RotAverageNclipColorCol3_nom RotColorDpq_nom 
+                           RotColorDpq3_nom NormalColor_nom NormalColor3_nom 
+                           NormalColorDpq_nom NormalColorDpq3_nom 
+                           NormalColorCol_nom NormalColorCol3_nom 
+HGT      29-11-95 12:32:10 RotMeshH 
+CSTBL    29-11-95 12:32:20 rcossin_tbl 
+FGO_00   29-11-95 12:32:22 TransposeMatrix 
+FGO_01   29-11-95 12:32:22 RotMatrix 
+FGO_02   29-11-95 12:32:22 RotMatrixYXZ 
+FGO_03   29-11-95 12:32:24 RotMatrixZYX 
+FGO_04   29-11-95 12:32:24 RotMatrixX 
+FGO_05   29-11-95 12:32:34 RotMatrixY 
+FGO_06   29-11-95 12:32:36 RotMatrixZ 
+FGO_07   29-11-95 12:32:36 rcossin 
+TMDF_F3  29-11-95 12:32:38 GsTMDfastNF3 GsTMDfastF3NL GsTMDfastF3L 
+                           GsTMDfastF3LFG 
+TMDF_F4  29-11-95 12:32:38 GsTMDfastNF4 GsTMDfastF4NL GsTMDfastF4L 
+                           GsTMDfastF4LFG 
+TMDF_G3  29-11-95 12:32:38 GsTMDfastNG3 GsTMDfastG3NL GsTMDfastG3L 
+                           GsTMDfastG3LFG 
+TMDF_G4  29-11-95 12:32:52 GsTMDfastNG4 GsTMDfastG4NL GsTMDfastG4L 
+                           GsTMDfastG4LFG 
+TMDF_FT3 29-11-95 12:32:52 GsTMDfastTNF3 GsTMDfastTF3NL GsTMDfastTF3L 
+                           GsTMDfastTF3LFG 
+TMDF_FT4 29-11-95 12:32:54 GsTMDfastTNF4 GsTMDfastTF4NL GsTMDfastTF4L 
+                           GsTMDfastTF4LFG 
+TMDF_GT3 29-11-95 12:32:54 GsTMDfastTNG3 GsTMDfastTG3NL GsTMDfastTG3L 
+                           GsTMDfastTG3LFG GsTMDfastTG3L_FLIP 
+TMDF_GT4 30-11-95 16:57:16 GsTMDfastTNG4 GsTMDfastTG4NL GsTMDfastTG4L 
+                           GsTMDfastTG4LFG 
+PRS_F3   29-11-95 12:32:56 GsPrstNF3 GsPrstF3NL GsPrstF3L GsPrstF3LFG 
+PRS_F4   29-11-95 12:33:10 GsPrstNF4 GsPrstF4NL GsPrstF4L GsPrstF4LFG 
+PRS_G3   29-11-95 12:33:12 GsPrstNG3 GsPrstG3NL GsPrstG3L GsPrstG3LFG 
+PRS_G4   29-11-95 12:33:12 GsPrstNG4 GsPrstG4NL GsPrstG4L GsPrstG4LFG 
+PRS_FT3  29-11-95 12:33:14 GsPrstTNF3 GsPrstTF3NL GsPrstTF3L GsPrstTF3LFG 
+PRS_FT4  29-11-95 12:33:14 GsPrstTNF4 GsPrstTF4NL GsPrstTF4L GsPrstTF4LFG 
+PRS_GT3  29-11-95 12:33:14 GsPrstTNG3 GsPrstTG3NL GsPrstTG3L GsPrstTG3LFG 
+PRS_GT4  29-11-95 12:33:32 GsPrstTNG4 GsPrstTG4NL GsPrstTG4L GsPrstTG4LFG 
+PMD      29-11-95 12:33:34 RotPMD_F3 RotPMD_G3 RotPMD_FT3 RotPMD_GT3 
+                           RotPMD_F4 RotPMD_G4 RotPMD_FT4 RotPMD_GT4 
+                           RotPMD_SV_F3 RotPMD_SV_G3 RotPMD_SV_FT3 
+                           RotPMD_SV_GT3 RotPMD_SV_F4 RotPMD_SV_G4 
+                           RotPMD_SV_FT4 RotPMD_SV_GT4 
+SMD_00   29-11-95 12:33:34 RotSMD_F3 
+SMD_01   29-11-95 12:33:36 RotSMD_G3 
+SMD_02   29-11-95 12:33:36 RotSMD_FT3 
+SMD_03   29-11-95 12:33:54 RotSMD_GT3 
+SMD_04   29-11-95 12:33:54 RotSMD_F4 
+SMD_05   29-11-95 12:33:54 RotSMD_G4 
+SMD_06   29-11-95 12:33:56 RotSMD_FT4 
+SMD_07   29-11-95 12:33:56 RotSMD_GT4 
+SMD_08   29-11-95 12:34:18 RotSMD_SV_F3 
+SMD_09   29-11-95 12:34:18 RotSMD_SV_G3 
+SMD_10   29-11-95 12:34:20 RotSMD_SV_FT3 
+SMD_11   29-11-95 12:34:20 RotSMD_SV_GT3 
+SMD_12   29-11-95 12:34:20 RotSMD_SV_F4 
+SMD_13   29-11-95 15:24:40 RotSMD_SV_G4 
+SMD_14   29-11-95 15:24:40 RotSMD_SV_FT4 
+SMD_15   29-11-95 15:24:42 RotSMD_SV_GT4 
+RMD_00   29-11-95 15:24:42 RotRMD_F3 
+RMD_01   29-11-95 15:24:42 RotRMD_G3 
+RMD_02   29-11-95 15:25:10 RotRMD_FT3 
+RMD_03   29-11-95 15:25:10 RotRMD_GT3 
+RMD_04   29-11-95 15:25:10 RotRMD_F4 
+RMD_05   29-11-95 15:25:12 RotRMD_G4 
+RMD_06   29-11-95 15:25:12 RotRMD_FT4 
+RMD_07   29-11-95 15:25:36 RotRMD_GT4 
+RMD_08   29-11-95 15:25:36 RotRMD_SV_F3 
+RMD_09   29-11-95 15:25:38 RotRMD_SV_G3 
+RMD_10   29-11-95 15:25:38 RotRMD_SV_FT3 
+RMD_11   29-11-95 15:25:38 RotRMD_SV_GT3 
+RMD_12   29-11-95 15:26:04 RotRMD_SV_F4 
+RMD_13   29-11-95 15:26:04 RotRMD_SV_G4 
+RMD_14   29-11-95 15:26:04 RotRMD_SV_FT4 
+RMD_15   29-11-95 15:26:06 RotRMD_SV_GT4 
+NMD      29-11-95 15:26:08 RotNMD_F3 RotNMD_G3 RotNMD_FT3 RotNMD_GT3 
+                           RotNMD_F4 RotNMD_G4 RotNMD_FT4 RotNMD_GT4 
+                           RotNMD_SV_F3 RotNMD_SV_G3 RotNMD_SV_FT3 
+                           RotNMD_SV_GT3 RotNMD_SV_F4 RotNMD_SV_G4 
+                           RotNMD_SV_FT4 RotNMD_SV_GT4 
+CLIP_INI 29-11-95 15:26:34 InitClip CLIPNearz CLIPEvbf _tmp_evbf CLIPHdkx 
+                           CLIPKdhx CLIPHdky CLIPKdhy CLIPFarz 
+CLIPF_00 29-11-95 15:26:36 Clip3FP 
+CLIPF_01 29-11-95 15:26:38 Clip4FP 
+CLIPF_02 29-11-95 15:26:40 Clip3F 
+CLIPF_03 29-11-95 15:26:40 Clip4F 
+CLIPF_04 29-11-95 15:27:10 ClipF 
+CLIPF_05 29-11-95 15:27:12 ZClipF 
+CLIP_G   29-11-95 15:27:16 Clip3G Clip4G ZClipG Clip3GP Clip4GP ClipG 
+CLIP_FT  29-11-95 15:27:20 ClipFT Clip3FT Clip4FT ZClipFT Clip3FTP Clip4FTP 
+CLIP_GT  29-11-95 15:27:24 ClipGT Clip3GT Clip4GT ZClipGT Clip3GTP Clip4GTP 
+DVF3_00  29-11-95 15:27:54 GsTMDdivF3L 
+DVF3_01  29-11-95 15:27:56 GsTMDdivF3LFG 
+DVF3_02  29-11-95 15:27:58 GsTMDdivF3NL 
+DVF3_03  29-11-95 15:28:00 GsTMDdivNF3 
+DVF3_04  29-11-95 15:28:04 DivideF3 
+DVFT3_00 29-11-95 15:28:34 GsTMDdivTF3L 
+DVFT3_01 29-11-95 15:28:36 GsTMDdivTF3LFG 
+DVFT3_02 29-11-95 15:28:38 GsTMDdivTF3NL 
+DVFT3_03 29-11-95 15:28:42 GsTMDdivTNF3 
+DVFT3_04 29-11-95 15:28:44 DivideFT3 
+DVG3_00  29-11-95 15:29:14 GsTMDdivG3L 
+DVG3_01  29-11-95 15:29:18 GsTMDdivG3LFG 
+DVG3_02  29-11-95 15:29:20 GsTMDdivG3NL 
+DVG3_03  29-11-95 15:29:22 GsTMDdivNG3 
+DVG3_04  29-11-95 15:30:50 DivideG3 
+DVGT3_00 29-11-95 15:30:52 GsTMDdivTG3L 
+DVGT3_01 29-11-95 15:30:56 GsTMDdivTG3LFG 
+DVGT3_02 29-11-95 15:30:58 GsTMDdivTG3NL 
+DVGT3_03 29-11-95 15:31:28 GsTMDdivTNG3 
+DVGT3_04 29-11-95 15:31:32 DivideGT3 
+DVF4_00  29-11-95 15:31:34 GsTMDdivF4L 
+DVF4_01  29-11-95 15:31:36 GsTMDdivF4LFG 
+DVF4_02  29-11-95 15:32:08 GsTMDdivF4NL 
+DVF4_03  29-11-95 15:32:10 GsTMDdivNF4 
+DVF4_04  29-11-95 15:32:14 DivideF4 
+DVFT4_00 29-11-95 15:32:16 GsTMDdivTF4L 
+DVFT4_01 29-11-95 15:32:48 GsTMDdivTF4LFG 
+DVFT4_02 29-11-95 15:32:50 GsTMDdivTF4NL 
+DVFT4_03 29-11-95 15:32:52 GsTMDdivTNF4 
+DVFT4_04 29-11-95 15:32:54 DivideFT4 
+DVG4_00  29-11-95 15:33:26 GsTMDdivG4L 
+DVG4_01  29-11-95 15:33:28 GsTMDdivG4LFG 
+DVG4_02  29-11-95 15:33:32 GsTMDdivG4NL 
+DVG4_03  29-11-95 15:33:34 GsTMDdivNG4 
+DVG4_04  29-11-95 15:34:06 DivideG4 
+DVGT4_00 29-11-95 15:34:08 GsTMDdivTG4L 
+DVGT4_01 29-11-95 15:34:12 GsTMDdivTG4LFG 
+DVGT4_02 29-11-95 15:34:14 GsTMDdivTG4NL 
+DVGT4_03 29-11-95 15:34:48 GsTMDdivTNG4 
+DVGT4_04 29-11-95 15:34:50 DivideGT4 
+DIVF3A   29-11-95 15:34:50 RCpolyF3 RCpolyF3A 
+DIVFT3A  29-11-95 15:34:52 RCpolyFT3 RCpolyFT3A 
+DIVG3A   29-11-95 15:35:24 RCpolyG3 RCpolyG3A 
+DIVGT3A  29-11-95 15:35:26 RCpolyGT3 RCpolyGT3A 
+DIVF4A   29-11-95 15:35:26 RCpolyF4 RCpolyF4A 
+DIVFT4A  29-11-95 15:35:28 RCpolyFT4 RCpolyFT4A 
+DIVG4A   29-11-95 15:36:26 RCpolyG4 RCpolyG4A 
+DIVGT4A  29-11-95 15:36:26 RCpolyGT4 RCpolyGT4A 
+DIVP     29-11-95 15:36:28 DivPloyFT4 
+NDIVNAM  29-11-95 15:36:28 FlipRotMatrixX FlipTRX AddNoDiv SetTest 
+NAMNAM   29-11-95 15:37:08 ADDP_NormalClip4 ADDPNclip4 ADDPAverage4 
+                           RDG_NormalClip4 RDG_Nclip4 RDG_Average4 
+                           RDG_NormalColorGT4 RDG_NormalColorG4 
+                           RDG_NormalColorDpqGT4 RDG_NormalColorDpqG4 
+ADOJNAM  29-11-95 15:37:08 AddObj3 AddObjDQ3 
+RATAN    29-11-95 15:37:10 ratan2 ratan_tbl 
+PPMFT    29-11-95 15:37:20 pers_map 
+PPM      29-11-95 15:37:54 ScanXY0 
+RMPS_F   29-11-95 15:37:56 RotMeshPrimS_F3 
+RMPS_G   29-11-95 15:37:56 RotMeshPrimS_G3 
+RMPS_FT  29-11-95 15:37:58 RotMeshPrimS_FT3 
+RMPS_GT  29-11-95 15:38:32 RotMeshPrimS_GT3 
+TRR      29-11-95 15:41:10 TransRot_32 TransRotPers TransRotPers3 
+                           ApplyTransposeMatrixLV 
+RMPS_FC  29-11-95 15:38:34 RotMeshPrimS_FC3 
+RMPS_GC  29-11-95 15:38:34 RotMeshPrimS_GC3 
+RMPS_FCT 29-11-95 15:38:34 RotMeshPrimS_FCT3 
+RMPS_GCT 29-11-95 15:39:10 RotMeshPrimS_GCT3 
+RMPS_T   29-11-95 15:39:10 RotMeshPrimS_T3 
+RMPR_F   29-11-95 15:39:12 RotMeshPrimR_F3 
+RMPR_G   29-11-95 15:39:12 RotMeshPrimR_G3 
+RMPR_FT  29-11-95 15:39:50 RotMeshPrimR_FT3 
+RMPR_GT  29-11-95 15:39:50 RotMeshPrimR_GT3 
+RMPR_FC  29-11-95 15:39:52 RotMeshPrimR_FC3 
+RMPR_GC  29-11-95 15:39:52 RotMeshPrimR_GC3 
+RMPR_FCT 29-11-95 15:40:30 RotMeshPrimR_FCT3 
+RMPR_GCT 29-11-95 15:40:30 RotMeshPrimR_GCT3 
+RMPR_T   29-11-95 15:40:30 RotMeshPrimR_T3 
+RMPQ_T   29-11-95 15:40:32 RotMeshPrimQ_T 
+PATCHGTE 29-11-95 15:41:10 _patch_gte 
+PHN      29-11-95 15:41:12 PhongLine 
+
+Name = LIBMATH.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+ADDDF3   07-12-95 14:34:40 __adddf3 
+ADDMANT  07-12-95 14:34:40 _add_mant_d 
+ADDSF3   07-12-95 14:34:42 __addsf3 
+DBSHIFT  07-12-95 14:35:00 _dbl_shift 
+DBSHIFTU 07-12-95 14:35:02 _dbl_shift_us 
+DIVDF3   07-12-95 14:35:02 _comp_mant __divdf3 
+DIVSF3   07-12-95 14:35:04 __divsf3 
+EQDF2    07-12-95 14:35:06 __eqdf2 
+EQSF2    07-12-95 14:35:06 __eqsf2 
+EXTSFDF2 07-12-95 14:35:08 __extendsfdf2 
+FIXDFSI  07-12-95 14:35:10 __fixdfsi 
+FIXSFSI  07-12-95 14:35:10 __fixsfsi 
+FIXUDFSI 07-12-95 14:35:12 __fixunsdfsi 
+FIXUSFSI 07-12-95 14:35:14 __fixunssfsi 
+FLTSIDF  07-12-95 14:35:14 __floatsidf 
+FLTSISF  07-12-95 14:35:16 __floatsisf 
+GEDF2    07-12-95 14:35:18 __gedf2 
+GESF2    07-12-95 14:35:18 __gesf2 
+GTDF2    07-12-95 14:35:20 __gtdf2 
+GTSF2    07-12-95 14:35:22 __gtsf2 
+LEDF2    07-12-95 14:35:22 __ledf2 
+LESF2    07-12-95 14:35:24 __lesf2 
+LTDF2    07-12-95 14:35:24 __ltdf2 
+LTSF2    07-12-95 14:35:26 __ltsf2 
+MAINASU  07-12-95 14:35:28 _mainasu 
+MULDF3   07-12-95 14:35:30 __muldf3 _mul_mant_d 
+MULSF3   07-12-95 14:35:30 __mulsf3 
+NEDF2    07-12-95 14:35:32 __nedf2 
+NEGDF2   07-12-95 14:35:34 __negdf2 
+NEGSF2   07-12-95 14:35:34 __negsf2 
+NESF2    07-12-95 14:35:36 __nesf2 
+SUBDF3   07-12-95 14:35:36 __subdf3 
+SUBSF3   07-12-95 14:35:42 __subsf3 
+ARC      07-12-95 14:35:46 atan acos asin atan2 
+TRUDFSF2 07-12-95 14:35:44 __truncdfsf2 
+EXP      07-12-95 14:35:48 exp 
+FLOOR    07-12-95 14:35:48 floor ceil 
+HYPOT    07-12-95 14:35:50 hypot 
+LDEXP    07-12-95 14:35:52 ldexp frexp 
+LOG      07-12-95 14:35:54 log log10 
+MODF     07-12-95 14:35:54 modf fmod 
+POW      07-12-95 14:35:56 pow 
+SIN      07-12-95 14:35:58 tan cos sin 
+SINH     07-12-95 14:36:00 tanh cosh sinh 
+SQRT     07-12-95 14:36:00 sqrt 
+FERR     07-12-95 14:36:02 math_errno _err_math math_err_point 
+PRINTF2  07-12-95 14:36:04 sprintf2 printf2 
+
+Name = LIBPRESS.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+LIBPRESS 04-12-95 14:32:52 DecDCTGetEnv DecDCTout DecDCTPutEnv 
+                           DecDCToutCallback DecDCTinSync DecDCTBufSize 
+                           DecDCTin DecDCTinCallback DecDCToutSync 
+                           DecDCTReset 
+DECVLC   04-12-95 14:32:54 DecDCTvlc DecDCTvlcSize 
+VLC      04-12-95 14:32:56 MDEC_vlc_brk MDEC_vlc 
+VLC2     04-12-95 14:32:58 dec_used dec_pt ivlc_dct_dc_size dc_y dc_type 
+                           dc_cb MDEC_vlc2 bs_curt dc_cr 
+DVLC     04-12-95 14:33:08 CF_DVLC CF2_DVLC DCC_DVLC DCL_DVLC 
+ENCSPU   04-12-95 14:33:10 EncSPU 
+
+Name = LIBSN.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+OPEN     20-09-95 20:44:22 PCopen 
+CLOSE    20-09-95 20:44:22 PCclose 
+LSEEK    20-09-95 20:44:22 PClseek 
+CREAT    20-09-95 20:44:22 PCcreat 
+SNREAD   20-09-95 20:44:22 _SN_read 
+SNMAIN   20-09-95 20:44:22 __bss __heapsize __SN_ENTRY_POINT __bsslen __data 
+                           __main __text __datalen __textlen 
+                           __do_global_dtors __heapbase 
+FSINIT   20-09-95 20:44:22 PCinit 
+SNWRITE  20-09-95 20:44:22 _SN_write 
+READ     20-09-95 20:44:24 PCread 
+WRITE    20-09-95 20:44:24 PCwrite 
+SNDEF    20-09-95 20:44:24 _stacksize _ramsize 
+PUREV    20-09-95 20:44:24 __pure_virtual 
+CACHE    20-09-95 20:44:24 SNFlushCache 
+_ASHLDI3 20-09-95 20:44:26 __ashldi3 
+_ASHRDI3 20-09-95 20:44:26 __ashrdi3 
+_CMPDI2  20-09-95 20:44:28 __cmpdi2 
+_DIVDI3  20-09-95 20:44:28 __divdi3 
+_EH      20-09-95 20:44:30 __throw_type_match __register_exceptions 
+                           __find_first_exception_table_match 
+_FFSDI2  20-09-95 20:44:30 __ffsdi2 
+_FXDFDI  20-09-95 20:44:32 __fixdfdi 
+_FXSFDI  20-09-95 20:44:32 __fixsfdi 
+_FXTFDI  20-09-95 20:44:34 
+_FXUSDFD 20-09-95 20:44:34 __fixunsdfdi 
+_FIXUSDF 20-09-95 20:44:36 __fixunsdfsi 
+_FXUSSFD 20-09-95 20:44:36 __fixunssfdi 
+_FXUSSFS 20-09-95 20:44:38 __fixunssfsi 
+_FXUSTFD 20-09-95 20:44:38 
+_FXUSXFD 20-09-95 20:44:38 
+_FXUSXFS 20-09-95 20:44:40 
+_FXXFDI  20-09-95 20:44:40 
+_FLTDIDF 20-09-95 20:44:42 __floatdidf 
+_FLTDISF 20-09-95 20:44:42 __floatdisf 
+_FLTDITF 20-09-95 20:44:44 
+_FLTDIXF 20-09-95 20:44:44 
+_LSHLDI3 20-09-95 20:44:46 __lshldi3 
+_LSHRDI3 20-09-95 20:44:46 __lshrdi3 
+_MODDI3  20-09-95 20:44:48 __moddi3 
+_MULDI3  20-09-95 20:44:48 __muldi3 
+_NEGDI2  20-09-95 20:44:50 __negdi2 
+_NEW_HAN 20-09-95 20:44:50 set_new_handler __new_handler 
+                           __default_new_handler 
+_OP_DELE 20-09-95 20:44:50 __builtin_delete 
+_OP_NEW  20-09-95 20:44:52 __builtin_new 
+_OP_VDEL 20-09-95 20:44:52 __builtin_vec_delete 
+_OP_VNEW 20-09-95 20:44:54 __builtin_vec_new 
+_SHTAB   20-09-95 20:44:54 __shtab 
+_TRAMPOL 20-09-95 20:44:56 
+_UCMPDI2 20-09-95 20:44:56 __ucmpdi2 
+_UDIVDI3 20-09-95 20:44:56 __udivdi3 
+_UDIVMOD 20-09-95 20:45:00 __udivmoddi4 
+_UDIV_W_ 20-09-95 20:45:00 __udiv_w_sdiv 
+_UMODDI3 20-09-95 20:45:02 __umoddi3 
+_VARARGS 20-09-95 20:45:02 __builtin_saveregs 
+__GCC_BC 20-09-95 20:45:04 __gcc_bcmp 
+
+Name = LIBSND.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+ADSR     04-12-95 14:33:22 _SsUtBuildADSR _SsUtResolveADSR 
+CRES     04-12-95 14:33:24 _SsSndCrescendo 
+DECRE    04-12-95 14:33:26 _SsSndDecrescendo 
+NEXT     04-12-95 14:33:28 _SsSndNextSep 
+PAUSE    04-12-95 14:33:30 _SsSndPause _SsSndNextPause 
+PLAY     04-12-95 14:33:30 _SsSndPlay 
+REPLAY   04-12-95 14:33:32 _SsSndReplay 
+SCGMVOL  04-12-95 14:33:34 SsGetMVol 
+SCGNCK   04-12-95 14:33:36 SsGetNck 
+SCGRVOL  04-12-95 14:33:36 SsGetRVol 
+SCGSATTR 04-12-95 14:33:38 SsGetSerialAttr 
+SCGSVOL  04-12-95 14:33:40 SsGetSerialVol 
+SCNOFF   04-12-95 14:33:42 SsSetNoiseOff 
+SCNON    04-12-95 14:33:44 SsSetNoiseOn 
+SCSMUTE  04-12-95 14:33:46 SsSetMute 
+SCSMVOL  04-12-95 14:33:46 SsSetMVol 
+SCSNCK   04-12-95 14:33:48 SsSetNck 
+SCSRVOL  04-12-95 14:33:50 SsSetRVol 
+SCSSATTR 04-12-95 14:33:52 SsSetSerialAttr 
+SCSSVOL  04-12-95 14:33:52 SsSetSerialVol 
+SEPINIT  04-12-95 14:33:56 SsSepOpen _SsInitSoundSep 
+SEQINIT  04-12-95 14:33:58 SsSeqOpen _SsInitSoundSeq 
+SEQREAD  04-12-95 14:34:06 _SsContRpn1 _SsContRpn2 _SsSndSetVabAttr 
+                           _SsContDataEntry _SsContPortaTime 
+                           _SsSetProgramChange _SsSetControlChange _SsNoteOn 
+                           _SsReadDeltaValue _SsContNrpn1 _SsContNrpn2 
+                           _SsSetPitchBend _SsGetMetaEvent _SsContResetAll 
+                           _SsContModulation _SsContPortamento _SsSeqPlay 
+                           _SsGetSeqData 
+SESKOFF  04-12-95 14:34:06 SsVoKeyOff 
+SESKON   04-12-95 14:34:10 SsVoKeyOn 
+SSACCELE 04-12-95 14:34:12 SsSepSetAccelerando SsSeqSetAccelerando 
+                           _SsSndSetAccele 
+SSADD    04-12-95 14:34:14 SsSetMarkCallback SsSetLoop SsIsEos SsSetTempo 
+SSCALL   04-12-95 14:34:16 SsSeqCalledTbyT 
+SSCLOSE  04-12-95 14:34:18 _SsClose SsSepClose SsSeqClose 
+SSINIT   04-12-95 14:34:20 SsSetTickMode SsStart2 _snd_openflag SsInit SsQuit 
+                           SsSetTableSize SsInitHot VBLANK_MINUS 
+                           _SsMarkCallback _ss_score _snd_seq_s_max 
+                           _snd_seq_t_max SsStart _snd_ev_flag SsEnd 
+SSNEXT   04-12-95 14:34:22 SsSetNext SsSeqSetNext 
+SSPAUSE  04-12-95 14:34:24 SsSepPause SsSeqPause _SsSndSetPauseMode 
+SSPLAY   04-12-95 14:34:26 SsSepPlay SsSeqPlay Snd_SetPlayMode SsPlayBack 
+SSREPLAY 04-12-95 14:34:26 SsSepReplay SsSeqReplay _SsSndSetReplayMode 
+SSRIT    04-12-95 14:34:28 SsSepSetRitardando SsSeqSetRitardando _SsSndSetRit 
+SSVOL    04-12-95 14:34:30 SsSeqGetVol SsSepSetVol SsSeqSetVol _SsSndSetVol 
+STOP     04-12-95 14:34:34 SsSepStop SsSeqStop _SsSndStop 
+TEMPO    04-12-95 14:34:36 _SsSndTempo 
+VOL      04-12-95 14:34:38 _SsSndSetCres _SsSndSetVolData SsSepSetDecrescendo 
+                           SsSeqSetDecrescendo SsSepSetCrescendo 
+                           SsSeqSetCrescendo _SsSndSetDecres 
+VS_AUTO  04-12-95 14:34:40 SsSetAutoKeyOffMode 
+VS_MONO  04-12-95 14:34:42 SsSetStereo SsSetMono 
+VS_SRV   04-12-95 14:34:44 SsSetReservedVoice 
+VS_VAB   04-12-95 14:34:46 SsVabOpen SsVabClose 
+VS_VFB   04-12-95 14:34:48 SsVabFakeBody 
+VS_VH    04-12-95 14:34:50 SsVabOpenHeadSticky SsVabFakeHead SsVabOpenHead 
+VS_VTB   04-12-95 14:34:52 SsVabTransBody 
+VS_VTBP  04-12-95 14:36:28 SsVabTransBodyPartly 
+VS_VTC   04-12-95 14:36:30 SsVabTransCompleted 
+VM_DOFF  04-12-95 14:36:30 SpuVmDamperOff 
+VM_DON   04-12-95 14:36:32 SpuVmDamperOn 
+VM_G     04-12-95 14:36:34 spuVmMaxVoice _svm_rattr _svm_vcf _svm_vab_used 
+                           _svm_cur _svm_auto_kof_mode _svm_vab_pg 
+                           _svm_vab_vh _svm_damper _svm_vab_tn 
+                           _svm_stereo_mono _svm_vab_total _svm_vab_count 
+                           _svm_vab_start kMaxPrograms _svm_brr_start_addr 
+                           _svm_pg _svm_vg _svm_vh _svm_tn 
+VM_VSU   04-12-95 14:36:36 SpuVmVSetUp 
+VM_DEBUG 04-12-95 14:36:38 SpuVmCheck 
+UT_F     04-12-95 14:36:40 SsUtFlush 
+UT_GPA   04-12-95 14:36:40 SsUtGetProgAtr 
+UT_GVA   04-12-95 14:36:44 SsUtGetVagAtr 
+UT_GVAD  04-12-95 14:36:48 SsUtGetVagAddr 
+UT_GVAFT 04-12-95 14:36:50 SsUtGetVagAddrFromTone 
+UT_GVBA  04-12-95 14:36:52 SsUtGetVBaddrInSB 
+UT_GVH   04-12-95 14:36:54 SsUtGetVabHdr 
+UT_REV   04-12-95 14:36:56 SsUtReverbOff SsUtSetReverbDelay 
+                           SsUtSetReverbDepth SsUtSetReverbFeedback 
+                           SsUtReverbOn SsUtGetReverbType SsUtSetReverbType 
+UT_SPA   04-12-95 14:36:58 SsUtSetProgAtr 
+UT_SVA   04-12-95 14:37:00 SsUtSetVagAtr 
+UT_SVH   04-12-95 14:37:02 SsUtSetVabHdr 
+VMANAGER 04-12-95 14:37:18 SsUtPitchBend _svm_orev1 _svm_orev2 SpuVmNoiseOff 
+                           SsUtVibrateOn SsUtKeyOffV SsUtGetVVol SpuVmKeyOff 
+                           SsUtSetVVol SsUtAutoPan SsUtGetDetVVol SpuVmSetVol 
+                           SsUtAutoVol SsUtSetDetVVol SpuVmSeqKeyOff 
+                           SpuVmPitchBend SpuVmGetSeqVol SsUtKeyOn 
+                           SsUtVibrateOff SpuVmSetSeqVol SpuVmPBVoice 
+                           SpuVmInit SpuVmSeKeyOn SpuVmNoiseOn 
+                           SpuVmGetSeqLVol KeyOnCheck SpuVmGetSeqRVol 
+                           SsUtKeyOnV SsUtChangePitch SpuVmGetProgPan 
+                           SsUtKeyOff SpuVmNoiseOnWithAdsr SpuVmSetProgPan 
+                           SpuVmKeyOn SpuVmGetProgVol SsUtAllKeyOff 
+                           SpuVmSetProgVol _svm_okof1 _svm_okof2 
+                           SpuVmSeKeyOff _svm_okon1 _svm_okon2 SpuVmFlush 
+                           SsUtChangeADSR 
+
+Name = LIBSPU.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+SPU      04-12-95 14:38:06 _spu_FsetRXXa _spu_IRQCallback _spu_RXX 
+                           _spu_inTransfer _spu_addrMode _spu_reset 
+                           _spu_write _spu_mem_mode _spu_tsa 
+                           _spu_mem_mode_unit _spu_mem_mode_plus 
+                           _spu_transferCallback _spu_t _spu_FiDMA 
+                           _spu_FsetRXX _spu_read _spu_transMode 
+                           _spu_mem_mode_unitM _spu_init _spu_r_ 
+                           _spu_FgetRXXa 
+SPU_IO   04-12-95 14:38:08 _spu_ioctl 
+S_CB     04-12-95 14:38:10 _SpuCallback 
+S_DCB    04-12-95 14:38:10 _SpuDataCallback 
+S_INI    04-12-95 14:38:12 _spu_zerobuf _spu_keystat _SpuInit _spu_isCalled 
+                           _spu_trans_mode SpuStart _spu_rev_flag 
+                           _spu_rev_attr _spu_voice_centerNote _spu_fd 
+                           _spu_EVdma _spu_rev_offsetaddr _spu_rev_reserve_wa 
+S_I      04-12-95 14:38:14 SpuInit 
+S_Q      04-12-95 14:38:16 SpuQuit 
+S_IH     04-12-95 14:38:16 SpuInitHot 
+S_SM     04-12-95 14:38:18 SpuSetMute 
+S_GM     04-12-95 14:38:20 SpuGetMute 
+S_M      04-12-95 14:38:20 _spu_AllocBlockNum _spu_AllocLastNum _spu_memList 
+S_M_INT  04-12-95 14:38:22 _spu_gcSPU 
+S_M_UTIL 04-12-95 14:38:24 _SpuIsInAllocateArea_ _SpuIsInAllocateArea 
+S_M_INIT 04-12-95 14:38:26 SpuInitMalloc 
+S_M_M    04-12-95 14:38:30 SpuMalloc 
+S_M_WSA  04-12-95 14:38:32 SpuMallocWithStartAddr 
+S_M_F    04-12-95 14:38:34 SpuFree 
+S_M_X    04-12-95 14:38:36 _spu_print 
+S_GAV    04-12-95 14:38:38 _SpuGetAnyVoice 
+S_SAV    04-12-95 14:38:38 _SpuSetAnyVoice 
+S_SNV    04-12-95 14:38:40 SpuSetNoiseVoice 
+S_GNV    04-12-95 14:38:42 SpuGetNoiseVoice 
+S_SNC    04-12-95 14:38:44 SpuSetNoiseClock 
+S_GNC    04-12-95 14:38:44 SpuGetNoiseClock 
+S_SR     04-12-95 14:38:46 SpuSetReverb 
+S_GR     04-12-95 14:38:48 SpuGetReverb 
+S_RMP    04-12-95 14:38:48 _spu_rev_startaddr _spu_rev_param 
+                           _spu_rev_workareasize 
+S_SRMP   04-12-95 14:38:56 SpuSetReverbModeParam 
+S_GRMP   04-12-95 14:38:56 SpuGetReverbModeParam 
+S_RRWA   04-12-95 14:38:58 SpuReserveReverbWorkArea 
+S_IRWAR  04-12-95 14:39:00 SpuIsReverbWorkAreaReserved 
+S_SRD    04-12-95 14:39:02 SpuSetReverbDepth 
+S_SRV    04-12-95 14:39:02 SpuSetReverbVoice 
+S_GRV    04-12-95 14:39:04 SpuGetReverbVoice 
+S_CRWA   04-12-95 14:39:06 SpuClearReverbWorkArea 
+S_RDD    04-12-95 14:39:08 SpuReadDecodedData 
+S_SI     04-12-95 14:39:08 SpuSetIRQ 
+S_GI     04-12-95 14:39:10 SpuGetIRQ 
+S_SIA    04-12-95 14:39:12 SpuSetIRQAddr 
+S_GIA    04-12-95 14:39:12 SpuGetIRQAddr 
+S_SIC    04-12-95 14:39:18 SpuSetIRQCallback 
+S_SK     04-12-95 14:39:20 SpuSetKey 
+S_SKOWA  04-12-95 14:39:20 SpuSetKeyOnWithAttr 
+S_SVA    04-12-95 14:39:24 _SpuSetVoiceAttr SpuSetVoiceAttr 
+S_GVA    04-12-95 14:39:26 SpuGetVoiceAttr 
+S_GKS    04-12-95 14:39:28 SpuGetKeyStatus 
+S_GCE    04-12-95 14:39:30 SpuGetCurrentEnvelope 
+S_R      04-12-95 14:39:32 SpuRead 
+S_W      04-12-95 14:39:32 SpuWrite 
+S_W0     04-12-95 14:39:34 SpuWrite0 
+S_STSA   04-12-95 14:39:36 SpuSetTransferStartAddr 
+S_GTSA   04-12-95 14:39:38 SpuGetTransferStartAddr 
+S_STM    04-12-95 14:39:38 SpuSetTransferMode 
+S_GTM    04-12-95 14:39:44 SpuGetTransferMode 
+S_WP     04-12-95 14:39:46 SpuWritePartly 
+S_ITC    04-12-95 14:39:48 SpuIsTransferCompleted 
+S_STC    04-12-95 14:39:50 SpuSetTransferCallback 
+S_IT     04-12-95 14:39:50 _spu_getInTransfer _spu_setInTransfer 
+S_SPLV   04-12-95 14:39:52 SpuSetPitchLFOVoice 
+S_GPLV   04-12-95 14:39:54 SpuGetPitchLFOVoice 
+S_SCA    04-12-95 14:39:56 SpuSetCommonAttr SpuCommonError 
+S_GCA    04-12-95 14:39:58 SpuGetCommonAttr 
+S_N2P    04-12-95 14:40:00 _spu_note2pitch _spu_pitch2note 
+SR_GAKS  04-12-95 14:40:02 SpuGetAllKeysStatus SpuRGetAllKeysStatus 
+SR_SVA   04-12-95 14:40:04 SpuRSetVoiceAttr 
+ST       04-12-95 14:40:08 SpuStTransfer SpuStInit SpuStGetVoiceStatus 
+                           SpuStQuit SpuStGetStatus 
+                           SpuStSetTransferFinishedCallback 
+                           SpuStSetStreamFinishedCallback 
+                           SpuStSetPreparationFinishedCallback 
+VERSION  04-12-95 14:40:14 
+
+Name = LIBSTR.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+
+Name = LIBSTR24.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+
+Name = LIBTAP.LIB 
+
+PsyLib version 2.01
+
+Module     Date     Time   Externals defined
+
+TAP      04-12-95 14:41:56 InitPAD StopPAD name StartPAD SysClearPAD 
+

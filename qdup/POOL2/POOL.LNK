@@ -1,0 +1,74 @@
+	org	$80010000
+
+text	group
+bss	group	bss
+
+
+	;;;;; Library files
+	inclib "e:\lib\libmath.lib"
+	inclib "e:\lib\libgpu.lib"
+	inclib "e:\lib\libapi.lib"
+	inclib "e:\lib\libsn.lib"
+	inclib "e:\lib\libc.lib"
+	inclib "e:\lib\libc2.lib"
+	inclib "e:\lib\libcard.lib"
+	inclib "e:\lib\libcd.lib"
+	inclib "e:\lib\libcomb.lib"
+	inclib "e:\lib\libetc.lib"
+	inclib "e:\lib\libgs.lib"
+	inclib "e:\lib\libgte.lib"
+	inclib "e:\lib\libpress.lib"
+	inclib "e:\lib\libsnd.lib"
+	inclib "e:\lib\libspu.lib"
+	inclib "e:\lib\libspu.lib"
+	inclib "e:\lib\libtap.lib"
+
+
+	;;;;; Object files
+
+	include	"menu.obj"	
+	include	"common.obj"	
+	include	"psx.obj"	
+
+	include	"engine.obj"	
+	include	"ball.obj"	
+	include	"gfx.obj"	
+	include	"file_io.obj"
+
+	include	"stv3d.obj"	
+	include	"pool.obj"	
+	include	"gametype.obj"	
+
+	include "e:\lib\vsdie.obj"
+	include "e:\lib\vsex.obj"
+
+	include	"code.obj"	
+	include	"escher.obj"	
+	include	"game.obj"	
+	include	"my3ds.obj"	
+	include	"rules.obj"	
+	include	"models.obj"	
+	include	"ai.obj"	
+	include	"scrdrws.obj"	
+	include	"ram.obj"	
+	include	"pad.obj"	
+	include	"sounds.obj"	
+	include	"link.obj"	
+	include	"resource.obj"	
+
+	include	"sgl.obj"	
+
+	section	.rdata,text  
+	section	.text,text   
+	section	.data,text   
+	section	.sdata,text  
+
+	section	.sbss,bss	; The bss sections
+	section	.bss,bss
+
+
+	regs	pc=__SN_ENTRY_POINT
+
+
+
+

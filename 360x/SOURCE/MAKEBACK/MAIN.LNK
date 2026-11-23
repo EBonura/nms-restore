@@ -1,0 +1,40 @@
+FILE	window.obj
+FILE	flc.obj
+FILE	_flc.obj
+FILE	heap.obj
+FILE	panels.obj
+FILE	path.obj
+FILE	glow.obj
+FILE	globe.obj
+FILE	mission.obj
+FILE	flood.obj
+FILE	poly.obj
+FILE	select.obj
+FILE	process.obj
+FILE	cd_code.obj
+FILE	level.obj
+FILE	attribs.obj
+FILE	menu.obj
+FILE	ints.obj
+FILE	line.obj
+FILE	fire.obj
+FILE	particle.obj
+FILE	scroll.obj
+FILE	sprtlist.obj
+FILE	sprite.obj
+FILE	vesa.obj
+FILE	svga.obj
+FILE	hardware.obj
+FILE	lbm.obj
+FILE	main.obj
+FILE	code.obj
+FILE	camera.obj
+FILE	polyfill.obj
+FILE	dllload.obj
+FILE	miles.obj
+DEBUG ALL
+OPTION  STACK=16384
+NAME	main.exe
+
+
+

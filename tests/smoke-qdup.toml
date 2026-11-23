@@ -1,0 +1,102 @@
+# Cross-emulator smoke (psoxide-test [cross]) for QD Up, on the game's variables (qdup.map): the option screen
+# is up (cursor 4, START), Start, Up moves the cursor (input taken in a menu), Down moves it back, Cross opens
+# the view choice screen and Cross again confirms 3D, and the game runs (cue_angle is set once the table has
+# loaded). The screens before the cursor moves publish no word, so those presses wait for the game's own
+# vblank counter (__psx_rt_vblank_count) to reach a value: the route of tests/gameplay/qdup.sh.
+name = "qdup-smoke"
+title = "QD Up smoke: option screen, cursor moves, START, game running"
+disc = "build/qdup-cd/qdup.cue"
+symbols = "build/qdup-cd/qdup.map"
+pad = "digital"
+
+[[step]]
+label = "the option screen is up with START under the cursor"
+wait_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 4 }
+timeout = 2500
+
+[[step]]
+checkpoint = "options"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "cursor"
+size = 4
+op = "eq"
+value = 4
+[[step.assert]]
+kind = "ram"
+sym = "cue_angle"
+size = 4
+op = "eq"
+value = 0
+
+[[step]]
+label = "Start (the game clock reaches 1000: the screens publish no word of their own)"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1000 }
+timeout = 4000
+
+[[step]]
+label = "Start leaves the title for the option screen"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1010 }
+timeout = 300
+
+[[step]]
+label = "Up"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1140 }
+timeout = 4000
+
+[[step]]
+label = "Up moves the cursor"
+press = ["up"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 3 }
+timeout = 600
+
+[[step]]
+label = "Down"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1450 }
+timeout = 4000
+
+[[step]]
+label = "Down moves it back to START"
+press = ["down"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 4 }
+timeout = 600
+
+[[step]]
+label = "Cross on START opens the view choice screen"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1750 }
+timeout = 4000
+
+[[step]]
+label = "Cross on START"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1760 }
+timeout = 300
+
+[[step]]
+label = "Cross confirms the first entry, 3D"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1950 }
+timeout = 4000
+
+[[step]]
+label = "Cross confirms 3D"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "cue_angle", size = 4, op = "ne", value = 0 }
+timeout = 2500
+
+[[step]]
+checkpoint = "game"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "cue_angle"
+size = 4
+op = "ne"
+value = 0
+[[step.assert]]
+kind = "ram"
+sym = "view_3d"
+size = 4
+op = "eq"
+value = 1

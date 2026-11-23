@@ -1,0 +1,2118 @@
+enum {
+	ai_null=0,		// (0)
+	ai_tele2=1,		// (1)
+	ai_tele1=44,		// (8)
+	ai_formation=80,		// (14)
+	ai_circle=239,		// (23)
+	ai_plunger=405,		// (36)
+	ai_plunger_dies=421,		// (38)
+	ai_playback=428,		// (39)
+	ai_die_spit=430,		// (40)
+	ai_mrspit=438,		// (41)
+	ai_msspit=450,		// (43)
+	ai_mrdrop=463,		// (45)
+	ai_msdrop=477,		// (46)
+	ai_new_man=530,		// (49)
+	ai_surface_hug=672,		// (60)
+	ai_lazer=785,		// (69)
+	ai_lazer_hit=875,		// (75)
+	ai_shite_lazer=885,		// (76)
+	ai_soft_rock=986,		// (81)
+	ai_rock_flash=989,		// (82)
+	ai_bugger=1034,		// (85)
+	ai_lem=1223,		// (93)
+	ai_flock=1459,		// (112)
+	ai_sperm=1645,		// (120)
+	ai_spermicide=1827,		// (128)
+	ai_tonsl1=1832,		// (129)
+	play_death_frames=1838,		// (130)
+	ai_flea=1841,		// (131)
+	throw_particles=1939,		// (135)
+	ai_polo=1992,		// (137)
+	ai_dissolve=2040,		// (141)
+	ai_path=2074,		// (143)
+	ai_test=2129,		// (146)
+	ai_floppy=2185,		// (151)
+	ai_floppy_sparks=2190,		// (152)
+	ai_flop_exp=2198,		// (153)
+	ai_pod=2203,		// (154)
+	ai_starfsh=2289,		// (162)
+	ai_spiral=2329,		// (167)
+	ai_swarm=2401,		// (170)
+	ai_tad_anim=2516,		// (178)
+	ai_tad_cycle=2561,		// (182)
+	ai_tad=2577,		// (184)
+	ai_tad_hit=2758,		// (191)
+	ai_star=2764,		// (193)
+	ai_none=2780,		// (195)
+	ai_flash=2781,		// (196)
+	ai_cycle=2791,		// (199)
+	ai_pingpong=2795,		// (202)
+	ai_explode=2799,		// (205)
+	ai_death=2807,		// (206)
+	ai_remove=2809,		// (207)
+	ai_test_ref=2811,		// (208)
+	ai_crystal=2865,		// (211)
+	ai_stream_crystal=2899,		// (214)
+	ai_blow_crystal=2978,		// (218)
+	ai_wind_tunnel=3046,		// (221)
+	ai_asteroid3=3138,		// (225)
+	ai_asteroid2=3142,		// (226)
+	ai_asteroid=3146,		// (227)
+	ai_asteroid_break=3251,		// (232)
+	ai_asteroid_break2=3257,		// (233)
+	ai_asteroid_break3=3263,		// (234)
+	ai_bug=3285,		// (237)
+	ai_cycle_man=3330,		// (242)
+	ai_survrs_die=3342,		// (244)
+	ai_blow=3412,		// (247)
+	ai_survrs=3418,		// (248)
+	ai_starfish_die=3679,		// (266)
+	ai_starfish=3685,		// (267)
+	ai_mussel_die=3691,		// (269)
+	ai_mussel=3703,		// (270)
+	ai_tentacle=3708,		// (271)
+	ai_tentacle_hit=3725,		// (273)
+};
+long ai_data[]={
+                                        // (   0) declare:	obj_x
+                                        // (   0) declare:	obj_y
+                                        // (   0) declare:	obj_temp1
+                                        // (   0) declare:	obj_temp2
+                                        // (   0) declare:	obj_temp3
+                                        // (   0) declare:	obj_temp4
+                                        // (   0) declare:	obj_temp5
+                                        // (   0) declare:	obj_temp6
+                                        // (   0) declare:	obj_temp7
+                                        // (   0) declare:	obj_temp8
+                                        // (   0) declare:	obj_temp9
+                                        // (   0) declare:	obj_temp10
+                                        // (   0) declare:	obj_temp11
+                                        // (   0) declare:	obj_temp12
+                                        // (   0) declare:	obj_temp13
+                                        // (   0) declare:	obj_temp14
+                                        // (   0) declare:	obj_temp15
+                                        // (   0) declare:	obj_temp16
+                                        // (   0) declare:	obj_children
+                                        // (   0) declare:	obj_angle
+                                        // (   0) declare:	obj_angle2
+                                        // (   0) name:	ai_null
+  COMMAND_WAIT,                         // (   0) 	wait
+                                        // (   1) name:	ai_tele2
+  COMMAND_THREAD,2791,                  // (   1) 	thread		ai_cycle
+                                        // (   3) @wait
+  COMMAND_STOP,                         // (   3) 	stop
+  COMMAND_INRANGE,16*16,9,              // (   4) 	inrange		16*16,@next_lev
+  COMMAND_JMP,3,                        // (   7) 	jmp		@wait
+                                        // (   9) @next_lev
+  COMMAND_GET_LEVEL,obj_temp1,          // (   9) 	get_level	obj_temp1
+  COMMAND_IFEQI,0,obj_temp1,41,         // (  11) 	ifeqi		0,obj_temp1,@goto_level6
+  COMMAND_IFEQI,1,obj_temp1,32,         // (  15) 	ifeqi		1,obj_temp1,@goto_level1
+  COMMAND_IFEQI,2,obj_temp1,35,         // (  19) 	ifeqi		2,obj_temp1,@goto_level4
+  COMMAND_IFEQI,3,obj_temp1,38,         // (  23) 	ifeqi		3,obj_temp1,@goto_level5
+  COMMAND_IFEQI,4,obj_temp1,41,         // (  27) 	ifeqi		4,obj_temp1,@goto_level6
+  COMMAND_WAIT,                         // (  31) 	wait
+                                        // (  32) @goto_level1
+  COMMAND_SET_LEVEL,0,                  // (  32) 	set_level	0
+  COMMAND_WAIT,                         // (  34) 	wait
+                                        // (  35) @goto_level4
+  COMMAND_SET_LEVEL,3,                  // (  35) 	set_level	3
+  COMMAND_WAIT,                         // (  37) 	wait
+                                        // (  38) @goto_level5
+  COMMAND_SET_LEVEL,4,                  // (  38) 	set_level	4
+  COMMAND_WAIT,                         // (  40) 	wait
+                                        // (  41) @goto_level6
+  COMMAND_SET_LEVEL,5,                  // (  41) 	set_level	5
+  COMMAND_WAIT,                         // (  43) 	wait
+                                        // (  44) name:	ai_tele1
+  COMMAND_THREAD,2791,                  // (  44) 	thread		ai_cycle
+                                        // (  46) @wait
+  COMMAND_STOP,                         // (  46) 	stop
+  COMMAND_INRANGE,16*16,52,             // (  47) 	inrange		16*16,@next_lev
+  COMMAND_JMP,46,                       // (  50) 	jmp		@wait
+                                        // (  52) @next_lev
+  COMMAND_GET_LEVEL,obj_temp1,          // (  52) 	get_level	obj_temp1
+  COMMAND_IFEQI,0,obj_temp1,74,         // (  54) 	ifeqi		0,obj_temp1,@goto_level2
+  COMMAND_IFEQI,1,obj_temp1,77,         // (  58) 	ifeqi		1,obj_temp1,@goto_level3
+  COMMAND_IFEQI,3,obj_temp1,77,         // (  62) 	ifeqi		3,obj_temp1,@goto_level3
+  COMMAND_IFEQI,5,obj_temp1,71,         // (  66) 	ifeqi		5,obj_temp1,@goto_level1
+  COMMAND_WAIT,                         // (  70) 	wait
+                                        // (  71) @goto_level1
+  COMMAND_SET_LEVEL,0,                  // (  71) 	set_level	0
+  COMMAND_WAIT,                         // (  73) 	wait
+                                        // (  74) @goto_level2
+  COMMAND_SET_LEVEL,1,                  // (  74) 	set_level	1
+  COMMAND_WAIT,                         // (  76) 	wait
+                                        // (  77) @goto_level3
+  COMMAND_SET_LEVEL,2,                  // (  77) 	set_level	2
+  COMMAND_WAIT,                         // (  79) 	wait
+                                        // (  80) equate:	member_x	obj_temp1
+                                        // (  80) equate:	member_y	obj_temp2
+                                        // (  80) equate: member_vel	obj_temp3
+                                        // (  80) equate: member_dist	obj_temp4
+                                        // (  80) equate: member_best	obj_temp5
+                                        // (  80) equate: member_id	obj_temp6
+                                        // (  80) equate: member_temp1	obj_temp7
+                                        // (  80) equate: member_temp2	obj_temp8
+                                        // (  80) equate: member_turn	obj_temp9
+                                        // (  80) equate: member_command	obj_temp10
+                                        // (  80) equate: member_param	obj_temp11
+                                        // (  80) equate: member_recieved	obj_temp12
+                                        // (  80) equate: TURN_ALL	666
+                                        // (  80) equate:	ORDER_0		0
+                                        // (  80) equate:	ORDER_1		1
+                                        // (  80) equate:	ORDER_2		2
+                                        // (  80) equate:	ORDER_3		3
+                                        // (  80) name:	ai_formation
+  COMMAND_MOVEI,0,obj_angle,            // (  80) 	movei		0,obj_angle
+  COMMAND_MOVEI,0,obj_temp9,            // (  83) 	movei		0,member_turn
+                                        // (  86) @next_add
+  COMMAND_MOVEV,obj_x,obj_temp1,        // (  86) 	movev		obj_x,member_x
+  COMMAND_MOVEV,obj_y,obj_temp2,        // (  89) 	movev		obj_y,member_y
+  COMMAND_ADD_LINE,obj_temp1,obj_temp2,obj_temp5,// (  92) 	add_line	member_x,member_y,member_best
+  COMMAND_STOP,                         // (  96) 	stop
+  COMMAND_ADD_LINE,obj_temp1,obj_temp2,obj_temp5,// (  97) 	add_line	member_x,member_y,member_best
+  COMMAND_STOP,                         // ( 101) 	stop
+  COMMAND_ADDI,1,obj_temp9,             // ( 102) 	addi		1,member_turn
+  COMMAND_ADDI,128,obj_angle,           // ( 105) 	addi		128,obj_angle
+  COMMAND_IFLTI,1024,obj_angle,86,      // ( 108) 	iflti		1024,obj_angle,@next_add
+  COMMAND_MOVEV,obj_x,obj_temp1,        // ( 112) 	movev		obj_x,member_x
+  COMMAND_MOVEV,obj_y,obj_temp2,        // ( 115) 	movev		obj_y,member_y
+                                        // ( 118) @through_wall
+  COMMAND_STOP,                         // ( 118) 	stop
+  COMMAND_ADDI,1,obj_temp2,             // ( 119) 	addi		1,member_y
+  COMMAND_POINT_COLLISION,obj_temp1,obj_temp2,118,// ( 122) 	point_collision	member_x,member_y,@through_wall
+                                        // ( 126) @to_bottom
+  COMMAND_STOP,                         // ( 126) 	stop
+  COMMAND_ADDI,1,obj_temp2,             // ( 127) 	addi		1,member_y
+  COMMAND_POINT_COLLISION,obj_temp1,obj_temp2,136,// ( 130) 	point_collision	member_x,member_y,@at_bottom
+  COMMAND_JMP,126,                      // ( 134) 	jmp		@to_bottom
+                                        // ( 136) @at_bottom
+  COMMAND_SUBV,obj_y,obj_temp2,         // ( 136) 	subv		obj_y,member_y
+  COMMAND_SHR,1,obj_temp2,obj_temp2,    // ( 139) 	shr		1,member_y,member_y
+  COMMAND_ADDV,obj_y,obj_temp2,         // ( 143) 	addv		obj_y,member_y
+                                        // ( 146) @to_middle
+  COMMAND_STOP,                         // ( 146) 	stop
+  COMMAND_IFEQV,obj_y,obj_temp2,156,    // ( 147) 	ifeqv		obj_y,member_y,@in_middle
+  COMMAND_ADDI,1,obj_y,                 // ( 151) 	addi		1,obj_y
+  COMMAND_JMP,146,                      // ( 154) 	jmp		@to_middle
+                                        // ( 156) @in_middle
+  COMMAND_MOVEV,obj_temp9,obj_temp7,    // ( 156) 	movev		member_turn,member_temp1
+                                        // ( 159) @again
+  COMMAND_MOVEI,0,obj_temp10,           // ( 159) 	movei		ORDER_0,member_command
+  COMMAND_MOVEI,0,obj_temp9,            // ( 162) 	movei		0,member_turn
+  COMMAND_MOVEI,80,obj_temp3,           // ( 165) 	movei		80,member_vel
+                                        // ( 168) @next_up
+  COMMAND_STOP,                         // ( 168) 	stop
+  COMMAND_MOVEI,20,obj_temp8,           // ( 169) 	movei		20,member_temp2
+  COMMAND_PAUSE,obj_temp8,              // ( 172) 	pause		member_temp2
+  COMMAND_ADDI,1,obj_temp9,             // ( 174) 	addi		1,member_turn
+  COMMAND_IFLTV,obj_temp7,obj_temp9,168,// ( 177) 	ifltv		member_temp1,member_turn,@next_up
+  COMMAND_MOVEI,180,obj_temp8,          // ( 181) 	movei		180,member_temp2
+  COMMAND_PAUSE,obj_temp8,              // ( 184) 	pause		member_temp2
+  COMMAND_MOVEI,1,obj_temp10,           // ( 186) 	movei		ORDER_1,member_command
+  COMMAND_MOVEI,32,obj_temp11,          // ( 189) 	movei		32,member_param
+  COMMAND_MOVEI,666,obj_temp9,          // ( 192) 	movei		TURN_ALL,member_turn
+  COMMAND_MOVEI,180,obj_temp8,          // ( 195) 	movei		180,member_temp2
+  COMMAND_PAUSE,obj_temp8,              // ( 198) 	pause		member_temp2
+  COMMAND_MOVEI,0,obj_temp10,           // ( 200) 	movei		ORDER_0,member_command
+  COMMAND_MOVEI,48,obj_temp3,           // ( 203) 	movei		48,member_vel
+  COMMAND_MOVEI,666,obj_temp9,          // ( 206) 	movei		TURN_ALL,member_turn
+  COMMAND_MOVEI,180,obj_temp8,          // ( 209) 	movei		180,member_temp2
+  COMMAND_PAUSE,obj_temp8,              // ( 212) 	pause		member_temp2
+  COMMAND_MOVEI,2,obj_temp10,           // ( 214) 	movei		ORDER_2,member_command
+  COMMAND_MOVEI,64,obj_temp11,          // ( 217) 	movei		64,member_param
+  COMMAND_MOVEI,666,obj_temp9,          // ( 220) 	movei		TURN_ALL,member_turn
+  COMMAND_MOVEI,64,obj_temp8,           // ( 223) 	movei		64,member_temp2
+  COMMAND_PAUSE,obj_temp8,              // ( 226) 	pause		member_temp2
+  COMMAND_MOVEI,666-1,obj_temp9,        // ( 228) 	movei		TURN_ALL-1,member_turn
+  COMMAND_MOVEI,200,obj_temp8,          // ( 231) 	movei		200,member_temp2
+  COMMAND_PAUSE,obj_temp8,              // ( 234) 	pause		member_temp2
+  COMMAND_JMP,159,                      // ( 236) 	jmp		@again
+  COMMAND_WAIT,                         // ( 238) 	wait
+                                        // ( 239) name:	ai_circle
+  COMMAND_THREAD,2791,                  // ( 239) 	thread		ai_cycle
+  COMMAND_MOVEI,666,obj_temp4,          // ( 241) 	movei		666,member_dist
+  COMMAND_GET_PARENTV,obj_temp9,        // ( 244) 	get_parentv	member_turn
+  COMMAND_GET_PARENTV,obj_angle,        // ( 246) 	get_parentv	obj_angle
+  COMMAND_MOVEI,0,obj_temp3,            // ( 248) 	movei		0,member_vel
+                                        // ( 251) @wait_for_command
+  COMMAND_STOP,                         // ( 251) 	stop
+  COMMAND_GET_PARENT_ID,obj_temp6,      // ( 252) 	get_parent_id	member_id
+  COMMAND_GET_IDS_VAR,obj_temp6,obj_temp9,obj_temp7,// ( 254) 	get_ids_var	member_id,member_turn,member_temp1
+  COMMAND_IFEQI,666,obj_temp7,266,      // ( 258) 	ifeqi		TURN_ALL,member_temp1,@turn
+  COMMAND_IFNEV,obj_temp7,obj_temp9,251,// ( 262) 	ifnev		member_temp1,member_turn,@wait_for_command
+                                        // ( 266) @turn
+  COMMAND_GET_IDS_VAR,obj_temp6,obj_temp10,obj_temp10,// ( 266) 	get_ids_var	member_id,member_command,member_command
+  COMMAND_IFEQI,0,obj_temp10,362,       // ( 270) 	ifeqi		ORDER_0,member_command,@process_0
+  COMMAND_IFEQI,1,obj_temp10,325,       // ( 274) 	ifeqi		ORDER_1,member_command,@process_1
+  COMMAND_IFEQI,2,obj_temp10,288,       // ( 278) 	ifeqi		ORDER_2,member_command,@process_2
+  COMMAND_IFEQI,3,obj_temp10,288,       // ( 282) 	ifeqi		ORDER_3,member_command,@process_3
+  COMMAND_JMP,251,                      // ( 286) 	jmp		@wait_for_command
+                                        // ( 288) @process_3
+                                        // ( 288) @process_2
+  COMMAND_GET_PARENTV,obj_temp11,       // ( 288) 	get_parentv	member_param
+                                        // ( 290) @next2
+  COMMAND_STOP,                         // ( 290) 	stop
+  COMMAND_ADDI,1,obj_angle2,            // ( 291) 	addi		1,obj_angle2
+  COMMAND_IFLTI,1024,obj_angle2,301,    // ( 294) 	iflti		1024,obj_angle2,@ok2
+  COMMAND_SUBI,1024,obj_angle2,         // ( 298) 	subi		1024,obj_angle2
+                                        // ( 301) @ok2
+  COMMAND_GET_PARENTV,obj_x,            // ( 301) 	get_parentv	obj_x
+  COMMAND_GET_PARENTV,obj_y,            // ( 303) 	get_parentv	obj_y
+  COMMAND_SET_VEL,obj_temp3,obj_temp1,obj_temp2,// ( 305) 	set_vel		member_vel,member_x,member_y
+  COMMAND_ADDV,obj_temp1,obj_x,         // ( 309) 	addv		member_x,obj_x
+  COMMAND_ADDV,obj_temp2,obj_y,         // ( 312) 	addv		member_y,obj_y
+  COMMAND_UPDATE_XY,                    // ( 315) 	update_xy
+  COMMAND_SUBI,1,obj_temp11,            // ( 316) 	subi		1,member_param
+  COMMAND_IFNEI,0,obj_temp11,290,       // ( 319) 	ifnei		0,member_param,@next2
+  COMMAND_JMP,251,                      // ( 323) 	jmp		@wait_for_command
+                                        // ( 325) @process_1
+  COMMAND_GET_PARENTV,obj_temp11,       // ( 325) 	get_parentv	member_param
+                                        // ( 327) @next1
+  COMMAND_STOP,                         // ( 327) 	stop
+  COMMAND_ADDI,1,obj_angle,             // ( 328) 	addi		1,obj_angle
+  COMMAND_IFLTI,1024,obj_angle,338,     // ( 331) 	iflti		1024,obj_angle,@ok
+  COMMAND_SUBI,1024,obj_angle,          // ( 335) 	subi		1024,obj_angle
+                                        // ( 338) @ok
+  COMMAND_GET_PARENTV,obj_x,            // ( 338) 	get_parentv	obj_x
+  COMMAND_GET_PARENTV,obj_y,            // ( 340) 	get_parentv	obj_y
+  COMMAND_SET_VEL,obj_temp3,obj_temp1,obj_temp2,// ( 342) 	set_vel		member_vel,member_x,member_y
+  COMMAND_ADDV,obj_temp1,obj_x,         // ( 346) 	addv		member_x,obj_x
+  COMMAND_ADDV,obj_temp2,obj_y,         // ( 349) 	addv		member_y,obj_y
+  COMMAND_UPDATE_XY,                    // ( 352) 	update_xy
+  COMMAND_SUBI,1,obj_temp11,            // ( 353) 	subi		1,member_param
+  COMMAND_IFNEI,0,obj_temp11,327,       // ( 356) 	ifnei		0,member_param,@next1
+  COMMAND_JMP,251,                      // ( 360) 	jmp		@wait_for_command
+                                        // ( 362) @process_0
+  COMMAND_GET_IDS_VAR,obj_temp6,obj_temp3,obj_temp7,// ( 362) 	get_ids_var	member_id,member_vel,member_temp1
+  COMMAND_IFEQV,obj_temp7,obj_temp3,251,// ( 366)      	ifeqv		member_temp1,member_vel,@wait_for_command
+  COMMAND_MOVEI,1,obj_temp8,            // ( 370) 	movei		1,member_temp2
+  COMMAND_IFLTV,obj_temp7,obj_temp3,380,// ( 373) 	ifltv		member_temp1,member_vel,@bigger
+  COMMAND_MOVEI,-1,obj_temp8,           // ( 377) 	movei		-1,member_temp2
+                                        // ( 380) @bigger
+                                        // ( 380) @next
+  COMMAND_STOP,                         // ( 380) 	stop
+  COMMAND_GET_PARENTV,obj_x,            // ( 381) 	get_parentv	obj_x	
+  COMMAND_GET_PARENTV,obj_y,            // ( 383) 	get_parentv	obj_y
+  COMMAND_SET_VEL,obj_temp3,obj_temp1,obj_temp2,// ( 385) 	set_vel		member_vel,member_x,member_y
+  COMMAND_ADDV,obj_temp1,obj_x,         // ( 389) 	addv		member_x,obj_x
+  COMMAND_ADDV,obj_temp2,obj_y,         // ( 392) 	addv		member_y,obj_y
+  COMMAND_UPDATE_XY,                    // ( 395) 	update_xy
+  COMMAND_ADDV,obj_temp8,obj_temp3,     // ( 396) 	addv		member_temp2,member_vel
+  COMMAND_IFNEV,obj_temp7,obj_temp3,380,// ( 399) 	ifnev		member_temp1,member_vel,@next
+  COMMAND_JMP,251,                      // ( 403) 	jmp		@wait_for_command
+                                        // ( 405) name:	ai_plunger
+  COMMAND_ON_HIT,421,                   // ( 405) 	on_hit		ai_plunger_dies
+  COMMAND_ANIMSPEED,3,                  // ( 407) 	animspeed	3
+                                        // ( 409) @again
+  COMMAND_MOVERND,64,obj_temp1,         // ( 409) 	movernd		64,obj_temp1
+  COMMAND_ADDI,32,obj_temp1,            // ( 412) 	addi		32,obj_temp1
+  COMMAND_PAUSE,obj_temp1,              // ( 415) 	pause		obj_temp1
+  COMMAND_ANIMPLAYFORWARDONCE,          // ( 417) 	animplayforwardonce
+  COMMAND_ANIMPLAYBACKONCE,             // ( 418) 	animplaybackonce
+  COMMAND_JMP,409,                      // ( 419) 	jmp		@again
+                                        // ( 421) name:	ai_plunger_dies
+  COMMAND_THREAD,2781,                  // ( 421) 	thread		ai_flash
+  COMMAND_CALL,2001,                    // ( 423) 	call		:expanding_polo
+  COMMAND_THREAD,2780,                  // ( 425) 	thread		ai_none
+  COMMAND_DIE,                          // ( 427) 	die
+                                        // ( 428) name:	ai_playback
+  COMMAND_ANIMPLAYBACKONCE,             // ( 428) 	animplaybackonce
+  COMMAND_WAIT,                         // ( 429)  	wait
+                                        // ( 430) name:	ai_die_spit
+  COMMAND_SHOOTABLE_OFF,                // ( 430) 	shootable_off
+  COMMAND_THREAD,428,                   // ( 431) 	thread		ai_playback
+  COMMAND_CALL,2001,                    // ( 433) 	call		:expanding_polo
+  COMMAND_THREAD,2780,                  // ( 435) 	thread		ai_none
+  COMMAND_WAIT,                         // ( 437) 	wait
+                                        // ( 438) name:	ai_mrspit
+  COMMAND_SETANIMNORMAL,                // ( 438) 	setanimnormal
+  COMMAND_ON_HIT,430,                   // ( 439) 	on_hit		ai_die_spit
+                                        // ( 441) @next
+  COMMAND_MOVEI,64,obj_temp1,           // ( 441) 	movei	64,obj_temp1
+  COMMAND_PAUSE,obj_temp1,              // ( 444) 	pause	obj_temp1
+  COMMAND_ANIMPLAYFORWARDONCE,          // ( 446) 	animplayforwardonce
+  COMMAND_ANIMPLAYBACKONCE,             // ( 447) 	animplaybackonce
+  COMMAND_JMP,441,                      // ( 448) 	jmp	@next
+                                        // ( 450) name:	ai_msspit
+  COMMAND_SETANIMNORMAL,                // ( 450) 	setanimnormal
+                                        // ( 451) @next
+  COMMAND_MOVERND,64,obj_temp1,         // ( 451) 	movernd	64,obj_temp1
+  COMMAND_ADDI,32,obj_temp1,            // ( 454) 	addi	32,obj_temp1
+  COMMAND_PAUSE,obj_temp1,              // ( 457) 	pause	obj_temp1
+  COMMAND_ANIMPLAYFORWARDONCE,          // ( 459) 	animplayforwardonce
+  COMMAND_ANIMPLAYBACKONCE,             // ( 460) 	animplaybackonce
+  COMMAND_JMP,451,                      // ( 461) 	jmp	@next
+                                        // ( 463) equate:	spit_x		obj_temp1
+                                        // ( 463) equate:	spit_y		obj_temp2
+                                        // ( 463) equate:	spit_dx		obj_temp3
+                                        // ( 463) equate:	spit_dy		obj_temp4
+                                        // ( 463) equate:	spit_count	obj_temp5
+                                        // ( 463) name:	ai_mrdrop
+  COMMAND_SUBI,28,obj_x,                // ( 463) 	subi		28,obj_x
+  COMMAND_ADDI,16,obj_x,                // ( 466) 	addi		16,obj_x
+  COMMAND_MOVEI,-65536*2,obj_temp3,     // ( 469) 	movei		-65536*2,spit_dx
+  COMMAND_MOVEI,0,obj_temp4,            // ( 472) 	movei		0,spit_dy
+  COMMAND_JMP,491,                      // ( 475) 	jmp		:drop
+                                        // ( 477) name:	ai_msdrop
+  COMMAND_SUBI,24,obj_x,                // ( 477) 	subi		24,obj_x
+  COMMAND_SUBI,12,obj_y,                // ( 480) 	subi		12,obj_y
+  COMMAND_MOVEI,-65536*2,obj_temp3,     // ( 483) 	movei		-65536*2,spit_dx
+  COMMAND_MOVEI,-65536,obj_temp4,       // ( 486) 	movei		-65536,spit_dy
+  COMMAND_JMP,491,                      // ( 489) 	jmp		:drop
+                                        // ( 491) :drop
+  COMMAND_UPDATE_XY,                    // ( 491) 	update_xy
+  COMMAND_SHL,16,obj_x,obj_temp1,       // ( 492) 	shl		16,obj_x,spit_x
+  COMMAND_SHL,16,obj_y,obj_temp2,       // ( 496) 	shl		16,obj_y,spit_y
+  COMMAND_MOVEI,128,obj_temp5,          // ( 500) 	movei		128,spit_count
+                                        // ( 503) @next
+  COMMAND_STOP,                         // ( 503) 	stop
+  COMMAND_SHR,16,obj_temp1,obj_x,       // ( 504) 	shr		16,spit_x,obj_x
+  COMMAND_SHR,16,obj_temp2,obj_y,       // ( 508) 	shr		16,spit_y,obj_y
+  COMMAND_UPDATE_XY,                    // ( 512) 	update_xy
+  COMMAND_ADDV,obj_temp3,obj_temp1,     // ( 513) 	addv		spit_dx,spit_x
+  COMMAND_ADDV,obj_temp4,obj_temp2,     // ( 516) 	addv		spit_dy,spit_y
+  COMMAND_ADDI,2048,obj_temp4,          // ( 519) 	addi		2048,spit_dy
+  COMMAND_SUBI,1,obj_temp5,             // ( 522) 	subi		1,spit_count
+  COMMAND_IFGTI,0,obj_temp5,503,        // ( 525) 	ifgti		0,spit_count,@next
+  COMMAND_DIE,                          // ( 529) 	die
+                                        // ( 530) equate:	new_man_x	obj_temp1
+                                        // ( 530) equate:	new_man_y 	obj_temp2
+                                        // ( 530) equate:	new_man_dx	obj_temp3
+                                        // ( 530) equate:	new_man_dy	obj_temp4
+                                        // ( 530) equate: new_man_lc	obj_temp5
+                                        // ( 530) equate: new_man_rc	obj_temp6
+                                        // ( 530) equate: MAX_SCAN	8
+                                        // ( 530) equate: MANS_HEIGHT	8
+                                        // ( 530) name:	ai_new_man
+  COMMAND_SETANIMNORMAL,                // ( 530) 	setanimnormal
+  COMMAND_THREAD,2791,                  // ( 531)  	thread		ai_cycle
+  COMMAND_MOVEI,8,obj_temp4,            // ( 533) 	movei		MAX_SCAN,new_man_dy
+  COMMAND_MOVEV,obj_x,obj_temp1,        // ( 536) 	movev		obj_x,new_man_x
+  COMMAND_ADDI,1,obj_temp1,             // ( 539) 	addi		1,new_man_x
+  COMMAND_MOVEV,obj_y,obj_temp2,        // ( 542) 	movev		obj_y,new_man_y
+  COMMAND_ADDI,8,obj_temp2,             // ( 545) 	addi		MANS_HEIGHT,new_man_y
+  COMMAND_FIND_FLOOR,obj_temp1,obj_temp2,obj_temp4,// ( 548) 	find_floor	new_man_x,new_man_y,new_man_dy
+  COMMAND_IFGTI,0,obj_temp4,558,        // ( 552) 	ifgti		0,new_man_dy,@positive
+  COMMAND_NEG,obj_temp4,                // ( 556) 	neg		new_man_dy
+                                        // ( 558) @positive
+  COMMAND_MOVEV,obj_temp4,obj_temp10,   // ( 558) 	movev		new_man_dy,obj_temp10
+  COMMAND_IFLTI,8,obj_temp4,567,        // ( 561) 	iflti		MAX_SCAN,new_man_dy,@not_stuck
+  COMMAND_JMP,2781,                     // ( 565) 	jmp		:spagetti_ai_flash
+                                        // ( 567) @not_stuck
+  COMMAND_SETANIMRIGHT,                 // ( 567) 	setanimright
+  COMMAND_MOVEI,0,obj_temp5,            // ( 568) 	movei		0,new_man_lc
+  COMMAND_MOVEI,0,obj_temp6,            // ( 571) 	movei		0,new_man_rc
+  COMMAND_MOVEI,1,obj_temp3,            // ( 574) 	movei		1,new_man_dx
+                                        // ( 577) @next
+  COMMAND_STOP,                         // ( 577) 	stop
+  COMMAND_MOVEI,8,obj_temp4,            // ( 578) 	movei		MAX_SCAN,new_man_dy
+  COMMAND_MOVEV,obj_x,obj_temp1,        // ( 581) 	movev		obj_x,new_man_x
+  COMMAND_MOVEV,obj_y,obj_temp2,        // ( 584) 	movev		obj_y,new_man_y
+  COMMAND_ADDI,8,obj_temp2,             // ( 587) 	addi		MANS_HEIGHT,new_man_y
+  COMMAND_ADDV,obj_temp3,obj_temp1,     // ( 590) 	addv		new_man_dx,new_man_x
+  COMMAND_FIND_FLOOR,obj_temp1,obj_temp2,obj_temp4,// ( 593) 	find_floor	new_man_x,new_man_y,new_man_dy
+  COMMAND_IFLTI,0,obj_temp3,606,        // ( 597) 	iflti		0,new_man_dx,@going_left
+  COMMAND_ADDI,1,obj_temp6,             // ( 601) 	addi		1,new_man_rc
+  COMMAND_JMP,609,                      // ( 604) 	jmp		@left_right_over
+                                        // ( 606) @going_left
+  COMMAND_ADDI,1,obj_temp5,             // ( 606) 	addi		1,new_man_lc
+                                        // ( 609) @left_right_over
+  COMMAND_IFLTI,0,obj_temp4,628,        // ( 609) 	iflti		0,new_man_dy,@going_up
+                                        // ( 613) @going_down
+  COMMAND_IFGEI,8-1,obj_temp4,643,      // ( 613) 	ifgei		MAX_SCAN-1,new_man_dy,@change_direction
+  COMMAND_ADDV,obj_temp3,obj_x,         // ( 617) 	addv		new_man_dx,obj_x
+  COMMAND_ADDV,obj_temp4,obj_y,         // ( 620) 	addv		new_man_dy,obj_y
+  COMMAND_UPDATE_XY,                    // ( 623) 	update_xy
+  COMMAND_ANIMSPEED,4,                  // ( 624) 	animspeed	4
+  COMMAND_JMP,577,                      // ( 626) 	jmp		@next
+                                        // ( 628) @going_up
+  COMMAND_IFLEI,-8,obj_temp4,643,       // ( 628) 	iflei		-MAX_SCAN,new_man_dy,@change_direction
+  COMMAND_ADDV,obj_temp3,obj_x,         // ( 632) 	addv		new_man_dx,obj_x
+  COMMAND_ADDV,obj_temp4,obj_y,         // ( 635) 	addv		new_man_dy,obj_y
+  COMMAND_UPDATE_XY,                    // ( 638) 	update_xy
+  COMMAND_ANIMSPEED,6,                  // ( 639) 	animspeed	6
+  COMMAND_JMP,577,                      // ( 641) 	jmp		@next
+                                        // ( 643) @change_direction
+  COMMAND_IFGTI,1,obj_temp5,654,        // ( 643) 	ifgti		1,new_man_lc,@good
+  COMMAND_IFGTI,1,obj_temp6,654,        // ( 647) 	ifgti		1,new_man_rc,@good
+  COMMAND_SETANIMNORMAL,                // ( 651) 	setanimnormal
+  COMMAND_JMP,2781,                     // ( 652) 	jmp		:spagetti_ai_flash
+                                        // ( 654) @good
+  COMMAND_NEG,obj_temp3,                // ( 654) 	neg		new_man_dx
+  COMMAND_IFGTI,0,obj_temp3,666,        // ( 656) 	ifgti		0,new_man_dx,@face_right
+  COMMAND_MOVEI,0,obj_temp5,            // ( 660) 	movei		0,new_man_lc
+  COMMAND_SETANIMLEFT,                  // ( 663) 	setanimleft
+  COMMAND_JMP,577,                      // ( 664) 	jmp		@next
+                                        // ( 666) @face_right
+  COMMAND_SETANIMRIGHT,                 // ( 666) 	setanimright
+  COMMAND_MOVEI,0,obj_temp6,            // ( 667) 	movei		0,new_man_rc
+  COMMAND_JMP,577,                      // ( 670) 	jmp		@next
+                                        // ( 672) equate:	hug_leftx	obj_temp1
+                                        // ( 672) equate:	hug_rightx	obj_temp2
+                                        // ( 672) equate:	hug_width	obj_temp3
+                                        // ( 672) equate:	hug_dx		obj_temp4
+                                        // ( 672) equate:	hug_dy		obj_temp5
+                                        // ( 672) name:	ai_surface_hug
+  COMMAND_MOVEI,1,obj_temp5,            // ( 672) 	movei		1,hug_dy
+                                        // ( 675) @again
+  COMMAND_STOP,                         // ( 675) 	stop
+  COMMAND_STOP,                         // ( 676) 	stop
+  COMMAND_STOP,                         // ( 677) 	stop
+  COMMAND_STOP,                         // ( 678) 	stop
+  COMMAND_SCAN,obj_x,obj_y,obj_temp1,obj_temp2,// ( 679) 	scan		obj_x,obj_y,hug_leftx,hug_rightx
+  COMMAND_IFLTV,obj_temp1,obj_x,724,    // ( 684) 	ifltv		hug_leftx,obj_x,@reverse_direction
+  COMMAND_MOVEV,obj_temp2,obj_temp3,    // ( 688) 	movev		hug_rightx,hug_width
+  COMMAND_SUBV,obj_temp1,obj_temp3,     // ( 691) 	subv		hug_leftx,hug_width
+  COMMAND_ADD_LINE,obj_temp1,obj_y,obj_temp3,// ( 694) 	add_line	hug_leftx,obj_y,hug_width
+  COMMAND_ADDV,obj_temp5,obj_y,         // ( 698) 	addv		hug_dy,obj_y
+  COMMAND_SUBV,obj_x,obj_temp1,         // ( 701) 	subv		obj_x,hug_leftx	
+  COMMAND_NEG,obj_temp1,                // ( 704) 	neg		hug_leftx
+  COMMAND_SUBV,obj_x,obj_temp2,         // ( 706) 	subv		obj_x,hug_rightx	
+  COMMAND_MOVEI,1,obj_temp4,            // ( 709) 	movei		1,hug_dx
+  COMMAND_IFGTV,obj_temp1,obj_temp2,718,// ( 712) 	ifgtv		hug_leftx,hug_rightx,@lefty
+  COMMAND_NEG,obj_temp4,                // ( 716) 	neg		hug_dx
+                                        // ( 718) @lefty
+  COMMAND_ADDV,obj_temp4,obj_x,         // ( 718) 	addv		hug_dx,obj_x
+  COMMAND_UPDATE_XY,                    // ( 721) 	update_xy	
+  COMMAND_JMP,675,                      // ( 722) 	jmp		@again
+                                        // ( 724) @reverse_direction
+  COMMAND_NEG,obj_temp5,                // ( 724) 	neg		hug_dy
+  COMMAND_ADDV,obj_temp5,obj_y,         // ( 726) 	addv		hug_dy,obj_y
+  COMMAND_UPDATE_XY,                    // ( 729) 	update_xy	
+  COMMAND_JMP,675,                      // ( 730) 	jmp		@again
+  COMMAND_MOVEV,obj_x,obj_temp1,        // ( 732) 	movev			obj_x,hug_leftx
+  COMMAND_ADDI,1,obj_temp1,             // ( 735) 	addi			1,hug_leftx
+  COMMAND_MOVEV,obj_x,obj_temp2,        // ( 738) 	movev			obj_x,hug_rightx
+  COMMAND_ADDI,1,obj_temp2,             // ( 741) 	addi			1,hug_rightx
+                                        // ( 744) @scan_right
+  COMMAND_STOP,                         // ( 744) 	stop
+  COMMAND_POINT_COLLISION,obj_temp2,obj_y,764,// ( 745) 	point_collision		hug_rightx,obj_y,@right_wall
+  COMMAND_MOVEV,obj_temp2,obj_temp3,    // ( 749) 	movev			hug_rightx,hug_width
+  COMMAND_SUBV,obj_temp1,obj_temp3,     // ( 752) 	subv			hug_leftx,hug_width
+  COMMAND_ADD_LINE,obj_temp1,obj_y,obj_temp3,// ( 755) 	add_line		hug_leftx,obj_y,hug_width
+  COMMAND_ADDI,1,obj_temp2,             // ( 759) 	addi			1,hug_rightx
+  COMMAND_JMP,744,                      // ( 762) 	jmp			@scan_right
+                                        // ( 764) @right_wall
+                                        // ( 764) @scan_left
+  COMMAND_STOP,                         // ( 764) 	stop
+  COMMAND_POINT_COLLISION,obj_temp1,obj_y,784,// ( 765) 	point_collision		hug_leftx,obj_y,@left_wall
+  COMMAND_MOVEV,obj_temp2,obj_temp3,    // ( 769) 	movev			hug_rightx,hug_width
+  COMMAND_SUBV,obj_temp1,obj_temp3,     // ( 772) 	subv			hug_leftx,hug_width
+  COMMAND_ADD_LINE,obj_temp1,obj_y,obj_temp3,// ( 775) 	add_line		hug_leftx,obj_y,hug_width
+  COMMAND_SUBI,1,obj_temp1,             // ( 779) 	subi			1,hug_leftx
+  COMMAND_JMP,764,                      // ( 782) 	jmp			@scan_left
+                                        // ( 784) @left_wall
+                                        // ( 784) @scan_up_left
+  COMMAND_WAIT,                         // ( 784) 	wait
+                                        // ( 785) equate:	lazer_x		obj_temp1
+                                        // ( 785) equate:	lazer_y		obj_temp2
+                                        // ( 785) equate:	lazer_length	obj_temp3
+                                        // ( 785) name:	ai_lazer
+                                        // ( 785) :spagetti_lazer
+  COMMAND_ON_HIT,875,                   // ( 785) 	on_hit		ai_lazer_hit
+                                        // ( 787) @still
+  COMMAND_STOP,                         // ( 787) 	stop
+  COMMAND_INRANGE,256*256,793,          // ( 788) 	inrange		256*256,@wait
+  COMMAND_JMP,787,                      // ( 791) 	jmp		@still
+                                        // ( 793) @wait
+  COMMAND_ANIMSPEED,4,                  // ( 793) 	animspeed	4
+  COMMAND_MOVEI,0,obj_temp1,            // ( 795) 	movei		0,obj_temp1
+  COMMAND_MOVERND,6,obj_temp2,          // ( 798) 	movernd		6,obj_temp2
+  COMMAND_ADDI,2,obj_temp2,             // ( 801) 	addi		2,obj_temp2
+  COMMAND_SETANIMRANGE,obj_temp1,obj_temp2,// ( 804) 	setanimrange	obj_temp1,obj_temp2
+  COMMAND_ANIMPLAYFORWARDONCE,          // ( 807) 	animplayforwardonce
+  COMMAND_ANIMPLAYBACKONCE,             // ( 808) 	animplaybackonce
+  COMMAND_INRANGE,128*128,814,          // ( 809) 	inrange		128*128,@start
+  COMMAND_JMP,793,                      // ( 812) 	jmp		@wait
+                                        // ( 814) @start
+  COMMAND_ANIMSPEED,3,                  // ( 814) 	animspeed	3
+  COMMAND_SETANIMNORMAL,                // ( 816) 	setanimnormal
+  COMMAND_ANIMPLAYFORWARDONCE,          // ( 817) 	animplayforwardonce
+  COMMAND_MOVEV,obj_x,obj_temp1,        // ( 818) 	movev		obj_x,lazer_x
+  COMMAND_MOVEI,320,obj_temp3,          // ( 821) 	movei		320,lazer_length
+                                        // ( 824) @fire
+  COMMAND_STOP,                         // ( 824) 	stop
+  COMMAND_MOVEV,obj_y,obj_temp2,        // ( 825) 	movev		obj_y,lazer_y
+  COMMAND_SUBI,2,obj_temp2,             // ( 828) 	subi		2,lazer_y
+  COMMAND_ADD_LINE,obj_temp1,obj_temp2,obj_temp3,// ( 831) 	add_line	lazer_x,lazer_y,lazer_length
+  COMMAND_ADDI,1,obj_temp2,             // ( 835) 	addi		1,lazer_y
+  COMMAND_ADD_LINE,obj_temp1,obj_temp2,obj_temp3,// ( 838) 	add_line	lazer_x,lazer_y,lazer_length
+  COMMAND_ADDI,1,obj_temp2,             // ( 842) 	addi		1,lazer_y
+  COMMAND_ADD_LINE,obj_temp1,obj_temp2,obj_temp3,// ( 845) 	add_line	lazer_x,lazer_y,lazer_length
+  COMMAND_ADDI,1,obj_temp2,             // ( 849) 	addi		1,lazer_y
+  COMMAND_ADD_LINE,obj_temp1,obj_temp2,obj_temp3,// ( 852) 	add_line	lazer_x,lazer_y,lazer_length
+  COMMAND_ADDI,1,obj_temp2,             // ( 856) 	addi		1,lazer_y
+  COMMAND_ADD_LINE,obj_temp1,obj_temp2,obj_temp3,// ( 859) 	add_line	lazer_x,lazer_y,lazer_length
+  COMMAND_ADDI,2,obj_temp2,             // ( 863) 	addi		2,lazer_y
+  COMMAND_IFGTI,0,obj_temp3,824,        // ( 866) 	ifgti		0,lazer_length,@fire
+  COMMAND_ANIMSPEED,2,                  // ( 870) 	animspeed	2
+  COMMAND_ANIMPLAYBACKONCE,             // ( 872) 	animplaybackonce
+  COMMAND_JMP,787,                      // ( 873) 	jmp		@still
+                                        // ( 875) name:	ai_lazer_hit
+  COMMAND_ANIMSPEED,1,                  // ( 875) 	animspeed	1
+  COMMAND_ANIMPLAYBACKONCE,             // ( 877) 	animplaybackonce
+  COMMAND_MOVEI,32,obj_temp1,           // ( 878) 	movei		32,obj_temp1
+  COMMAND_PAUSE,obj_temp1,              // ( 881) 	pause		obj_temp1
+  COMMAND_JMP,785,                      // ( 883) 	jmp		:spagetti_lazer
+                                        // ( 885) equate:	lazer_x		obj_temp1
+                                        // ( 885) equate:	lazer_y		obj_temp2
+                                        // ( 885) equate:	lazer_xf	obj_temp3
+                                        // ( 885) equate:	lazer_yf	obj_temp4
+                                        // ( 885) equate:	lazer_dx	obj_temp5
+                                        // ( 885) equate:	lazer_dy	obj_temp6
+                                        // ( 885) equate:	lazer_r1	obj_temp7
+                                        // ( 885) equate:	lazer_r2	obj_temp8
+                                        // ( 885) equate:	lazer_r1f	obj_temp9
+                                        // ( 885) equate:	lazer_r2f	obj_temp10
+                                        // ( 885) equate:	lazer_count	obj_temp11
+                                        // ( 885) name:	ai_shite_lazer
+                                        // ( 885) @wait
+  COMMAND_STOP,                         // ( 885) 	stop
+  COMMAND_INRANGE,256*256,891,          // ( 886) 	inrange		256*256,@ready
+  COMMAND_JMP,885,                      // ( 889) 	jmp		@wait
+                                        // ( 891) @ready
+  COMMAND_ANIMPLAYFORWARDONCE,          // ( 891) 	animplayforwardonce
+  COMMAND_MOVEV,obj_x,obj_temp1,        // ( 892) 	movev		obj_x,lazer_x
+  COMMAND_MOVEV,obj_y,obj_temp2,        // ( 895) 	movev		obj_y,lazer_y
+  COMMAND_SHL,16,obj_temp1,obj_temp3,   // ( 898) 	shl		16,lazer_x,lazer_xf
+  COMMAND_SHL,16,obj_temp2,obj_temp4,   // ( 902) 	shl		16,lazer_y,lazer_yf
+  COMMAND_MOVEI,4,obj_temp7,            // ( 906) 	movei		4,lazer_r1
+  COMMAND_MOVEI,1,obj_temp8,            // ( 909) 	movei		1,lazer_r2
+  COMMAND_SHL,16,obj_temp7,obj_temp9,   // ( 912) 	shl		16,lazer_r1,lazer_r1f
+  COMMAND_SHL,16,obj_temp8,obj_temp10,  // ( 916) 	shl		16,lazer_r2,lazer_r2f
+                                        // ( 920) @expand
+  COMMAND_STOP,                         // ( 920) 	stop
+  COMMAND_SHR,16,obj_temp9,obj_temp7,   // ( 921) 	shr		16,lazer_r1f,lazer_r1
+  COMMAND_SHR,16,obj_temp10,obj_temp8,  // ( 925) 	shr		16,lazer_r2f,lazer_r2
+  COMMAND_ADD_POLO,obj_temp7,obj_temp8,obj_temp1,obj_temp2,// ( 929) 	add_polo	lazer_r1,lazer_r2,lazer_x,lazer_y
+  COMMAND_ADDI,16384,obj_temp9,         // ( 934) 	addi		16384,lazer_r1f
+  COMMAND_ADDI,8192+4096,obj_temp10,    // ( 937) 	addi		8192+4096,lazer_r2f
+  COMMAND_IFLTI,32,obj_temp7,920,       // ( 940) 	iflti		32,lazer_r1,@expand
+  COMMAND_MOVEI,128,obj_temp11,         // ( 944) 	movei		128,lazer_count
+  COMMAND_MOVEI,32768,obj_temp5,        // ( 947) 	movei		32768,lazer_dx
+  COMMAND_MOVEI,0,obj_temp6,            // ( 950) 	movei		0,lazer_dy
+                                        // ( 953) @loop
+  COMMAND_STOP,                         // ( 953) 	stop	
+  COMMAND_SHR,16,obj_temp3,obj_temp1,   // ( 954) 	shr		16,lazer_xf,lazer_x
+  COMMAND_SHR,16,obj_temp4,obj_temp2,   // ( 958) 	shr		16,lazer_yf,lazer_y
+  COMMAND_ADD_POLO,obj_temp7,obj_temp8,obj_temp1,obj_temp2,// ( 962) 	add_polo	lazer_r1,lazer_r2,lazer_x,lazer_y
+  COMMAND_ADDV,obj_temp5,obj_temp3,     // ( 967) 	addv		lazer_dx,lazer_xf
+  COMMAND_ADDV,obj_temp6,obj_temp4,     // ( 970) 	addv		lazer_dy,lazer_yf
+  COMMAND_ADDI,4096,obj_temp5,          // ( 973) 	addi		4096,lazer_dx
+  COMMAND_SUBI,1,obj_temp11,            // ( 976) 	subi		1,lazer_count
+  COMMAND_IFGTI,0,obj_temp11,953,       // ( 979) 	ifgti		0,lazer_count,@loop
+  COMMAND_ANIMPLAYBACKONCE,             // ( 983) 	animplaybackonce
+  COMMAND_JMP,885,                      // ( 984) 	jmp		@wait
+                                        // ( 986) name:	ai_soft_rock
+  COMMAND_ON_HIT,989,                   // ( 986) 	on_hit		ai_rock_flash
+  COMMAND_WAIT,                         // ( 988) 	wait
+                                        // ( 989) name:	ai_rock_flash
+  COMMAND_MOVEI,4,obj_temp1,            // ( 989) 	movei		4,obj_temp1
+  COMMAND_MOVEI,1,obj_temp2,            // ( 992) 	movei		1,obj_temp2
+                                        // ( 995) @loop1
+  COMMAND_MOVEV,obj_temp1,obj_temp3,    // ( 995) 	movev		obj_temp1,obj_temp3
+  COMMAND_VISIBLE_OFF,                  // ( 998) 	visible_off
+  COMMAND_PAUSE,obj_temp3,              // ( 999) 	pause		obj_temp3
+  COMMAND_VISIBLE_ON,                   // (1001) 	visible_on
+  COMMAND_MOVEV,obj_temp2,obj_temp3,    // (1002) 	movev		obj_temp2,obj_temp3
+  COMMAND_PAUSE,obj_temp3,              // (1005) 	pause		obj_temp3
+  COMMAND_ADDI,1,obj_temp2,             // (1007) 	addi		1,obj_temp2
+  COMMAND_IFLTI,4,obj_temp2,995,        // (1010) 	iflti		4,obj_temp2,@loop1
+                                        // (1014) @loop2
+  COMMAND_MOVEV,obj_temp1,obj_temp3,    // (1014) 	movev		obj_temp1,obj_temp3
+  COMMAND_VISIBLE_OFF,                  // (1017) 	visible_off
+  COMMAND_PAUSE,obj_temp3,              // (1018) 	pause		obj_temp3
+  COMMAND_VISIBLE_ON,                   // (1020) 	visible_on
+  COMMAND_MOVEV,obj_temp2,obj_temp3,    // (1021) 	movev		obj_temp2,obj_temp3
+  COMMAND_PAUSE,obj_temp3,              // (1024) 	pause		obj_temp3
+  COMMAND_SUBI,1,obj_temp1,             // (1026) 	subi		1,obj_temp1
+  COMMAND_IFNEI,0,obj_temp1,1014,       // (1029) 	ifnei		0,obj_temp1,@loop2
+  COMMAND_WAIT,                         // (1033) 	wait
+                                        // (1034) equate:	bugger_x	obj_temp1
+                                        // (1034) equate:	bugger_y	obj_temp2
+                                        // (1034) equate:	bugger_dx	obj_temp3
+                                        // (1034) equate:	bugger_dy	obj_temp4
+                                        // (1034) equate:	bugger_ddx	obj_temp5
+                                        // (1034) equate:	bugger_ddy	obj_temp6
+                                        // (1034) equate:	temp_x		obj_temp1
+                                        // (1034) equate:	temp_y		obj_temp2
+                                        // (1034) equate:	temp_x1		obj_temp3
+                                        // (1034) equate:	temp_x2		obj_temp4
+                                        // (1034) equate:	temp_y1		obj_temp5
+                                        // (1034) equate:	temp_y2		obj_temp6
+                                        // (1034) equate:	temp_xdx	obj_temp7
+                                        // (1034) equate:	temp_ydy	obj_temp8
+                                        // (1034) equate:	temp_count	obj_temp9
+                                        // (1034) name:	ai_bugger
+  COMMAND_CALL,1146,                    // (1034) 	call	@find_floor
+                                        // (1036) @again
+  COMMAND_MOVEI,32,obj_temp1,           // (1036) 	movei		32,obj_temp1
+  COMMAND_PAUSE,obj_temp1,              // (1039) 	pause		obj_temp1
+  COMMAND_MOVEI,0,obj_temp1,            // (1041) 	movei		0,obj_temp1
+  COMMAND_MOVEI,5,obj_temp2,            // (1044) 	movei		5,obj_temp2
+  COMMAND_SETANIMRANGE,obj_temp1,obj_temp2,// (1047) 	setanimrange	obj_temp1,obj_temp2
+  COMMAND_MOVEI,8,obj_temp3,            // (1050) 	movei		8,obj_temp3
+                                        // (1053) @faster	
+  COMMAND_ANIMSPEEDV,obj_temp3,         // (1053) 	animspeedv	obj_temp3
+  COMMAND_SET_FRAME,obj_temp1,          // (1055) 	set_frame	obj_temp1
+  COMMAND_ANIMPLAYFORWARDONCE,          // (1057) 	animplayforwardonce
+  COMMAND_SUBI,1,obj_temp3,             // (1058) 	subi		1,obj_temp3
+  COMMAND_IFGEI,3,obj_temp3,1053,       // (1061) 	ifgei		3,obj_temp3,@faster
+  COMMAND_MOVEI,6,obj_temp1,            // (1065) 	movei		6,obj_temp1
+  COMMAND_MOVEI,23,obj_temp2,           // (1068) 	movei		23,obj_temp2
+  COMMAND_SET_FRAME,obj_temp1,          // (1071) 	set_frame	obj_temp1
+  COMMAND_SETANIMRANGE,obj_temp1,obj_temp2,// (1073) 	setanimrange	obj_temp1,obj_temp2
+  COMMAND_ANIMPLAYFORWARDONCE,          // (1076) 	animplayforwardonce
+  COMMAND_MOVEI,24,obj_temp1,           // (1077) 	movei		24,obj_temp1
+  COMMAND_MOVEI,29,obj_temp2,           // (1080) 	movei		29,obj_temp2
+  COMMAND_SET_FRAME,obj_temp1,          // (1083) 	set_frame	obj_temp1
+  COMMAND_SETANIMRANGE,obj_temp1,obj_temp2,// (1085) 	setanimrange	obj_temp1,obj_temp2
+  COMMAND_THREAD,2791,                  // (1088) 	thread		ai_cycle
+  COMMAND_SHL,16,obj_x,obj_temp1,       // (1090) 	shl		16,obj_x,bugger_x
+  COMMAND_SHL,16,obj_y,obj_temp2,       // (1094) 	shl		16,obj_y,bugger_y
+  COMMAND_MOVEI,0,obj_temp3,            // (1098) 	movei		0,bugger_dx
+  COMMAND_MOVEI,-65536,obj_temp4,       // (1101) 	movei		-65536,bugger_dy
+  COMMAND_MOVEI,0,obj_temp5,            // (1104) 	movei		0,bugger_ddx
+  COMMAND_MOVEI,4096,obj_temp6,         // (1107) 	movei		4096,bugger_ddy
+                                        // (1110) @loop
+  COMMAND_STOP,                         // (1110) 	stop
+  COMMAND_SHR,16,obj_temp1,obj_x,       // (1111) 	shr		16,bugger_x,obj_x
+  COMMAND_SHR,16,obj_temp2,obj_y,       // (1115) 	shr		16,bugger_y,obj_y
+  COMMAND_UPDATE_XY,                    // (1119) 	update_xy
+  COMMAND_ADDV,obj_temp3,obj_temp1,     // (1120) 	addv		bugger_dx,bugger_x
+  COMMAND_ADDV,obj_temp4,obj_temp2,     // (1123) 	addv		bugger_dy,bugger_y
+  COMMAND_ADDV,obj_temp5,obj_temp3,     // (1126) 	addv		bugger_ddx,bugger_dx
+  COMMAND_ADDV,obj_temp6,obj_temp4,     // (1129) 	addv		bugger_ddy,bugger_dy
+  COMMAND_IFLTI,0,obj_temp4,1110,       // (1132) 	iflti		0,bugger_dy,@loop
+  COMMAND_POINT_COLLISION,obj_x,obj_y,1142,// (1136) 	point_collision	obj_x,obj_y,@done
+  COMMAND_JMP,1110,                     // (1140) 	jmp		@loop
+                                        // (1142) @done
+  COMMAND_THREAD,2780,                  // (1142) 	thread		ai_none
+  COMMAND_JMP,1036,                     // (1144) 	jmp		@again
+                                        // (1146) @find_floor
+  COMMAND_STOP,                         // (1146) 	stop
+  COMMAND_GET_SPRITES_COORDS,obj_temp3,obj_temp5,obj_temp4,obj_temp6,// (1147) 	get_sprites_coords	temp_x1,temp_y1,temp_x2,temp_y2
+  COMMAND_OUTPUT_VAR,0,obj_temp3,       // (1152) 	output_var		0,temp_x1
+  COMMAND_OUTPUT_VAR,1,obj_temp5,       // (1155) 	output_var		1,temp_y1
+  COMMAND_OUTPUT_VAR,2,obj_temp4,       // (1158) 	output_var		2,temp_x2
+  COMMAND_OUTPUT_VAR,3,obj_temp6,       // (1161) 	output_var		3,temp_y2
+  COMMAND_MOVEV,obj_temp4,obj_temp7,    // (1164) 	movev			temp_x2,temp_xdx
+  COMMAND_SUBV,obj_temp3,obj_temp7,     // (1167) 	subv			temp_x1,temp_xdx
+  COMMAND_MOVEV,obj_temp6,obj_temp8,    // (1170) 	movev			temp_y2,temp_ydy
+  COMMAND_SUBV,obj_temp5,obj_temp8,     // (1173) 	subv			temp_y1,temp_ydy
+  COMMAND_OUTPUT_VAR,4,obj_temp7,       // (1176) 	output_var		4,temp_xdx
+  COMMAND_OUTPUT_VAR,5,obj_temp8,       // (1179) 	output_var		5,temp_ydy
+  COMMAND_DIVI,2,obj_temp7,obj_temp7,   // (1182) 	divi			2,temp_xdx,temp_xdx
+  COMMAND_MOVEI,0,obj_temp9,            // (1186) 	movei			0,temp_count
+                                        // (1189) @down_a_bit
+  COMMAND_STOP,                         // (1189) 	stop
+  COMMAND_ADDI,1,obj_temp9,             // (1190) 	addi			1,temp_count
+  COMMAND_OUTPUT_VAR,6,obj_temp9,       // (1193) 	output_var		6,temp_count
+  COMMAND_OUTPUT_VAR,7,obj_temp2,       // (1196) 	output_var		7,temp_y
+  COMMAND_MOVEV,obj_x,obj_temp1,        // (1199) 	movev			obj_x,temp_x
+  COMMAND_MOVEV,obj_y,obj_temp2,        // (1202) 	movev			obj_y,temp_y
+  COMMAND_ADDV,obj_temp7,obj_temp1,     // (1205) 	addv			temp_xdx,temp_x
+  COMMAND_ADDV,obj_temp8,obj_temp2,     // (1208) 	addv			temp_ydy,temp_y
+  COMMAND_POINT_COLLISION,obj_temp1,obj_temp2,1221,// (1211) 	point_collision		temp_x,temp_y,@bad
+  COMMAND_ADDI,1,obj_y,                 // (1215) 	addi			1,obj_y
+  COMMAND_UPDATE_XY,                    // (1218) 	update_xy
+  COMMAND_JMP,1189,                     // (1219) 	jmp			@down_a_bit
+                                        // (1221) @bad
+  COMMAND_RETURN,                       // (1221) 	return			; got it
+                                        // (1222) equate:	lem_x		obj_temp1
+                                        // (1222) equate:	lem_y		obj_temp2
+                                        // (1222) equate:	lem_x1		obj_temp1
+                                        // (1222) equate:	lem_x2		obj_temp2
+                                        // (1222) equate:	lem_y1		obj_temp3
+                                        // (1222) equate:	lem_y2		obj_temp4
+                                        // (1222) equate:	lem_xdx		obj_temp5
+                                        // (1222) equate:	lem_ydy		obj_temp6
+                                        // (1222) equate:	lem_count	obj_temp7
+                                        // (1222) equate:	dy		obj_temp7
+                                        // (1222) equate:	lem_temp	obj_temp8
+                                        // (1222) equate:	lem_x_move	obj_temp9
+                                        // (1222) equate: tx		obj_temp10
+                                        // (1222) equate: ty		obj_temp11
+                                        // (1222) equate: px		obj_temp12
+                                        // (1222) equate: py		obj_temp13
+                                        // (1222) equate: fdy		obj_temp15
+                                        // (1222) equate: MAN_ANIM_DELAY	1
+                                        // (1222) equate: MAN_DELAY	32
+  COMMAND_WAIT,                         // (1222) 	wait
+                                        // (1223) name:	ai_lem
+  COMMAND_ON_HIT,3342,                  // (1223) 	on_hit	ai_survrs_die
+  COMMAND_SETANIMRIGHT,                 // (1225) 	setanimright
+  COMMAND_CALL,1408,                    // (1226) 	call			@find_floor
+  COMMAND_MOVEI,1,obj_temp9,            // (1228) 	movei			1,lem_x_move
+  COMMAND_MOVEI,20,obj_temp16,          // (1231) 	movei			20,obj_temp16
+                                        // (1234) @lets_go
+  COMMAND_ADDV,obj_temp9,obj_x,         // (1234) 	addv			lem_x_move,obj_x ;move horizontally
+  COMMAND_FRAMEINC,                     // (1237) 	frameinc
+  COMMAND_MOVEI,0,obj_temp7,            // (1238) 	movei			0,lem_count	 ;reset counter
+  COMMAND_MOVEV,obj_x,obj_temp1,        // (1241) 	movev			obj_x,lem_x	 ;get co-ordinates of man
+  COMMAND_MOVEV,obj_y,obj_temp2,        // (1244) 	movev			obj_y,lem_y
+  COMMAND_ADDV,obj_temp5,obj_temp1,     // (1247) 	addv			lem_xdx,lem_x	 ;add width/2 to x
+  COMMAND_ADDV,obj_temp6,obj_temp2,     // (1250) 	addv			lem_ydy,lem_y	 ;add height to man
+  COMMAND_CALL,1379,                    // (1253) 	call			:find_dy
+                                        // (1255) @do_move
+  COMMAND_IFLTI,8,obj_temp7,1281,       // (1255) 	iflti			8,dy,@not_big_down
+  COMMAND_SUBV,obj_temp9,obj_x,         // (1259) 	subv			lem_x_move,obj_x
+  COMMAND_NEG,obj_temp9,                // (1262) 	neg			lem_x_move
+  COMMAND_OUTPUT_VAR,0,obj_temp7,       // (1264) 	output_var		0,dy
+  COMMAND_STOP,                         // (1267) 	stop
+  COMMAND_MOVEI,32,obj_temp8,           // (1268) 	movei			MAN_DELAY,lem_temp
+  COMMAND_PAUSE,obj_temp8,              // (1271) 	pause			lem_temp
+  COMMAND_CALL,1408,                    // (1273) 	call	@find_floor
+  COMMAND_SETANIMNORMAL,                // (1275) 	setanimnormal
+  COMMAND_ANIMPLAYFORWARDONCE,          // (1276) 	animplayforwardonce
+  COMMAND_CALL,1320,                    // (1277) 	call			:set_direction
+  COMMAND_JMP,1234,                     // (1279) 	jmp			@lets_go
+                                        // (1281) @not_big_down
+  COMMAND_IFGTI,-8,obj_temp7,1307,      // (1281) 	ifgti			-8,dy,@not_big_up
+  COMMAND_SUBV,obj_temp9,obj_x,         // (1285) 	subv			lem_x_move,obj_x
+  COMMAND_NEG,obj_temp9,                // (1288) 	neg			lem_x_move
+  COMMAND_OUTPUT_VAR,0,obj_temp7,       // (1290) 	output_var		0,dy
+  COMMAND_STOP,                         // (1293) 	stop
+  COMMAND_MOVEI,32,obj_temp8,           // (1294) 	movei			MAN_DELAY,lem_temp
+  COMMAND_PAUSE,obj_temp8,              // (1297) 	pause			lem_temp
+  COMMAND_CALL,1408,                    // (1299) 	call	@find_floor
+  COMMAND_SETANIMNORMAL,                // (1301) 	setanimnormal
+  COMMAND_ANIMPLAYFORWARDONCE,          // (1302) 	animplayforwardonce
+  COMMAND_CALL,1320,                    // (1303) 	call			:set_direction
+  COMMAND_JMP,1234,                     // (1305) 	jmp			@lets_go
+                                        // (1307) @not_big_up
+  COMMAND_ADDV,obj_temp7,obj_y,         // (1307) 	addv			dy,obj_y
+  COMMAND_UPDATE_XY,                    // (1310) 	update_xy
+  COMMAND_MOVEI,4,obj_temp8,            // (1311) 	movei			4,lem_temp
+  COMMAND_PAUSE,obj_temp8,              // (1314) 	pause			lem_temp
+  COMMAND_CALL,1408,                    // (1316) 	call	@find_floor
+  COMMAND_JMP,1234,                     // (1318) 	jmp			@lets_go
+                                        // (1320) :set_direction
+  COMMAND_IFEQI,-1,obj_temp9,1333,      // (1320) 	ifeqi			-1,lem_x_move,@set_left
+  COMMAND_SETANIMRIGHT,                 // (1324) 	setanimright
+  COMMAND_GET_RET,obj_temp16,           // (1325) 	get_ret		obj_temp16
+  COMMAND_CALL,1408,                    // (1327) 	call		@find_floor
+  COMMAND_SET_RET,obj_temp16,           // (1329) 	set_ret		obj_temp16
+  COMMAND_JMP,1340,                     // (1331) 	jmp		@l2
+                                        // (1333) 	@set_left
+  COMMAND_SETANIMLEFT,                  // (1333) 	setanimleft
+  COMMAND_GET_RET,obj_temp16,           // (1334) 	get_ret		obj_temp16
+  COMMAND_CALL,1408,                    // (1336) 	call		@find_floor
+  COMMAND_SET_RET,obj_temp16,           // (1338) 	set_ret		obj_temp16
+                                        // (1340) 	@l2
+  COMMAND_RETURN,                       // (1340) 	return
+                                        // (1341) :steep_climb
+                                        // (1341) 	@get_increment
+  COMMAND_IFLEI,-1,obj_temp7,1350,      // (1341) 	 iflei			-1,dy,@negative
+  COMMAND_MOVEI,32768,obj_temp15,       // (1345) 	 movei			32768,fdy
+  COMMAND_JMP,1361,                     // (1348) 	 jmp			@climb_loop
+                                        // (1350) 	@negative
+  COMMAND_MOVEI,-32768,obj_temp15,      // (1350) 	  movei			-32768,fdy
+  COMMAND_SHL,16,obj_temp7,obj_temp8,   // (1353) 	  shl 			16,dy,lem_temp
+  COMMAND_SHL,16,obj_y,obj_temp11,      // (1357) 	  shl			16,obj_y,ty
+                                        // (1361)      @climb_loop
+  COMMAND_STOP,                         // (1361) 	  stop
+  COMMAND_ADDV,obj_temp15,obj_y,        // (1362) 	  addv			fdy,obj_y
+  COMMAND_SUBI,32768,obj_temp8,         // (1365) 	  subi			32768,lem_temp
+  COMMAND_SHR,16,obj_temp11,obj_y,      // (1368) 	  shr			16,ty,obj_y
+  COMMAND_UPDATE_XY,                    // (1372) 	  update_xy
+  COMMAND_FRAMEINC,                     // (1373) 	  frameinc
+  COMMAND_IFGEI,0,obj_temp8,1361,       // (1374) 	 ifgei			0,lem_temp,@climb_loop
+  COMMAND_RETURN,                       // (1378) 	return
+                                        // (1379) :find_dy
+                                        // (1379) @go_down
+  COMMAND_POINT_COLLISION,obj_temp1,obj_temp2,1393,// (1379) 	point_collision		lem_x,lem_y,@go_up
+  COMMAND_ADDI,1,obj_temp7,             // (1383) 	addi			1,lem_count
+  COMMAND_ADDI,1,obj_temp2,             // (1386) 	addi			1,lem_y
+  COMMAND_IFLTI,16,obj_temp7,1379,      // (1389) 	iflti			16,lem_count,@go_down
+                                        // (1393) @go_up
+  COMMAND_IFLEI,-16,obj_temp7,1407,     // (1393) 	iflei			-16,lem_count,@end_find_dy
+  COMMAND_SUBI,1,obj_temp7,             // (1397) 	subi			1,lem_count
+  COMMAND_SUBI,1,obj_temp2,             // (1400) 	subi			1,lem_y
+  COMMAND_POINT_COLLISION,obj_temp1,obj_temp2,1393,// (1403) 	point_collision		lem_x,lem_y,@go_up
+                                        // (1407) @end_find_dy
+  COMMAND_RETURN,                       // (1407) 	return
+                                        // (1408) @find_floor
+  COMMAND_GET_SPRITES_COORDS,obj_temp1,obj_temp3,obj_temp2,obj_temp4,// (1408) 	get_sprites_coords	lem_x1,lem_y1,lem_x2,lem_y2
+  COMMAND_MOVEV,obj_temp2,obj_temp5,    // (1413) 	movev			lem_x2,lem_xdx
+  COMMAND_SUBV,obj_temp1,obj_temp5,     // (1416) 	subv			lem_x1,lem_xdx
+  COMMAND_MOVEV,obj_temp4,obj_temp6,    // (1419) 	movev			lem_y2,lem_ydy
+  COMMAND_SUBV,obj_temp3,obj_temp6,     // (1422) 	subv			lem_y1,lem_ydy
+  COMMAND_DIVI,2,obj_temp5,obj_temp5,   // (1425) 	divi			2,lem_xdx,lem_xdx ;width /2 
+  COMMAND_MOVEI,0,obj_temp7,            // (1429) 	movei			0,lem_count ;reset counter
+                                        // (1432) @up_a_bit
+  COMMAND_STOP,                         // (1432) 	stop
+  COMMAND_ADDI,1,obj_temp7,             // (1433) 	addi			1,lem_count
+  COMMAND_MOVEV,obj_x,obj_temp1,        // (1436) 	movev			obj_x,lem_x
+  COMMAND_MOVEV,obj_y,obj_temp2,        // (1439) 	movev			obj_y,lem_y
+  COMMAND_ADDV,obj_temp5,obj_temp1,     // (1442) 	addv			lem_xdx,lem_x
+  COMMAND_ADDV,obj_temp6,obj_temp2,     // (1445) 	addv			lem_ydy,lem_y	;offset collision Cx point 
+  COMMAND_POINT_COLLISION,obj_temp1,obj_temp2,1453,// (1448) 	point_collision		lem_x,lem_y,@bad
+  COMMAND_RETURN,                       // (1452) 	return			; feet above floor so go back
+                                        // (1453) @bad
+  COMMAND_SUBI,1,obj_y,                 // (1453) 	subi			1,obj_y
+  COMMAND_UPDATE_XY,                    // (1456) 	update_xy
+  COMMAND_JMP,1432,                     // (1457) 	jmp			@up_a_bit
+                                        // (1459) equate:	flock_x		obj_temp1
+                                        // (1459) equate:	flock_y		obj_temp2
+                                        // (1459) equate:	flock_dx	obj_temp3
+                                        // (1459) equate:	flock_dy	obj_temp4
+                                        // (1459) equate:	flock_ddx	obj_temp5
+                                        // (1459) equate:	flock_ddy	obj_temp6
+                                        // (1459) equate: flock_steps	obj_temp7
+                                        // (1459) equate: flock_to_id	obj_temp8
+                                        // (1459) equate: flock_vel	obj_temp9
+                                        // (1459) name:	ai_flock
+  COMMAND_ON_HIT,1827,                  // (1459) 	on_hit		ai_spermicide
+  COMMAND_NEXT_NODE,obj_temp3,obj_temp4,obj_temp7,// (1461) 	next_node	flock_dx,flock_dy,flock_steps
+  COMMAND_IFEQI,-1,obj_temp3,1517,      // (1465) 	ifeqi		-1,flock_dx,@not_leader
+  COMMAND_ADOPT_INRANGE_CHILD,128*128,  // (1469) 	adopt_inrange_child	128*128
+  COMMAND_STOP,                         // (1471) 	stop
+                                        // (1472) @leader_loop
+  COMMAND_CALL,1612,                    // (1472) 	call		@make_dds
+  COMMAND_SHL,16,obj_x,obj_temp1,       // (1474) 	shl		16,obj_x,flock_x
+  COMMAND_SHL,16,obj_y,obj_temp2,       // (1478) 	shl		16,obj_y,flock_y
+                                        // (1482) @leader_move
+  COMMAND_STOP,                         // (1482) 	stop
+  COMMAND_ADDV,obj_temp3,obj_temp1,     // (1483) 	addv		flock_dx,flock_x
+  COMMAND_ADDV,obj_temp4,obj_temp2,     // (1486) 	addv		flock_dy,flock_y
+  COMMAND_ADDV,obj_temp5,obj_temp3,     // (1489) 	addv		flock_ddx,flock_dx
+  COMMAND_ADDV,obj_temp6,obj_temp4,     // (1492) 	addv		flock_ddy,flock_dy
+  COMMAND_SHR,16,obj_temp1,obj_x,       // (1495) 	shr		16,flock_x,obj_x
+  COMMAND_SHR,16,obj_temp2,obj_y,       // (1499) 	shr		16,flock_y,obj_y
+  COMMAND_UPDATE_XY,                    // (1503) 	update_xy
+  COMMAND_SUBI,1,obj_temp7,             // (1504) 	subi		1,flock_steps
+  COMMAND_IFGTI,0,obj_temp7,1482,       // (1507) 	ifgti		0,flock_steps,@leader_move
+  COMMAND_NEXT_NODE,obj_temp3,obj_temp4,obj_temp7,// (1511) 	next_node	flock_dx,flock_dy,flock_steps
+  COMMAND_JMP,1472,                     // (1515) 	jmp		@leader_loop	
+                                        // (1517) @not_leader
+  COMMAND_STOP,                         // (1517) 	stop
+  COMMAND_GET_PARENT_ID,obj_temp8,      // (1518) 	get_parent_id	flock_to_id
+  COMMAND_GET_ANGLE_TO_ID,obj_temp8,    // (1520) 	get_angle_to_id	flock_to_id
+  COMMAND_DIVI,16,obj_angle,obj_temp9,  // (1522) 	divi		16,obj_angle,flock_vel
+  COMMAND_ADDI,32,obj_temp9,            // (1526) 	addi		32,flock_vel
+  COMMAND_IFLTI,64,obj_temp9,1536,      // (1529) 	iflti		64,flock_vel,@not_too_big
+  COMMAND_SUBI,64,obj_temp9,            // (1533) 	subi		64,flock_vel
+                                        // (1536) @not_too_big
+  COMMAND_IFGEI,0,obj_temp9,1543,       // (1536) 	ifgei		0,flock_vel,@not_too_small
+  COMMAND_ADDI,64,obj_temp9,            // (1540) 	addi		64,flock_vel
+                                        // (1543) @not_too_small
+  COMMAND_MOVEI,63,obj_temp3,           // (1543) 	movei		63,flock_dx
+  COMMAND_SUBV,obj_temp9,obj_temp3,     // (1546) 	subv		flock_vel,flock_dx
+  COMMAND_SET_FRAME,obj_temp3,          // (1549) 	set_frame	flock_dx
+  COMMAND_MOVERND,32768,obj_temp9,      // (1551) 	movernd		32768,flock_vel
+  COMMAND_ADDI,40000,obj_temp9,         // (1554) 	addi		40000,flock_vel
+  COMMAND_SET_VEL,obj_temp9,obj_temp3,obj_temp4,// (1557) 	set_vel		flock_vel,flock_dx,flock_dy
+  COMMAND_SHL,16,obj_x,obj_temp1,       // (1561) 	shl		16,obj_x,flock_x
+  COMMAND_SHL,16,obj_y,obj_temp2,       // (1565) 	shl		16,obj_y,flock_y
+  COMMAND_MOVERND,32,obj_temp7,         // (1569) 	movernd		32,flock_steps
+  COMMAND_ADDI,48,obj_temp7,            // (1572) 	addi		48,flock_steps
+  COMMAND_CALL,1612,                    // (1575) 	call		@make_dds
+                                        // (1577) @fly_baby
+  COMMAND_STOP,                         // (1577) 	stop
+  COMMAND_ADDV,obj_temp3,obj_temp1,     // (1578) 	addv		flock_dx,flock_x
+  COMMAND_ADDV,obj_temp4,obj_temp2,     // (1581) 	addv		flock_dy,flock_y
+  COMMAND_ADDV,obj_temp5,obj_temp3,     // (1584) 	addv		flock_ddx,flock_dx
+  COMMAND_ADDV,obj_temp6,obj_temp4,     // (1587) 	addv		flock_ddy,flock_dy
+  COMMAND_SHR,16,obj_temp1,obj_x,       // (1590) 	shr		16,flock_x,obj_x
+  COMMAND_SHR,16,obj_temp2,obj_y,       // (1594) 	shr		16,flock_y,obj_y
+  COMMAND_UPDATE_XY,                    // (1598) 	update_xy
+  COMMAND_SUBI,1,obj_temp7,             // (1599) 	subi		1,flock_steps
+  COMMAND_IFGTI,0,obj_temp7,1577,       // (1602) 	ifgti		0,flock_steps,@fly_baby
+  COMMAND_IFEQI,0,obj_children,1517,    // (1606) 	ifeqi		0,obj_children,@not_leader
+  COMMAND_JMP,1472,                     // (1610) 	jmp		@leader_loop
+                                        // (1612) @make_dds
+  COMMAND_MOVEV,obj_temp3,obj_temp5,    // (1612) 	movev		flock_dx,flock_ddx	       
+  COMMAND_MOVEV,obj_temp4,obj_temp6,    // (1615) 	movev		flock_dy,flock_ddy
+  COMMAND_DIVV,obj_temp7,obj_temp5,obj_temp5,// (1618) 	divv		flock_steps,flock_ddx,flock_ddx
+  COMMAND_DIVV,obj_temp7,obj_temp6,obj_temp6,// (1622) 	divv		flock_steps,flock_ddy,flock_ddy
+  COMMAND_NEG,obj_temp5,                // (1626) 	neg		flock_ddx
+  COMMAND_NEG,obj_temp6,                // (1628) 	neg		flock_ddy
+  COMMAND_DIVI,2,obj_temp3,obj_temp9,   // (1630) 	divi		2,flock_dx,flock_vel
+  COMMAND_ADDV,obj_temp9,obj_temp3,     // (1634) 	addv		flock_vel,flock_dx
+  COMMAND_DIVI,2,obj_temp4,obj_temp9,   // (1637) 	divi		2,flock_dy,flock_vel
+  COMMAND_ADDV,obj_temp9,obj_temp4,     // (1641) 	addv		flock_vel,flock_dy
+  COMMAND_RETURN,                       // (1644) 	return
+                                        // (1645) equate:	sperm_x		obj_temp1
+                                        // (1645) equate:	sperm_y		obj_temp2
+                                        // (1645) equate:	sperm_dx	obj_temp3
+                                        // (1645) equate:	sperm_dy	obj_temp4
+                                        // (1645) equate:	sperm_ddx	obj_temp5
+                                        // (1645) equate:	sperm_ddy	obj_temp6
+                                        // (1645) equate: sperm_steps	obj_temp7
+                                        // (1645) equate: sperm_to_id	obj_temp8
+                                        // (1645) equate: sperm_vel	obj_temp9
+                                        // (1645) name:	ai_sperm
+  COMMAND_ON_HIT,1827,                  // (1645) 	on_hit		ai_spermicide
+  COMMAND_NEXT_NODE,obj_temp3,obj_temp4,obj_temp7,// (1647) 	next_node	sperm_dx,sperm_dy,sperm_steps
+  COMMAND_IFEQI,-1,obj_temp3,1701,      // (1651) 	ifeqi		-1,sperm_dx,@not_leader
+  COMMAND_ADOPT_INRANGE_CHILD,128*128,  // (1655) 	adopt_inrange_child	128*128
+  COMMAND_STOP,                         // (1657) 	stop
+                                        // (1658) @leader_loop
+  COMMAND_SHL,16,obj_x,obj_temp1,       // (1658) 	shl		16,obj_x,sperm_x
+  COMMAND_SHL,16,obj_y,obj_temp2,       // (1662) 	shl		16,obj_y,sperm_y
+                                        // (1666) @leader_move
+  COMMAND_STOP,                         // (1666) 	stop
+  COMMAND_ADDV,obj_temp3,obj_temp1,     // (1667) 	addv		sperm_dx,sperm_x
+  COMMAND_ADDV,obj_temp4,obj_temp2,     // (1670) 	addv		sperm_dy,sperm_y
+  COMMAND_ADDV,obj_temp5,obj_temp3,     // (1673) 	addv		sperm_ddx,sperm_dx
+  COMMAND_ADDV,obj_temp6,obj_temp4,     // (1676) 	addv		sperm_ddy,sperm_dy
+  COMMAND_SHR,16,obj_temp1,obj_x,       // (1679) 	shr		16,sperm_x,obj_x
+  COMMAND_SHR,16,obj_temp2,obj_y,       // (1683) 	shr		16,sperm_y,obj_y
+  COMMAND_UPDATE_XY,                    // (1687) 	update_xy
+  COMMAND_SUBI,1,obj_temp7,             // (1688) 	subi		1,sperm_steps
+  COMMAND_IFGTI,0,obj_temp7,1666,       // (1691) 	ifgti		0,sperm_steps,@leader_move
+  COMMAND_NEXT_NODE,obj_temp3,obj_temp4,obj_temp7,// (1695) 	next_node	sperm_dx,sperm_dy,sperm_steps
+  COMMAND_JMP,1658,                     // (1699) 	jmp		@leader_loop	
+                                        // (1701) @not_leader
+  COMMAND_STOP,                         // (1701) 	stop
+  COMMAND_GET_QUEEN_ID,obj_temp8,       // (1702) 	get_queen_id	sperm_to_id
+  COMMAND_GET_ANGLE_TO_ID,obj_temp8,    // (1704) 	get_angle_to_id	sperm_to_id
+  COMMAND_DIVI,16,obj_angle,obj_temp9,  // (1706) 	divi		16,obj_angle,sperm_vel
+  COMMAND_ADDI,32,obj_temp9,            // (1710) 	addi		32,sperm_vel
+  COMMAND_IFLTI,64,obj_temp9,1720,      // (1713) 	iflti		64,sperm_vel,@not_too_big
+  COMMAND_SUBI,64,obj_temp9,            // (1717) 	subi		64,sperm_vel
+                                        // (1720) @not_too_big
+  COMMAND_IFGEI,0,obj_temp9,1727,       // (1720) 	ifgei		0,sperm_vel,@not_too_small
+  COMMAND_ADDI,64,obj_temp9,            // (1724) 	addi		64,sperm_vel
+                                        // (1727) @not_too_small
+  COMMAND_MOVEI,63,obj_temp3,           // (1727) 	movei		63,sperm_dx
+  COMMAND_SUBV,obj_temp9,obj_temp3,     // (1730) 	subv		sperm_vel,sperm_dx
+  COMMAND_SET_FRAME,obj_temp3,          // (1733) 	set_frame	sperm_dx
+  COMMAND_MOVERND,20000,obj_temp9,      // (1735) 	movernd		20000,sperm_vel
+  COMMAND_ADDI,65536,obj_temp9,         // (1738) 	addi		65536,sperm_vel
+  COMMAND_SET_VEL,obj_temp9,obj_temp3,obj_temp4,// (1741) 	set_vel		sperm_vel,sperm_dx,sperm_dy
+  COMMAND_SHL,16,obj_x,obj_temp1,       // (1745) 	shl		16,obj_x,sperm_x
+  COMMAND_SHL,16,obj_y,obj_temp2,       // (1749) 	shl		16,obj_y,sperm_y
+  COMMAND_MOVERND,32,obj_temp7,         // (1753) 	movernd		32,sperm_steps
+  COMMAND_ADDI,40,obj_temp7,            // (1756) 	addi		40,sperm_steps
+                                        // (1759) @fly_baby
+  COMMAND_STOP,                         // (1759) 	stop
+  COMMAND_ADDV,obj_temp3,obj_temp1,     // (1760) 	addv		sperm_dx,sperm_x
+  COMMAND_ADDV,obj_temp4,obj_temp2,     // (1763) 	addv		sperm_dy,sperm_y
+  COMMAND_ADDV,obj_temp5,obj_temp3,     // (1766) 	addv		sperm_ddx,sperm_dx
+  COMMAND_ADDV,obj_temp6,obj_temp4,     // (1769) 	addv		sperm_ddy,sperm_dy
+  COMMAND_SHR,16,obj_temp1,obj_x,       // (1772) 	shr		16,sperm_x,obj_x
+  COMMAND_SHR,16,obj_temp2,obj_y,       // (1776) 	shr		16,sperm_y,obj_y
+  COMMAND_UPDATE_XY,                    // (1780) 	update_xy
+  COMMAND_SUBI,1,obj_temp7,             // (1781) 	subi		1,sperm_steps
+  COMMAND_IFGTI,0,obj_temp7,1759,       // (1784) 	ifgti		0,sperm_steps,@fly_baby
+  COMMAND_IFEQI,0,obj_children,1701,    // (1788) 	ifeqi		0,obj_children,@not_leader
+  COMMAND_JMP,1658,                     // (1792) 	jmp		@leader_loop
+                                        // (1794) @make_dds
+  COMMAND_MOVEV,obj_temp3,obj_temp5,    // (1794) 	movev		sperm_dx,sperm_ddx	       
+  COMMAND_MOVEV,obj_temp4,obj_temp6,    // (1797) 	movev		sperm_dy,sperm_ddy
+  COMMAND_DIVV,obj_temp7,obj_temp5,obj_temp5,// (1800) 	divv		sperm_steps,sperm_ddx,sperm_ddx
+  COMMAND_DIVV,obj_temp7,obj_temp6,obj_temp6,// (1804) 	divv		sperm_steps,sperm_ddy,sperm_ddy
+  COMMAND_NEG,obj_temp5,                // (1808) 	neg		sperm_ddx
+  COMMAND_NEG,obj_temp6,                // (1810) 	neg		sperm_ddy
+  COMMAND_DIVI,2,obj_temp3,obj_temp9,   // (1812) 	divi		2,sperm_dx,sperm_vel
+  COMMAND_ADDV,obj_temp9,obj_temp3,     // (1816) 	addv		sperm_vel,sperm_dx
+  COMMAND_DIVI,2,obj_temp4,obj_temp9,   // (1819) 	divi		2,sperm_dy,sperm_vel
+  COMMAND_ADDV,obj_temp9,obj_temp4,     // (1823) 	addv		sperm_vel,sperm_dy
+  COMMAND_RETURN,                       // (1826) 	return
+                                        // (1827) name:	ai_spermicide
+  COMMAND_SHOOTABLE_OFF,                // (1827) 	shootable_off
+  COMMAND_CALL,2001,                    // (1828) 	call		:expanding_polo
+  COMMAND_DIE,                          // (1830) 	die
+  COMMAND_WAIT,                         // (1831) 	wait
+                                        // (1832) name:	ai_tonsl1
+  COMMAND_ON_HIT,1838,                  // (1832) 	on_hit	play_death_frames
+  COMMAND_SETANIMNORMAL,                // (1834) 	setanimnormal
+  COMMAND_JMP,2795,                     // (1835) 	jmp	:spagetti_ai_pingpong
+  COMMAND_WAIT,                         // (1837) 	wait
+                                        // (1838) name:	play_death_frames
+  COMMAND_SETANIMDEATH,                 // (1838) 	setanimdeath
+  COMMAND_JMP,2791,                     // (1839) 	jmp	:spagetti_ai_cycle
+                                        // (1841) equate:	flea_x		obj_temp1
+                                        // (1841) equate:	flea_y		obj_temp2
+                                        // (1841) equate:	flea_x_search	obj_temp3
+                                        // (1841) equate:	flea_y_search	obj_temp4
+                                        // (1841) equate:	flea_dx		obj_temp5
+                                        // (1841) equate:	flea_dy		obj_temp6
+                                        // (1841) equate:	flea_ddx	obj_temp7
+                                        // (1841) equate:	flea_ddy	obj_temp8
+                                        // (1841) equate:	flea_temp	obj_temp9
+                                        // (1841) name:	ai_flea
+                                        // (1841) @move_up
+  COMMAND_STOP,                         // (1841) 	stop
+  COMMAND_SUBI,1,obj_y,                 // (1842) 	subi		1,obj_y
+  COMMAND_UPDATE_XY,                    // (1845) 	update_xy
+  COMMAND_BG_COLLIDE,1841,              // (1846) 	bg_collide	@move_up
+  COMMAND_STOP,                         // (1848) 	stop
+  COMMAND_THREAD,2791,                  // (1849) 	thread		ai_cycle
+  COMMAND_SHL,16,obj_x,obj_temp1,       // (1851) 	shl		16,obj_x,flea_x
+  COMMAND_SHL,16,obj_y,obj_temp2,       // (1855) 	shl		16,obj_y,flea_y
+  COMMAND_MOVEV,obj_temp1,obj_temp3,    // (1859) 	movev		flea_x,flea_x_search
+  COMMAND_MOVEV,obj_temp2,obj_temp4,    // (1862) 	movev		flea_y,flea_y_search
+  COMMAND_MOVERND,8192,obj_temp5,       // (1865) 	movernd		8192,flea_dx
+  COMMAND_ADDI,16384,obj_temp5,         // (1868) 	addi		16384,flea_dx
+  COMMAND_MOVERND,2,obj_temp9,          // (1871) 	movernd		2,flea_temp
+  COMMAND_INDEX_ARRAY,obj_temp9,2754,obj_temp9,// (1874) 	index_array	flea_temp,:plus_or_minus,flea_temp
+  COMMAND_MULV,obj_temp9,obj_temp5,obj_temp5,// (1878) 	mulv		flea_temp,flea_dx,flea_dx	
+  COMMAND_MOVERND,8192,obj_temp6,       // (1882) 	movernd		8192,flea_dy
+  COMMAND_ADDI,16384,obj_temp6,         // (1885) 	addi		16384,flea_dy
+  COMMAND_MOVERND,2,obj_temp9,          // (1888) 	movernd		2,flea_temp
+  COMMAND_INDEX_ARRAY,obj_temp9,2754,obj_temp9,// (1891) 	index_array	flea_temp,:plus_or_minus,flea_temp
+  COMMAND_MULV,obj_temp9,obj_temp6,obj_temp6,// (1895) 	mulv		flea_temp,flea_dy,flea_dy
+  COMMAND_DIVI,64,obj_temp5,obj_temp7,  // (1899) 	divi		64,flea_dx,flea_ddx
+  COMMAND_DIVI,64,obj_temp6,obj_temp8,  // (1903) 	divi		64,flea_dy,flea_ddy
+  COMMAND_MOVEI,0,obj_temp9,            // (1907) 	movei		0,flea_temp
+                                        // (1910) @search
+  COMMAND_STOP,                         // (1910) 	stop
+  COMMAND_ADDV,obj_temp5,obj_temp3,     // (1911) 	addv		flea_dx,flea_x_search	
+  COMMAND_ADDV,obj_temp6,obj_temp4,     // (1914) 	addv		flea_dy,flea_y_search	
+  COMMAND_ADDV,obj_temp7,obj_temp5,     // (1917) 	addv		flea_ddx,flea_dx
+  COMMAND_ADDV,obj_temp8,obj_temp6,     // (1920) 	addv		flea_ddy,flea_dy
+  COMMAND_SHR,16,obj_temp3,obj_x,       // (1923) 	shr		16,flea_x_search,obj_x
+  COMMAND_SHR,16,obj_temp4,obj_y,       // (1927) 	shr		16,flea_y_search,obj_y
+  COMMAND_UPDATE_XY,                    // (1931) 	update_xy
+  COMMAND_BG_COLLIDE,1939,              // (1932) 	bg_collide	@collided
+  COMMAND_ADDI,1,obj_temp9,             // (1934) 	addi		1,flea_temp
+  COMMAND_JMP,1910,                     // (1937) 	jmp		@search
+                                        // (1939) @collided
+                                        // (1939) equate:	polo_r1		obj_temp1
+                                        // (1939) equate:	polo_r2		obj_temp2
+                                        // (1939) equate:	party_dx	obj_temp3
+                                        // (1939) equate:	party_dy	obj_temp4
+                                        // (1939) equate:	party_ddx	obj_temp5
+                                        // (1939) equate:	party_ddy	obj_temp6
+                                        // (1939) equate:	party_0		obj_temp7
+                                        // (1939) name: 	throw_particles
+  COMMAND_MOVEI,0,obj_temp7,            // (1939) 	movei		0,party_0
+  COMMAND_MOVEI,0,obj_temp5,            // (1942) 	movei		0,party_ddx
+  COMMAND_MOVEI,0,obj_temp6,            // (1945) 	movei		0,party_ddy
+  COMMAND_MOVEI,64000,obj_temp3,        // (1948) 	movei		64000,party_dx
+  COMMAND_MOVEI,64000,obj_temp4,        // (1951) 	movei		64000,party_dy
+                                        // (1954) @infinite
+  COMMAND_MOVERND,32000,obj_temp3,      // (1954) 	movernd		32000,party_dx
+  COMMAND_SHL,2,obj_temp3,obj_temp3,    // (1957) 	shl		2,party_dx,party_dx
+  COMMAND_SUBI,64000,obj_temp3,         // (1961) 	subi		64000,party_dx
+  COMMAND_MOVERND,32000,obj_temp4,      // (1964) 	movernd		32000,party_dy
+  COMMAND_SHL,2,obj_temp4,obj_temp4,    // (1967) 	shl		2,party_dy,party_dy
+  COMMAND_SUBI,64000,obj_temp4,         // (1971) 	subi		64000,party_dy
+  COMMAND_SHR,7,obj_temp3,obj_temp5,    // (1974) 	shr		7,party_dx,party_ddx
+  COMMAND_SHR,7,obj_temp4,obj_temp6,    // (1978) 	shr		7,party_dy,party_ddy
+  COMMAND_ADD_PARTICLE,obj_x,obj_y,obj_temp3,obj_temp4,obj_temp5,obj_temp6,// (1982) 	add_particle	obj_x,obj_y,party_dx,party_dy,party_ddx,party_ddy
+  COMMAND_STOP,                         // (1989) 	stop
+  COMMAND_JMP,1954,                     // (1990) 	jmp		@infinite
+                                        // (1992) name:	ai_polo
+  COMMAND_SHOOTABLE_OFF,                // (1992) 	shootable_off
+  COMMAND_THREAD,1939,                  // (1993) 	thread		throw_particles
+  COMMAND_THREAD,2780,                  // (1995) 	thread		ai_none
+  COMMAND_CALL,2001,                    // (1997) 	call		:expanding_polo
+  COMMAND_SHOOTABLE_ON,                 // (1999) 	shootable_on
+  COMMAND_WAIT,                         // (2000) 	wait
+                                        // (2001) :expanding_polo
+  COMMAND_MOVEI,16,obj_temp1,           // (2001) 	movei		16,polo_r1
+  COMMAND_MOVEI,12,obj_temp2,           // (2004) 	movei		12,polo_r2
+                                        // (2007) @loop1
+  COMMAND_STOP,                         // (2007) 	stop
+  COMMAND_ADDI,3,obj_temp1,             // (2008) 	addi		3,polo_r1
+  COMMAND_ADDI,1,obj_temp2,             // (2011) 	addi		1,polo_r2
+  COMMAND_ADD_POLO,obj_temp1,obj_temp2,obj_x,obj_y,// (2014) 	add_polo	polo_r1,polo_r2,obj_x,obj_y
+  COMMAND_IFLTI,48,obj_temp1,2007,      // (2019) 	iflti		48,polo_r1,@loop1
+                                        // (2023) @loop2
+  COMMAND_STOP,                         // (2023) 	stop
+  COMMAND_ADDI,1,obj_temp1,             // (2024) 	addi		1,polo_r1
+  COMMAND_ADDI,3,obj_temp2,             // (2027) 	addi		3,polo_r2
+  COMMAND_ADD_POLO,obj_temp1,obj_temp2,obj_x,obj_y,// (2030) 	add_polo	polo_r1,polo_r2,obj_x,obj_y
+  COMMAND_IFLTV,obj_temp1,obj_temp2,2023,// (2035) 	ifltv		polo_r1,polo_r2,@loop2
+  COMMAND_RETURN,                       // (2039) 	return
+                                        // (2040) name:	ai_dissolve
+  COMMAND_GET_RET,obj_temp1,            // (2040) 	get_ret	obj_temp1
+  COMMAND_SET_RET,obj_temp1,            // (2042) 	set_ret	obj_temp1
+  COMMAND_MOVEI,24,obj_temp3,           // (2044) 	movei	24,obj_temp3
+  COMMAND_MOVEI,12,obj_temp4,           // (2047) 	movei	12,obj_temp4
+                                        // (2050) @next
+  COMMAND_MOVEV,obj_temp3,obj_temp1,    // (2050) 	movev	obj_temp3,obj_temp1
+  COMMAND_MOVEV,obj_temp4,obj_temp2,    // (2053) 	movev	obj_temp4,obj_temp2
+  COMMAND_VISIBLE_ON,                   // (2056) 	visible_on
+  COMMAND_PAUSE,obj_temp1,              // (2057) 	pause	obj_temp1
+  COMMAND_VISIBLE_OFF,                  // (2059) 	visible_off
+  COMMAND_PAUSE,obj_temp2,              // (2060) 	pause	obj_temp2
+  COMMAND_SUBI,2,obj_temp3,             // (2062) 	subi	2,obj_temp3
+  COMMAND_SUBI,1,obj_temp4,             // (2065) 	subi	1,obj_temp4
+  COMMAND_IFGTI,0,obj_temp4,2050,       // (2068) 	ifgti	0,obj_temp4,@next
+  COMMAND_DIE,                          // (2072) 	die
+  COMMAND_WAIT,                         // (2073) 	wait
+                                        // (2074) equate:	path_x		obj_temp1
+                                        // (2074) equate:	path_y		obj_temp2
+                                        // (2074) equate:	path_dx		obj_temp3
+                                        // (2074) equate:	path_dy		obj_temp4
+                                        // (2074) equate: path_steps	obj_temp5
+                                        // (2074) equate: path_x1		obj_temp6
+                                        // (2074) equate: path_y1		obj_temp7
+                                        // (2074) equate: path_x2		obj_temp8
+                                        // (2074) equate: path_y2		obj_temp9
+                                        // (2074) equate: path_0		obj_temp10
+                                        // (2074) name:	ai_path
+  COMMAND_ON_HIT,2329,                  // (2074) 	on_hit		ai_spiral
+  COMMAND_MOVEI,0,obj_temp10,           // (2076) 	movei		0,path_0
+  COMMAND_THREAD,2791,                  // (2079) 	thread		ai_cycle
+                                        // (2081) @loop
+  COMMAND_STOP,                         // (2081) 	stop
+  COMMAND_ANIMSPEED,1,                  // (2082) 	animspeed	1
+  COMMAND_MOVEI,100,obj_temp5,          // (2084) 	movei		100,path_steps
+  COMMAND_PAUSE,obj_temp5,              // (2087) 	pause		path_steps
+  COMMAND_ANIMSPEED,4,                  // (2089) 	animspeed	4
+  COMMAND_NEXT_NODE,obj_temp3,obj_temp4,obj_temp5,// (2091) 	next_node	path_dx,path_dy,path_steps
+  COMMAND_SHL,16,obj_x,obj_temp1,       // (2095) 	shl		16,obj_x,path_x
+  COMMAND_SHL,16,obj_y,obj_temp2,       // (2099) 	shl		16,obj_y,path_y
+                                        // (2103) @move
+  COMMAND_STOP,                         // (2103) 	stop
+  COMMAND_ADDV,obj_temp3,obj_temp1,     // (2104) 	addv		path_dx,path_x
+  COMMAND_ADDV,obj_temp4,obj_temp2,     // (2107) 	addv		path_dy,path_y
+  COMMAND_SHR,16,obj_temp1,obj_x,       // (2110) 	shr		16,path_x,obj_x
+  COMMAND_SHR,16,obj_temp2,obj_y,       // (2114) 	shr		16,path_y,obj_y
+  COMMAND_UPDATE_XY,                    // (2118) 	update_xy
+  COMMAND_SUBI,1,obj_temp5,             // (2119) 	subi		1,path_steps
+  COMMAND_IFGTI,0,obj_temp5,2103,       // (2122) 	ifgti		0,path_steps,@move
+  COMMAND_JMP,2081,                     // (2126) 	jmp		@loop
+  COMMAND_WAIT,                         // (2128) 	wait
+                                        // (2129) equate:	test_x		obj_temp1
+                                        // (2129) equate:	test_y		obj_temp2
+                                        // (2129) equate:	test_dx		obj_temp3
+                                        // (2129) equate:	test_dy		obj_temp4
+                                        // (2129) equate:	test_ddx	obj_temp5
+                                        // (2129) equate:	test_ddy	obj_temp6
+                                        // (2129) name:	ai_test
+  COMMAND_MOVEI,0,obj_temp5,            // (2129) 	movei		0,test_ddx
+  COMMAND_MOVEI,0,obj_temp6,            // (2132) 	movei		0,test_ddy
+                                        // (2135) @again
+  COMMAND_MOVEI,16-1,obj_temp4,         // (2135) 	movei		16-1,test_dy
+                                        // (2138) @next_y
+  COMMAND_STOP,                         // (2138) 	stop
+  COMMAND_MOVEI,16-1,obj_temp3,         // (2139) 	movei		16-1,test_dx
+                                        // (2142) @next_x
+  COMMAND_STOP,                         // (2142) 	stop
+  COMMAND_MOVEV,obj_x,obj_temp1,        // (2143) 	movev		obj_x,test_x
+  COMMAND_MOVEV,obj_y,obj_temp2,        // (2146) 	movev		obj_y,test_y
+  COMMAND_ADDV,obj_temp3,obj_temp1,     // (2149) 	addv		test_dx,test_x
+  COMMAND_ADDV,obj_temp4,obj_temp2,     // (2152) 	addv		test_dy,test_y
+  COMMAND_POINT_COLLISION,obj_temp1,obj_temp2,2169,// (2155) 	point_collision	test_x,test_y,@bad
+  COMMAND_SUBI,16,obj_temp1,            // (2159) 	subi		16,test_x
+  COMMAND_ADD_PARTICLE,obj_temp1,obj_temp2,obj_temp5,obj_temp6,obj_temp5,obj_temp6,// (2162) 	add_particle	test_x,test_y,test_ddx,test_ddy,test_ddx,test_ddy
+                                        // (2169) @bad
+  COMMAND_SUBI,1,obj_temp3,             // (2169) 	subi		1,test_dx
+  COMMAND_IFGTI,-16,obj_temp3,2142,     // (2172) 	ifgti		-16,test_dx,@next_x
+  COMMAND_SUBI,1,obj_temp4,             // (2176) 	subi		1,test_dy
+  COMMAND_IFGTI,-16,obj_temp4,2138,     // (2179) 	ifgti		-16,test_dy,@next_y
+  COMMAND_JMP,2135,                     // (2183) 	jmp		@again
+                                        // (2185) name:	ai_floppy
+  COMMAND_THREAD,2795,                  // (2185) 	thread	ai_pingpong
+  COMMAND_ON_HIT,2190,                  // (2187) 	on_hit	ai_floppy_sparks
+  COMMAND_WAIT,                         // (2189) 	wait
+                                        // (2190) name:	ai_floppy_sparks
+  COMMAND_SHOOTABLE_OFF,                // (2190) 	shootable_off
+  COMMAND_MOVEI,32,obj_temp1,           // (2191) 	movei		32,obj_temp1
+  COMMAND_PAUSE,obj_temp1,              // (2194) 	pause		obj_temp1
+  COMMAND_SHOOTABLE_ON,                 // (2196) 	shootable_on
+  COMMAND_WAIT,                         // (2197) 	wait
+                                        // (2198) name:	ai_flop_exp
+  COMMAND_ANIMSPEED,2,                  // (2198) 	animspeed	2
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2200) 	animplayforwardonce
+  COMMAND_DIE,                          // (2201) 	die
+  COMMAND_WAIT,                         // (2202) 	wait
+                                        // (2203) equate:	pods_x		obj_temp5
+                                        // (2203) equate:	pods_y		obj_temp6
+                                        // (2203) equate:	pods_dx		obj_temp7
+                                        // (2203) equate:	pods_dy		obj_temp8
+                                        // (2203) equate:	pods_ddx	obj_temp9
+                                        // (2203) equate:	pods_ddy	obj_temp10
+                                        // (2203) name:	ai_pod
+                                        // (2203) @restart
+  COMMAND_THREAD,2780,                  // (2203) 	thread		ai_none
+  COMMAND_MOVEI,0,obj_temp1,            // (2205) 	movei		0,obj_temp1
+  COMMAND_VISIBLE_ON,                   // (2208) 	visible_on
+                                        // (2209) @wait
+  COMMAND_STOP,                         // (2209) 	stop
+  COMMAND_INRANGE,128*128,2215,         // (2210) 	inrange		128*128,@ready
+  COMMAND_JMP,2209,                     // (2213) 	jmp		@wait
+                                        // (2215) @ready
+  COMMAND_MOVEI,1,obj_temp1,            // (2215) 	movei		1,obj_temp1
+  COMMAND_THREAD,2781,                  // (2218) 	thread		ai_flash
+                                        // (2220) @flash
+  COMMAND_STOP,                         // (2220) 	stop
+  COMMAND_IFEQI,2,obj_temp1,2230,       // (2221) 	ifeqi		2,obj_temp1,@wait_to_be_dropped
+  COMMAND_INRANGE,160*160,2220,         // (2225) 	inrange		160*160,@flash
+  COMMAND_JMP,2203,                     // (2228) 	jmp		@restart
+                                        // (2230) @wait_to_be_dropped
+  COMMAND_VISIBLE_ON,                   // (2230) 	visible_on
+  COMMAND_THREAD,2780,                  // (2231) 	thread		ai_none
+  COMMAND_STOP,                         // (2233) 	stop
+  COMMAND_IFEQI,2,obj_temp1,2230,       // (2234) 	ifeqi		2,obj_temp1,@wait_to_be_dropped
+  COMMAND_SHL,16,obj_x,obj_temp5,       // (2238) 	shl		16,obj_x,pods_x
+  COMMAND_SHL,16,obj_y,obj_temp6,       // (2242) 	shl		16,obj_y,pods_y
+                                        // (2246) @fall
+  COMMAND_STOP,                         // (2246) 	stop
+  COMMAND_ADDV,obj_temp7,obj_temp5,     // (2247) 	addv		pods_dx,pods_x
+  COMMAND_ADDV,obj_temp8,obj_temp6,     // (2250) 	addv		pods_dy,pods_y
+  COMMAND_ADDV,obj_temp9,obj_temp7,     // (2253) 	addv		pods_ddx,pods_dx
+  COMMAND_ADDV,obj_temp10,obj_temp8,    // (2256) 	addv		pods_ddy,pods_dy
+  COMMAND_SHR,16,obj_temp5,obj_x,       // (2259) 	shr		16,pods_x,obj_x
+  COMMAND_SHR,16,obj_temp6,obj_y,       // (2263) 	shr		16,pods_y,obj_y
+  COMMAND_UPDATE_XY,                    // (2267) 	update_xy
+  COMMAND_BG_COLLIDE,2272,              // (2268) 	bg_collide	@restore
+  COMMAND_JMP,2246,                     // (2270) 	jmp		@fall
+                                        // (2272) @restore
+  COMMAND_SUBV,obj_temp7,obj_temp5,     // (2272) 	subv		pods_dx,pods_x
+  COMMAND_SUBV,obj_temp8,obj_temp6,     // (2275) 	subv		pods_dy,pods_y
+  COMMAND_SHR,16,obj_temp5,obj_x,       // (2278) 	shr		16,pods_x,obj_x
+  COMMAND_SHR,16,obj_temp6,obj_y,       // (2282) 	shr		16,pods_y,obj_y
+  COMMAND_UPDATE_XY,                    // (2286) 	update_xy
+  COMMAND_JMP,2203,                     // (2287) 	jmp		@restart	
+                                        // (2289) equate:	starfsh_command		obj_temp1
+                                        // (2289) name:	ai_starfsh
+  COMMAND_ON_HIT,2329,                  // (2289) 	on_hit		ai_spiral
+  COMMAND_THREAD,2791,                  // (2291) 	thread		ai_cycle
+  COMMAND_ADOPT_INRANGE_CHILD,64*64,    // (2293) 	adopt_inrange_child	64*64
+  COMMAND_SET_ANGLE,obj_temp3,          // (2295) 	set_angle	obj_temp3
+  COMMAND_IFEQI,0,obj_children,2316,    // (2297) 	ifeqi		0,obj_children,@star_child
+                                        // (2301) @start
+  COMMAND_MOVEI,0,obj_temp1,            // (2301) 	movei		0,starfsh_command
+                                        // (2304) @hang
+  COMMAND_STOP,                         // (2304) 	stop
+  COMMAND_INRANGE,256*256,2310,         // (2305) 	inrange		256*256,@ready
+  COMMAND_JMP,2304,                     // (2308) 	jmp		@hang
+                                        // (2310) @ready
+  COMMAND_MOVEI,1,obj_temp1,            // (2310) 	movei		1,starfsh_command
+  COMMAND_STOP,                         // (2313) 	stop
+  COMMAND_JMP,2301,                     // (2314) 	jmp		@start
+                                        // (2316) @star_child
+  COMMAND_STOP,                         // (2316) 	stop
+  COMMAND_GET_QUEENS,obj_temp1,         // (2317) 	get_queens	starfsh_command
+  COMMAND_IFEQI,0,obj_temp1,2316,       // (2319) 	ifeqi		0,starfsh_command,@star_child
+  COMMAND_ADDI,1,obj_y,                 // (2323) 	addi		1,obj_y
+  COMMAND_UPDATE_XY,                    // (2326) 	update_xy
+  COMMAND_JMP,2316,                     // (2327) 	jmp		@star_child
+                                        // (2329) equate:	spiral_iter	obj_temp1
+                                        // (2329) equate:	spiral_vel	obj_temp2
+                                        // (2329) equate:	spiral_dangle	obj_temp3
+                                        // (2329) equate:	spiral_spawn	obj_temp4
+                                        // (2329) equate:	spiral_dx	obj_temp5
+                                        // (2329) equate:	spiral_dy	obj_temp6
+                                        // (2329) equate:	spiral_ddx	obj_temp7
+                                        // (2329) equate:	spiral_ddy	obj_temp8
+                                        // (2329) equate:	SPIRAL_ITS	64
+                                        // (2329) equate:	SPIRAL_ICOUNT	4*2
+                                        // (2329) equate:	SPIRAL_ADD_A	64/2
+                                        // (2329) equate:	SPIRAL_ADD_B	(16+1)
+                                        // (2329) equate:	SPIRAL_RND	32767
+                                        // (2329) equate:	SPIRAL_CONST	66666
+                                        // (2329) equate:	SPIRAL_SHIFT	6
+                                        // (2329) name:	ai_spiral
+  COMMAND_GET_PLAYER_ID,obj_temp1,      // (2329) 	get_player_id	obj_temp1
+  COMMAND_GET_ANGLE_TO_ID,obj_temp1,    // (2331) 	get_angle_to_id	obj_temp1
+  COMMAND_MOVEI,0,obj_temp1,            // (2333) 	movei		0,obj_temp1
+  COMMAND_SET_ANGLE,obj_temp1,          // (2336) 	set_angle	obj_temp1
+  COMMAND_STOP,                         // (2338) 	stop
+  COMMAND_MOVEI,64,obj_temp1,           // (2339) 	movei		SPIRAL_ITS,obj_temp1
+                                        // (2342) @next
+  COMMAND_STOP,                         // (2342) 	stop
+  COMMAND_MOVEI,64/2,obj_temp3,         // (2343) 	movei		SPIRAL_ADD_A,spiral_dangle
+  COMMAND_MOVERND,32767,obj_temp2,      // (2346) 	movernd		SPIRAL_RND,spiral_vel
+  COMMAND_ADDI,66666,obj_temp2,         // (2349) 	addi		SPIRAL_CONST,spiral_vel
+  COMMAND_MOVEI,4*2,obj_temp4,          // (2352) 	movei		SPIRAL_ICOUNT,spiral_spawn
+                                        // (2355) @spawn
+  COMMAND_ADD_TO_ANGLE,obj_temp3,       // (2355) 	add_to_angle	spiral_dangle
+  COMMAND_SET_VEL,obj_temp2,obj_temp5,obj_temp6,// (2357) 	set_vel		spiral_vel,spiral_dx,spiral_dy
+  COMMAND_SHR,6,obj_temp5,obj_temp7,    // (2361) 	shr		SPIRAL_SHIFT,spiral_dx,spiral_ddx
+  COMMAND_SHR,6,obj_temp6,obj_temp8,    // (2365) 	shr		SPIRAL_SHIFT,spiral_dy,spiral_ddy
+  COMMAND_NEG,obj_temp7,                // (2369) 	neg		spiral_ddx
+  COMMAND_NEG,obj_temp8,                // (2371) 	neg		spiral_ddy
+  COMMAND_ADD_PARTICLE,obj_x,obj_y,obj_temp5,obj_temp6,obj_temp7,obj_temp8,// (2373) 	add_particle	obj_x,obj_y,spiral_dx,spiral_dy,spiral_ddx,spiral_ddy
+  COMMAND_SUBI,1,obj_temp4,             // (2380) 	subi		1,spiral_spawn
+  COMMAND_IFGTI,0,obj_temp4,2355,       // (2383) 	ifgti		0,spiral_spawn,@spawn
+  COMMAND_MOVEI,(16+1),obj_temp3,       // (2387) 	movei		SPIRAL_ADD_B,spiral_dangle
+  COMMAND_ADD_TO_ANGLE,obj_temp3,       // (2390) 	add_to_angle	spiral_dangle
+  COMMAND_SUBI,1,obj_temp1,             // (2392) 	subi		1,spiral_iter
+  COMMAND_IFGTI,0,obj_temp1,2342,       // (2395) 	ifgti		0,spiral_iter,@next
+  COMMAND_DIE,                          // (2399) 	die
+  COMMAND_WAIT,                         // (2400) 	wait
+                                        // (2401) equate:	swarm_x		obj_temp1
+                                        // (2401) equate:	swarm_y		obj_temp2
+                                        // (2401) equate:	swarm_dx	obj_temp3
+                                        // (2401) equate:	swarm_dy	obj_temp4
+                                        // (2401) equate:	swarm_ddx	obj_temp5
+                                        // (2401) equate:	swarm_ddy	obj_temp6
+                                        // (2401) equate:	swarm_counter	obj_temp7
+                                        // (2401) equate:	swarm_temp	obj_temp8
+                                        // (2401) equate:	swarm_temp2	obj_temp9
+                                        // (2401) equate: swarm_speed	obj_temp10
+                                        // (2401) name:	ai_swarm
+  COMMAND_BG_COLLIDE,2781,              // (2401) 	bg_collide	:spagetti_ai_flash
+  COMMAND_ON_HIT,2809,                  // (2403) 	on_hit		ai_remove
+  COMMAND_THREAD,2516,                  // (2405) 	thread		ai_tad_anim
+  COMMAND_MOVEI,0,obj_temp5,            // (2407) 	movei		0,swarm_ddx
+  COMMAND_MOVEI,0,obj_temp6,            // (2410) 	movei		0,swarm_ddy
+  COMMAND_ADOPT_INRANGE_CHILD,256*256,  // (2413) 	adopt_inrange_child	256*256
+  COMMAND_STOP,                         // (2415) 	stop
+  COMMAND_GET_QUEEN_ID,obj_temp8,       // (2416)  	get_queen_id	swarm_temp
+  COMMAND_GET_ANGLE_TO_ID,obj_temp8,    // (2418) 	get_angle_to_id	swarm_temp
+                                        // (2420) @swarm_question
+  COMMAND_MOVEI,0,obj_temp3,            // (2420) 	movei		0,swarm_dx
+  COMMAND_MOVEI,0,obj_temp4,            // (2423) 	movei		0,swarm_dy
+  COMMAND_MOVEI,0,obj_temp10,           // (2426) 	movei		0,swarm_speed
+  COMMAND_IFEQI,0,obj_children,2449,    // (2429) 	ifeqi		0,obj_children,@swarm_child
+                                        // (2433) @swarm_follow
+  COMMAND_STOP,                         // (2433) 	stop
+  COMMAND_GET_VECTOR,obj_temp3,obj_temp4,// (2434) 	get_vector	swarm_dx,swarm_dy
+  COMMAND_ADDV,obj_temp3,obj_x,         // (2437) 	addv		swarm_dx,obj_x
+  COMMAND_ADDV,obj_temp4,obj_y,         // (2440) 	addv		swarm_dy,obj_y
+  COMMAND_UPDATE_XY,                    // (2443) 	update_xy
+  COMMAND_JMP,2433,                     // (2444) 	jmp		@swarm_follow
+  COMMAND_STOP,                         // (2446) 	stop
+  COMMAND_JMP,2463,                     // (2447) 	jmp		@swarm_make_vel
+                                        // (2449) @swarm_child
+  COMMAND_STOP,                         // (2449) 	stop
+  COMMAND_MOVERND,256,obj_temp10,       // (2450) 	movernd		256,swarm_speed
+  COMMAND_ADDI,128,obj_temp10,          // (2453) 	addi		128,swarm_speed
+  COMMAND_MOVEI,256,obj_temp10,         // (2456) 	movei		256,swarm_speed
+  COMMAND_SET_VEL,obj_temp10,obj_temp3,obj_temp4,// (2459) 	set_vel		swarm_speed,swarm_dx,swarm_dy
+                                        // (2463) @swarm_make_vel
+  COMMAND_SHL,8,obj_x,obj_temp1,        // (2463) 	shl		8,obj_x,swarm_x
+  COMMAND_SHL,8,obj_y,obj_temp2,        // (2467) 	shl		8,obj_y,swarm_y
+  COMMAND_MOVEI,64,obj_temp7,           // (2471) 	movei		64,swarm_counter
+                                        // (2474) @swarm_move
+  COMMAND_STOP,                         // (2474) 	stop
+  COMMAND_IFGEI,16,obj_temp7,2492,      // (2475) 	ifgei		16,swarm_counter,@swarm_skip
+  COMMAND_GET_QUEEN_ID,obj_temp8,       // (2479) 	get_queen_id	swarm_temp
+  COMMAND_GET_ROTATION_TO_ID,obj_temp8,obj_temp5,// (2481) 	get_rotation_to_id	swarm_temp,swarm_ddx
+                                        // (2484) @no_fetch
+  COMMAND_ADD_TO_ANGLE,obj_temp5,       // (2484) 	add_to_angle	swarm_ddx
+  COMMAND_ADD_TO_ANGLE,obj_temp5,       // (2486) 	add_to_angle	swarm_ddx
+  COMMAND_SET_VEL,obj_temp10,obj_temp3,obj_temp4,// (2488) 	set_vel		swarm_speed,swarm_dx,swarm_dy
+                                        // (2492) @swarm_skip
+  COMMAND_ADDV,obj_temp3,obj_temp1,     // (2492) 	addv		swarm_dx,swarm_x
+  COMMAND_ADDV,obj_temp4,obj_temp2,     // (2495) 	addv		swarm_dy,swarm_y
+  COMMAND_SHR,8,obj_temp1,obj_x,        // (2498) 	shr		8,swarm_x,obj_x
+  COMMAND_SHR,8,obj_temp2,obj_y,        // (2502) 	shr		8,swarm_y,obj_y
+  COMMAND_UPDATE_XY,                    // (2506) 	update_xy
+  COMMAND_SUBI,1,obj_temp7,             // (2507) 	subi		1,swarm_counter
+  COMMAND_IFNEI,0,obj_temp7,2474,       // (2510) 	ifnei		0,swarm_counter,@swarm_move
+  COMMAND_JMP,2420,                     // (2514) 	jmp		@swarm_question
+                                        // (2516) name:	ai_tad_anim
+  COMMAND_MOVEI,0,obj_temp9,            // (2516) 	movei		0,swarm_temp2
+  COMMAND_MOVEI,0,obj_temp6,            // (2519) 	movei		0,swarm_ddy
+                                        // (2522) @loop
+  COMMAND_GET_ANGLE,obj_temp8,          // (2522) 	get_angle	swarm_temp
+  COMMAND_SHR,2,obj_temp8,obj_temp8,    // (2524) 	shr		2,swarm_temp,swarm_temp
+  COMMAND_ADDI,16,obj_temp8,            // (2528) 	addi		16,swarm_temp
+  COMMAND_IFLEI,64,obj_temp8,2538,      // (2531) 	iflei		64,swarm_temp,@no_problemo	; Attempted fix
+  COMMAND_SUBI,64,obj_temp8,            // (2535) 	subi		64,swarm_temp
+                                        // (2538) @no_problemo
+  COMMAND_NEG,obj_temp8,                // (2538) 	neg		swarm_temp
+  COMMAND_ADDI,64,obj_temp8,            // (2540) 	addi		64,swarm_temp
+  COMMAND_ADDI,64,obj_temp9,            // (2543) 	addi		64,swarm_temp2
+  COMMAND_IFLTI,64*3,obj_temp9,2553,    // (2546) 	iflti		64*3,swarm_temp2,@ok
+  COMMAND_MOVEI,0,obj_temp9,            // (2550) 	movei		0,swarm_temp2
+                                        // (2553) @ok
+  COMMAND_ADDV,obj_temp9,obj_temp8,     // (2553) 	addv		swarm_temp2,swarm_temp
+  COMMAND_SET_FRAME,obj_temp8,          // (2556) 	set_frame	swarm_temp
+  COMMAND_STOP,                         // (2558) 	stop
+  COMMAND_JMP,2522,                     // (2559) 	jmp		@loop
+                                        // (2561) equate:	tad_x		obj_temp1
+                                        // (2561) equate:	tad_y		obj_temp2
+                                        // (2561) equate:	tad_x_furthur	obj_temp3
+                                        // (2561) equate:	tad_y_furthur	obj_temp4
+                                        // (2561) equate:	tad_dx		obj_temp5
+                                        // (2561) equate:	tad_dy		obj_temp6
+                                        // (2561) equate:	tad_ddx		obj_temp7
+                                        // (2561) equate:	tad_ddy		obj_temp8
+                                        // (2561) equate:	tad_search_dist	obj_temp9
+                                        // (2561) equate:	tad_counter	obj_temp10
+                                        // (2561) equate:	tad_done	obj_temp11
+                                        // (2561) equate:	tad_first	obj_temp12
+                                        // (2561) equate:	tad_last	obj_temp13
+                                        // (2561) equate: TAD_AHEAD_DIST	8
+                                        // (2561) equate: TAD_MIN_SPEED	192
+                                        // (2561) equate: TAD_RND_SPEED	128
+                                        // (2561) name:	ai_tad_cycle
+  COMMAND_GETANIMRANGE,obj_temp12,obj_temp13,// (2561) 	getanimrange	tad_first,tad_last
+                                        // (2564) @again
+  COMMAND_STOP,                         // (2564) 	stop
+  COMMAND_IFNEI,1,obj_temp11,2564,      // (2565) 	ifnei		1,tad_done,@again
+  COMMAND_SET_FRAME,obj_temp12,         // (2569) 	set_frame	tad_first
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2571) 	animplayforwardonce
+  COMMAND_MOVEI,2,obj_temp11,           // (2572) 	movei		2,tad_done
+  COMMAND_JMP,2564,                     // (2575) 	jmp		@again
+                                        // (2577) name: 	ai_tad
+  COMMAND_UPDATE_XY,                    // (2577) 	update_xy
+  COMMAND_BG_COLLIDE,2781,              // (2578) 	bg_collide	:spagetti_ai_flash
+  COMMAND_ON_HIT,2758,                  // (2580) 	on_hit		ai_tad_hit
+  COMMAND_THREAD,2561,                  // (2582) 	thread		ai_tad_cycle
+  COMMAND_SHL,8,obj_x,obj_temp1,        // (2584) 	shl		8,obj_x,tad_x
+  COMMAND_SHL,8,obj_y,obj_temp2,        // (2588) 	shl		8,obj_y,tad_y
+  COMMAND_MOVEI,8,obj_temp9,            // (2592) 	movei		TAD_AHEAD_DIST,tad_search_dist
+                                        // (2595) @tad_start
+  COMMAND_MOVEI,0,obj_temp11,           // (2595) 	movei		0,tad_done
+  COMMAND_SUBI,1,obj_temp9,             // (2598) 	subi		1,tad_search_dist
+  COMMAND_MOVEV,obj_temp1,obj_temp3,    // (2601) 	movev		tad_x,tad_x_furthur
+  COMMAND_MOVEV,obj_temp2,obj_temp4,    // (2604) 	movev		tad_y,tad_y_furthur
+  COMMAND_SHR,8,obj_temp1,obj_x,        // (2607) 	shr		8,tad_x,obj_x
+  COMMAND_SHR,8,obj_temp2,obj_y,        // (2611) 	shr		8,tad_y,obj_y
+  COMMAND_UPDATE_XY,                    // (2615) 	update_xy
+                                        // (2616) @tad_wait
+  COMMAND_STOP,                         // (2616) 	stop
+  COMMAND_INRANGE,512*512,2622,         // (2617) 	inrange		512*512,@tad_go
+  COMMAND_JMP,2616,                     // (2620) 	jmp		@tad_wait
+                                        // (2622) @tad_go
+  COMMAND_MOVERND,2,obj_temp7,          // (2622) 	movernd		2,tad_ddx
+  COMMAND_INDEX_ARRAY,obj_temp7,2754,obj_temp7,// (2625) 	index_array	tad_ddx,:plus_or_minus,tad_ddx
+  COMMAND_MOVERND,192,obj_temp5,        // (2629) 	movernd		TAD_MIN_SPEED,tad_dx
+  COMMAND_ADDI,128,obj_temp5,           // (2632) 	addi		TAD_RND_SPEED,tad_dx
+  COMMAND_MULV,obj_temp7,obj_temp5,obj_temp5,// (2635) 	mulv		tad_ddx,tad_dx,tad_dx
+  COMMAND_MOVERND,2,obj_temp8,          // (2639) 	movernd		2,tad_ddy
+  COMMAND_INDEX_ARRAY,obj_temp8,2754,obj_temp8,// (2642) 	index_array	tad_ddy,:plus_or_minus,tad_ddy
+  COMMAND_MOVERND,192,obj_temp6,        // (2646) 	movernd		TAD_MIN_SPEED,tad_dy
+  COMMAND_ADDI,128,obj_temp6,           // (2649) 	addi		TAD_RND_SPEED,tad_dy
+  COMMAND_MULV,obj_temp8,obj_temp6,obj_temp6,// (2652) 	mulv		tad_ddy,tad_dy,tad_dy
+  COMMAND_NEG,obj_temp7,                // (2656) 	neg		tad_ddx
+  COMMAND_NEG,obj_temp8,                // (2658) 	neg		tad_ddy
+  COMMAND_MOVEV,obj_temp9,obj_temp10,   // (2660) 	movev		tad_search_dist,tad_counter
+                                        // (2663) @tad_scan
+  COMMAND_STOP,                         // (2663) 	stop
+  COMMAND_ADDV,obj_temp5,obj_temp3,     // (2664) 	addv		tad_dx,tad_x_furthur
+  COMMAND_ADDV,obj_temp6,obj_temp4,     // (2667) 	addv		tad_dy,tad_y_furthur
+  COMMAND_SHR,8,obj_temp3,obj_x,        // (2670) 	shr		8,tad_x_furthur,obj_x
+  COMMAND_SHR,8,obj_temp4,obj_y,        // (2674) 	shr		8,tad_y_furthur,obj_y
+  COMMAND_UPDATE_XY,                    // (2678) 	update_xy
+  COMMAND_BG_COLLIDE,2595,              // (2679) 	bg_collide	:tad_start
+  COMMAND_SHR,8,obj_temp1,obj_x,        // (2681) 	shr		8,tad_x,obj_x
+  COMMAND_SHR,8,obj_temp2,obj_y,        // (2685) 	shr		8,tad_y,obj_y
+  COMMAND_UPDATE_XY,                    // (2689) 	update_xy
+  COMMAND_SUBI,1,obj_temp10,            // (2690) 	subi		1,tad_counter
+  COMMAND_IFGTI,0,obj_temp10,2663,      // (2693) 	ifgti		0,tad_counter,@tad_scan
+  COMMAND_MOVEI,1,obj_temp11,           // (2697) 	movei		1,tad_done
+  COMMAND_MOVERND,64,obj_temp10,        // (2700) 	movernd		64,tad_counter
+  COMMAND_ADDI,48,obj_temp10,           // (2703) 	addi		48,tad_counter
+                                        // (2706) @tad_move
+  COMMAND_STOP,                         // (2706) 	stop
+  COMMAND_ADDV,obj_temp5,obj_temp1,     // (2707) 	addv		tad_dx,tad_x
+  COMMAND_ADDV,obj_temp6,obj_temp2,     // (2710) 	addv		tad_dy,tad_y
+  COMMAND_ADDV,obj_temp5,obj_temp3,     // (2713) 	addv		tad_dx,tad_x_furthur
+  COMMAND_ADDV,obj_temp6,obj_temp4,     // (2716) 	addv		tad_dy,tad_y_furthur
+  COMMAND_ADDV,obj_temp7,obj_temp5,     // (2719) 	addv		tad_ddx,tad_dx
+  COMMAND_ADDV,obj_temp8,obj_temp6,     // (2722) 	addv		tad_ddy,tad_dy
+  COMMAND_SHR,8,obj_temp3,obj_x,        // (2725) 	shr		8,tad_x_furthur,obj_x
+  COMMAND_SHR,8,obj_temp4,obj_y,        // (2729) 	shr		8,tad_y_furthur,obj_y
+  COMMAND_UPDATE_XY,                    // (2733) 	update_xy
+  COMMAND_BG_COLLIDE,2595,              // (2734) 	bg_collide	:tad_start
+  COMMAND_SHR,8,obj_temp1,obj_x,        // (2736) 	shr		8,tad_x,obj_x
+  COMMAND_SHR,8,obj_temp2,obj_y,        // (2740) 	shr		8,tad_y,obj_y
+  COMMAND_UPDATE_XY,                    // (2744) 	update_xy
+  COMMAND_IFNEI,2,obj_temp11,2706,      // (2745) 	ifnei		2,tad_done,@tad_move
+  COMMAND_MOVEI,8,obj_temp9,            // (2749) 	movei		TAD_AHEAD_DIST,tad_search_dist
+  COMMAND_JMP,2595,                     // (2752) 	jmp		@tad_start
+                                        // (2754) :plus_or_minus	
+  COMMAND_ARRAY,2,-1,1,                 // (2754) 	array	2,-1,1
+                                        // (2758) name:	ai_tad_hit
+  COMMAND_ANIMSPEED,0,                  // (2758) 	animspeed	0
+                                        // (2760) @loop
+  COMMAND_SETANIMNORMAL,                // (2760)      	setanimnormal
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2761) 	animplayforwardonce
+  COMMAND_JMP,2760,                     // (2762) 	jmp	@loop
+                                        // (2764) name: ai_star
+                                        // (2764) @loop
+  COMMAND_SETANIMLEFT,                  // (2764) 	setanimleft
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2765) 	animplayforwardonce
+  COMMAND_SETANIMRIGHT,                 // (2766) 	setanimright
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2767) 	animplayforwardonce
+  COMMAND_SETANIMUP,                    // (2768) 	setanimup
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2769) 	animplayforwardonce
+  COMMAND_SETANIMDOWN,                  // (2770) 	setanimdown
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2771) 	animplayforwardonce
+  COMMAND_SETANIMNORMAL,                // (2772) 	setanimnormal
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2773) 	animplayforwardonce
+  COMMAND_SETANIMWOUNDED,               // (2774) 	setanimwounded
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2775) 	animplayforwardonce
+  COMMAND_SETANIMDEATH,                 // (2776) 	setanimdeath
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2777) 	animplayforwardonce
+  COMMAND_JMP,2764,                     // (2778) 	jmp	@loop	
+                                        // (2780) name: ai_none
+  COMMAND_WAIT,                         // (2780) 	wait
+                                        // (2781) name:	ai_flash
+                                        // (2781) :spagetti_ai_flash
+                                        // (2781) @loop
+  COMMAND_VISIBLE_ON,                   // (2781) 	visible_on
+  COMMAND_STOP,                         // (2782) 	stop
+  COMMAND_STOP,                         // (2783) 	stop
+  COMMAND_STOP,                         // (2784) 	stop
+  COMMAND_STOP,                         // (2785) 	stop
+  COMMAND_VISIBLE_OFF,                  // (2786) 	visible_off
+  COMMAND_STOP,                         // (2787) 	stop
+  COMMAND_STOP,                         // (2788) 	stop
+  COMMAND_JMP,2781,                     // (2789) 	jmp		@loop
+                                        // (2791) name: ai_cycle
+                                        // (2791) :spagetti_ai_cycle
+                                        // (2791) @cycle_loop
+  COMMAND_STOP,                         // (2791) 	stop
+  COMMAND_FRAMEINC,                     // (2792) 	frameinc
+  COMMAND_JMP,2791,                     // (2793) 	jmp	@cycle_loop
+                                        // (2795) name: ai_pingpong
+                                        // (2795) :spagetti_ai_pingpong
+                                        // (2795) :pingpong_loop
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2795) 	animplayforwardonce
+  COMMAND_ANIMPLAYBACKONCE,             // (2796) 	animplaybackonce
+  COMMAND_JMP,2795,                     // (2797) 	jmp	:pingpong_loop
+                                        // (2799) name: ai_explode
+  COMMAND_SHOOTABLE_OFF,                // (2799) 	shootable_off
+  COMMAND_SET_PRIORITY,0,               // (2800) 	set_priority	0
+  COMMAND_ANIMSPEED,2,                  // (2802) 	animspeed	2
+  COMMAND_ANIMPLAYFORWARDONCE,          // (2804) 	animplayforwardonce
+  COMMAND_DIE,                          // (2805) 	die
+  COMMAND_WAIT,                         // (2806) 	wait
+                                        // (2807) name: ai_death
+  COMMAND_DIE,                          // (2807) 	die
+  COMMAND_WAIT,                         // (2808) 	wait
+                                        // (2809) name: ai_remove
+  COMMAND_DIE,                          // (2809) 	die
+  COMMAND_WAIT,                         // (2810) 	wait
+                                        // (2811) equate: particle_x	obj_temp1
+                                        // (2811) equate: particle_y	obj_temp2
+                                        // (2811) equate: particle_dx	obj_temp3
+                                        // (2811) equate: particle_dy	obj_temp4
+                                        // (2811) equate: particle_ddx	obj_temp5
+                                        // (2811) equate: particle_ddy	obj_temp6
+                                        // (2811) equate: crystal_count	obj_temp7
+                                        // (2811) equate: particle_iter 	obj_temp8
+                                        // (2811) equate: particle_id 	obj_temp10
+                                        // (2811) name: ai_test_ref
+  COMMAND_MOVEI,32,obj_temp5,           // (2811) 	movei		32,particle_ddx	
+  COMMAND_MOVEI,16,obj_temp6,           // (2814) 	movei		16,particle_ddy
+  COMMAND_MOVEI,24,obj_temp3,           // (2817) 	movei		24,particle_dx	
+  COMMAND_MOVEI,20,obj_temp4,           // (2820) 	movei		20,particle_dy
+  COMMAND_THREAD,2791,                  // (2823) 	thread		ai_cycle
+                                        // (2825) @next_c
+  COMMAND_STOP,                         // (2825) 	stop
+  COMMAND_JMP,2825,                     // (2826) 	jmp		@next_c
+  COMMAND_MOVEI,4,obj_temp8,            // (2828) 	movei		4,particle_iter
+                                        // (2831) @next_i
+  COMMAND_MOVERND,32767,obj_temp3,      // (2831) 	movernd		32767,particle_dx
+  COMMAND_ADDI,-16384,obj_temp3,        // (2834) 	addi		-16384,particle_dx
+  COMMAND_ADDV,obj_temp3,obj_temp3,     // (2837) 	addv		particle_dx,particle_dx
+  COMMAND_MOVERND,32767,obj_temp4,      // (2840) 	movernd		32767,particle_dy
+  COMMAND_ADDI,-16384,obj_temp4,        // (2843) 	addi		-16384,particle_dy
+  COMMAND_ADDV,obj_temp4,obj_temp4,     // (2846) 	addv		particle_dy,particle_dy
+  COMMAND_ADD_PARTICLE,obj_temp1,obj_temp2,obj_temp3,obj_temp4,obj_temp5,obj_temp6,// (2849)      	add_particle	particle_x,particle_y,particle_dx,particle_dy,particle_ddx,particle_ddy
+  COMMAND_SUBI,1,obj_temp8,             // (2856) 	subi		1,particle_iter
+  COMMAND_IFNEI,0,obj_temp8,2831,       // (2859) 	ifnei		0,particle_iter,@next_i
+  COMMAND_JMP,2825,                     // (2863) 	jmp		@next_c
+                                        // (2865) name: ai_crystal
+  COMMAND_WAIT,                         // (2865) 	wait
+  COMMAND_MOVEI,0,obj_temp5,            // (2866) 	movei		0,particle_ddx	
+  COMMAND_MOVEI,0,obj_temp6,            // (2869) 	movei		0,particle_ddy
+  COMMAND_ON_HIT,2899,                  // (2872) 	on_hit		ai_stream_crystal
+  COMMAND_VISIBLE_ON,                   // (2874) 	visible_on
+  COMMAND_THREAD,2791,                  // (2875) 	thread		ai_cycle
+                                        // (2877) :crystal_animate
+  COMMAND_WAIT,                         // (2877) 	wait
+  COMMAND_STOP,                         // (2878) 	stop
+  COMMAND_JMP,2877,                     // (2879) 	jmp		:crystal_animate
+                                        // (2881) :ai_add_part
+  COMMAND_MOVERND,32767,obj_temp8,      // (2881) 	movernd		32767,particle_iter
+  COMMAND_ADDI,99999,obj_temp8,         // (2884) 	addi		99999,particle_iter
+  COMMAND_SET_VEL,obj_temp8,obj_temp3,obj_temp4,// (2887) 	set_vel		particle_iter,particle_dx,particle_dy
+  COMMAND_ADD_PARTICLE,obj_temp1,obj_temp2,obj_temp3,obj_temp4,obj_temp5,obj_temp6,// (2891) 	add_particle	particle_x,particle_y,particle_dx,particle_dy,particle_ddx,particle_ddy
+  COMMAND_RETURN,                       // (2898) 	return
+                                        // (2899) name: ai_stream_crystal
+  COMMAND_ANIMSPEED,0,                  // (2899) 	animspeed	0
+  COMMAND_MOVEI,64,obj_temp7,           // (2901) 	movei		64,crystal_count
+                                        // (2904) @find_safe_area
+  COMMAND_STOP,                         // (2904) 	stop
+  COMMAND_SUBI,1,obj_temp7,             // (2905) 	subi		1,crystal_count
+  COMMAND_IFLEI,0,obj_temp7,2973,       // (2908) 	iflei		0,crystal_count,@finished
+  COMMAND_MOVERND,16,obj_temp1,         // (2912) 	movernd		16,particle_x
+  COMMAND_ADDI,-8,obj_temp1,            // (2915) 	addi		-8,particle_x
+  COMMAND_ADDV,obj_x,obj_temp1,         // (2918) 	addv		obj_x,particle_x
+  COMMAND_MOVERND,16,obj_temp2,         // (2921) 	movernd		16,particle_y
+  COMMAND_ADDI,-8,obj_temp2,            // (2924) 	addi		-8,particle_y
+  COMMAND_ADDV,obj_y,obj_temp2,         // (2927) 	addv		obj_y,particle_y
+  COMMAND_POINT_COLLISION,obj_temp1,obj_temp2,2904,// (2930) 	point_collision	particle_x,particle_y,@find_safe_area
+  COMMAND_GET_PLAYER_ID,obj_temp10,     // (2934) 	get_player_id	particle_id
+  COMMAND_GET_ANGLE_TO_ID,obj_temp10,   // (2936) 	get_angle_to_id particle_id
+                                        // (2938) @next_particle
+  COMMAND_CALL,2881,                    // (2938) 	call		:ai_add_part
+  COMMAND_STOP,                         // (2940) 	stop
+  COMMAND_MOVEI,-2,obj_temp10,          // (2941) 	movei		-2,particle_id
+  COMMAND_ADD_TO_ANGLE,obj_temp10,      // (2944) 	add_to_angle	particle_id
+  COMMAND_CALL,2881,                    // (2946) 	call		:ai_add_part
+  COMMAND_STOP,                         // (2948) 	stop
+  COMMAND_MOVEI,4,obj_temp10,           // (2949) 	movei		4,particle_id
+  COMMAND_ADD_TO_ANGLE,obj_temp10,      // (2952) 	add_to_angle	particle_id
+  COMMAND_CALL,2881,                    // (2954) 	call		:ai_add_part
+  COMMAND_STOP,                         // (2956) 	stop
+  COMMAND_MOVEI,-2,obj_temp10,          // (2957) 	movei		-2,particle_id
+  COMMAND_ADD_TO_ANGLE,obj_temp10,      // (2960) 	add_to_angle	particle_id
+  COMMAND_IFEQI,0,obj_temp7,2973,       // (2962) 	ifeqi		0,crystal_count,@finished	
+  COMMAND_STOP,                         // (2966) 	stop
+  COMMAND_STOP,                         // (2967) 	stop
+  COMMAND_SUBI,1,obj_temp7,             // (2968) 	subi		1,crystal_count
+  COMMAND_JMP,2938,                     // (2971) 	jmp		@next_particle
+                                        // (2973) @finished
+  COMMAND_ANIMSPEED,4,                  // (2973) 	animspeed	4
+  COMMAND_STOP,                         // (2975) 	stop
+  COMMAND_JMP,2877,                     // (2976) 	jmp		:crystal_animate	
+                                        // (2978) name: ai_blow_crystal
+  COMMAND_SHOOTABLE_OFF,                // (2978) 	shootable_off
+  COMMAND_MOVEI,32,obj_temp7,           // (2979) 	movei		32,crystal_count
+                                        // (2982) :next_crystals_particle
+  COMMAND_STOP,                         // (2982) 	stop
+  COMMAND_MOVEI,4,obj_temp8,            // (2983) 	movei		4,particle_iter
+                                        // (2986) :next_iter
+  COMMAND_MOVERND,16,obj_temp1,         // (2986) 	movernd		16,particle_x
+  COMMAND_ADDI,-8,obj_temp1,            // (2989) 	addi		-8,particle_x
+  COMMAND_ADDV,obj_x,obj_temp1,         // (2992) 	addv		obj_x,particle_x
+  COMMAND_MOVERND,16,obj_temp2,         // (2995) 	movernd		16,particle_y
+  COMMAND_ADDI,-8,obj_temp2,            // (2998) 	addi		-8,particle_y
+  COMMAND_ADDV,obj_y,obj_temp2,         // (3001) 	addv		obj_y,particle_y
+  COMMAND_MOVERND,32767,obj_temp3,      // (3004) 	movernd		32767,particle_dx
+  COMMAND_ADDI,-16384,obj_temp3,        // (3007) 	addi		-16384,particle_dx
+  COMMAND_ADDV,obj_temp3,obj_temp3,     // (3010) 	addv		particle_dx,particle_dx
+  COMMAND_MOVERND,32767,obj_temp4,      // (3013) 	movernd		32767,particle_dy
+  COMMAND_ADDI,-16384,obj_temp4,        // (3016) 	addi		-16384,particle_dy
+  COMMAND_ADDV,obj_temp4,obj_temp4,     // (3019) 	addv		particle_dy,particle_dy
+  COMMAND_ADD_PARTICLE,obj_temp1,obj_temp2,obj_temp3,obj_temp4,obj_temp5,obj_temp6,// (3022)      	add_particle	particle_x,particle_y,particle_dx,particle_dy,particle_ddx,particle_ddy
+  COMMAND_SUBI,1,obj_temp8,             // (3029) 	subi		1,particle_iter
+  COMMAND_IFNEI,0,obj_temp8,2986,       // (3032) 	ifnei		0,particle_iter,:next_iter
+  COMMAND_SUBI,1,obj_temp7,             // (3036) 	subi		1,crystal_count
+  COMMAND_IFNEI,0,obj_temp7,2982,       // (3039) 	ifnei		0,crystal_count,:next_crystals_particle
+  COMMAND_SHOOTABLE_ON,                 // (3043) 	shootable_on
+  COMMAND_JMP,2877,                     // (3044) 	jmp		:crystal_animate	
+                                        // (3046) name: ai_wind_tunnel
+  COMMAND_MOVEI,64,obj_temp5,           // (3046) 	movei		64,particle_ddx
+  COMMAND_MOVEI,0,obj_temp6,            // (3049) 	movei		0,particle_ddy
+  COMMAND_SETANIMNORMAL,                // (3052) 	setanimnormal
+  COMMAND_GETANIMRANGE,obj_temp1,obj_temp2,// (3053) 	getanimrange	particle_x,particle_y
+  COMMAND_MOVEV,obj_temp1,obj_temp2,    // (3056) 	movev		particle_x,particle_y
+  COMMAND_ADDI,5,obj_temp2,             // (3059) 	addi		5,particle_y
+  COMMAND_SETANIMRANGE,obj_temp1,obj_temp2,// (3062) 	setanimrange	particle_x,particle_y
+  COMMAND_THREAD,2795,                  // (3065) 	thread		ai_pingpong
+                                        // (3067) :dont_do_it
+  COMMAND_STOP,                         // (3067) 	stop
+  COMMAND_INRANGE,256*256,3073,         // (3068) 	inrange		256*256,:unwind
+  COMMAND_JMP,3067,                     // (3071) 	jmp		:dont_do_it
+                                        // (3073) :unwind
+  COMMAND_THREAD,2780,                  // (3073) 	thread		ai_none
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3075) 	animplayforwardonce
+  COMMAND_SETANIMNORMAL,                // (3076) 	setanimnormal
+  COMMAND_GETANIMRANGE,obj_temp1,obj_temp2,// (3077) 	getanimrange	particle_x,particle_y
+  COMMAND_MOVEV,obj_temp2,obj_temp1,    // (3080) 	movev		particle_y,particle_x
+  COMMAND_SUBI,7,obj_temp1,             // (3083) 	subi		7,particle_x
+  COMMAND_SETANIMRANGE,obj_temp1,obj_temp2,// (3086) 	setanimrange	particle_x,particle_y
+  COMMAND_THREAD,2795,                  // (3089) 	thread		ai_pingpong
+                                        // (3091) :wind_loop
+  COMMAND_STOP,                         // (3091) 	stop
+  COMMAND_MOVERND,32,obj_temp1,         // (3092) 	movernd		32,particle_x
+  COMMAND_ADDI,-16,obj_temp1,           // (3095) 	addi		-16,particle_x
+  COMMAND_ADDV,obj_x,obj_temp1,         // (3098) 	addv		obj_x,particle_x
+  COMMAND_MOVERND,32,obj_temp2,         // (3101) 	movernd		32,particle_y
+  COMMAND_ADDI,-16,obj_temp2,           // (3104) 	addi		-16,particle_y
+  COMMAND_ADDV,obj_y,obj_temp2,         // (3107) 	addv		obj_y,particle_y
+  COMMAND_MOVERND,32767,obj_temp3,      // (3110) 	movernd		32767,particle_dx
+  COMMAND_ADDI,-65536-32768-16384,obj_temp3,// (3113) 	addi		-65536-32768-16384,particle_dx
+  COMMAND_MOVERND,32767,obj_temp4,      // (3116) 	movernd		32767,particle_dy
+  COMMAND_ADDI,-16384,obj_temp4,        // (3119) 	addi		-16384,particle_dy
+  COMMAND_ADD_PARTICLE,obj_temp1,obj_temp2,obj_temp3,obj_temp4,obj_temp5,obj_temp6,// (3122) 	add_particle	particle_x,particle_y,particle_dx,particle_dy,particle_ddx,particle_ddy
+  COMMAND_INRANGE,480*480,3091,         // (3129) 	inrange		480*480,:wind_loop
+  COMMAND_THREAD,2780,                  // (3132) 	thread		ai_none
+  COMMAND_SETANIMNORMAL,                // (3134) 	setanimnormal
+  COMMAND_ANIMPLAYBACKONCE,             // (3135) 	animplaybackonce
+  COMMAND_JMP,3067,                     // (3136) 	jmp		:dont_do_it
+                                        // (3138) equate:	ast_facing	obj_temp1
+                                        // (3138) equate:	ast_x		obj_temp2
+                                        // (3138) equate:	ast_y		obj_temp3
+                                        // (3138) equate:	ast_dx		obj_temp4
+                                        // (3138) equate:	ast_dy		obj_temp5
+                                        // (3138) equate:	ast_temp	obj_temp6
+                                        // (3138) equate:	ast_num		obj_temp7
+                                        // (3138) name: ai_asteroid3
+  COMMAND_ON_HIT,3263,                  // (3138) 	on_hit		ai_asteroid_break3
+  COMMAND_JMP,3148,                     // (3140) 	jmp		:ast_dummy
+                                        // (3142) name: ai_asteroid2
+  COMMAND_ON_HIT,3257,                  // (3142) 	on_hit		ai_asteroid_break2
+  COMMAND_JMP,3148,                     // (3144) 	jmp		:ast_dummy
+                                        // (3146) name: ai_asteroid
+  COMMAND_ON_HIT,3251,                  // (3146) 	on_hit		ai_asteroid_break
+                                        // (3148) :ast_dummy
+  COMMAND_THREAD,2791,                  // (3148) 	thread		ai_cycle
+  COMMAND_MOVERND,8,obj_temp1,          // (3150) 	movernd		8,ast_facing
+  COMMAND_INDEX_ARRAY,obj_temp1,3265,obj_temp6,// (3153) 	index_array	ast_facing,:bounce_x,ast_temp
+  COMMAND_SHL,8,obj_temp6,obj_temp4,    // (3157) 	shl		8,ast_temp,ast_dx
+  COMMAND_INDEX_ARRAY,obj_temp1,3275,obj_temp6,// (3161) 	index_array	ast_facing,:bounce_y,ast_temp
+  COMMAND_SHL,8,obj_temp6,obj_temp5,    // (3165) 	shl		8,ast_temp,ast_dy
+  COMMAND_SHL,8,obj_x,obj_temp2,        // (3169) 	shl		8,obj_x,ast_x
+  COMMAND_SHL,8,obj_y,obj_temp3,        // (3173) 	shl		8,obj_y,ast_y
+                                        // (3177) :move_ast
+  COMMAND_STOP,                         // (3177) 	stop
+  COMMAND_ADDV,obj_temp4,obj_temp2,     // (3178) 	addv		ast_dx,ast_x
+  COMMAND_ADDV,obj_temp5,obj_temp3,     // (3181) 	addv		ast_dy,ast_y
+  COMMAND_SHR,8,obj_temp2,obj_x,        // (3184) 	shr		8,ast_x,obj_x
+  COMMAND_SHR,8,obj_temp3,obj_y,        // (3188) 	shr		8,ast_y,obj_y
+  COMMAND_UPDATE_XY,                    // (3192) 	update_xy
+  COMMAND_BG_COLLIDE,3197,              // (3193) 	bg_collide	:ast_change_dir
+  COMMAND_JMP,3177,                     // (3195) 	jmp		:move_ast
+                                        // (3197) :ast_change_dir
+  COMMAND_SUBV,obj_temp4,obj_temp2,     // (3197) 	subv		ast_dx,ast_x
+  COMMAND_SUBV,obj_temp5,obj_temp3,     // (3200) 	subv		ast_dy,ast_y
+  COMMAND_SHR,8,obj_temp2,obj_x,        // (3203) 	shr		8,ast_x,obj_x
+  COMMAND_SHR,8,obj_temp3,obj_y,        // (3207) 	shr		8,ast_y,obj_y
+  COMMAND_ADDI,1,obj_temp1,             // (3211) 	addi		1,ast_facing
+  COMMAND_IFNEI,8,obj_temp1,3221,       // (3214) 	ifnei		8,ast_facing,:ast_do_it
+  COMMAND_MOVEI,0,obj_temp1,            // (3218) 	movei		0,ast_facing
+                                        // (3221) :ast_do_it
+  COMMAND_INDEX_ARRAY,obj_temp1,3265,obj_temp6,// (3221) 	index_array	ast_facing,:bounce_x,ast_temp
+  COMMAND_SHL,8,obj_temp6,obj_temp4,    // (3225) 	shl		8,ast_temp,ast_dx
+  COMMAND_MOVERND,64,obj_temp6,         // (3229) 	movernd		64,ast_temp
+  COMMAND_ADDV,obj_temp6,obj_temp4,     // (3232) 	addv		ast_temp,ast_dx
+  COMMAND_INDEX_ARRAY,obj_temp1,3275,obj_temp6,// (3235) 	index_array	ast_facing,:bounce_y,ast_temp
+  COMMAND_SHL,8,obj_temp6,obj_temp5,    // (3239) 	shl		8,ast_temp,ast_dy
+  COMMAND_MOVERND,64,obj_temp6,         // (3243) 	movernd		64,ast_temp
+  COMMAND_ADDV,obj_temp6,obj_temp5,     // (3246) 	addv		ast_temp,ast_dy
+  COMMAND_JMP,3177,                     // (3249) 	jmp		:move_ast
+                                        // (3251) name:	ai_asteroid_break
+  COMMAND_ON_HIT,2780,                  // (3251) 	on_hit		ai_none
+  COMMAND_THREAD,2780,                  // (3253) 	thread		ai_none
+  COMMAND_DIE,                          // (3255) 	die
+  COMMAND_WAIT,                         // (3256) 	wait
+                                        // (3257) name:	ai_asteroid_break2
+  COMMAND_ON_HIT,2780,                  // (3257) 	on_hit		ai_none
+  COMMAND_THREAD,2780,                  // (3259) 	thread		ai_none
+  COMMAND_DIE,                          // (3261) 	die
+  COMMAND_WAIT,                         // (3262) 	wait
+                                        // (3263) name:	ai_asteroid_break3
+  COMMAND_DIE,                          // (3263) 	die
+  COMMAND_WAIT,                         // (3264) 	wait
+                                        // (3265) :bounce_x
+  COMMAND_ARRAY,8,1,1,-1,-1,-1,-1,1,1,  // (3265) 	array	       	8,1,1,-1,-1, -1,-1, 1,1
+                                        // (3275) :bounce_y
+  COMMAND_ARRAY,8,1,-1,1,-1,1,1,-1,1,   // (3275) 	array		8,1,-1,1,-1, 1, 1, -1,1
+                                        // (3285) equate:	bug_flood_val	obj_temp1
+                                        // (3285) equate:	bug_dx		obj_temp2
+                                        // (3285) equate:	bug_dy		obj_temp3
+                                        // (3285) name: ai_bug
+                                        // (3285) :bug_wait
+  COMMAND_STOP,                         // (3285) 	stop
+  COMMAND_GET_FLOOD_VAL,obj_temp1,      // (3286) 	get_flood_val	bug_flood_val
+  COMMAND_IFEQI,-1,obj_temp1,3285,      // (3288) 	ifeqi		-1,bug_flood_val,:bug_wait
+  COMMAND_IFLTI,8,obj_temp1,3285,       // (3292) 	iflti		8,bug_flood_val,:bug_wait
+                                        // (3296) :bug_fly
+  COMMAND_STOP,                         // (3296) 	stop
+  COMMAND_GET_FLOOD_VAL,obj_temp1,      // (3297) 	get_flood_val	bug_flood_val
+  COMMAND_IFEQI,-1,obj_temp1,3285,      // (3299) 	ifeqi		-1,bug_flood_val,:bug_wait
+  COMMAND_GET_VECTOR,obj_temp2,obj_temp3,// (3303) 	get_vector	bug_dx,bug_dy
+  COMMAND_ADDV,obj_temp2,obj_x,         // (3306) 	addv		bug_dx,obj_x
+  COMMAND_ADDV,obj_temp3,obj_y,         // (3309) 	addv		bug_dy,obj_y
+  COMMAND_UPDATE_XY,                    // (3312) 	update_xy
+  COMMAND_GET_FLOOD_VAL,obj_temp1,      // (3313) 	get_flood_val	bug_flood_val
+  COMMAND_IFEQI,-1,obj_temp1,3322,      // (3315) 	ifeqi		-1,bug_flood_val,:bug_exception
+  COMMAND_FRAMEINC,                     // (3319) 	frameinc
+                                        // (3320) :back_in
+  COMMAND_JMP,3296,                     // (3320) 	jmp		:bug_fly
+                                        // (3322) :bug_exception
+  COMMAND_SUBV,obj_temp2,obj_x,         // (3322) 	subv		bug_dx,obj_x
+  COMMAND_UPDATE_XY,                    // (3325) 	update_xy
+  COMMAND_GET_FLOOD_VAL,obj_temp1,      // (3326) 	get_flood_val	bug_flood_val
+  COMMAND_JMP,3320,                     // (3328) 	jmp		:back_in
+                                        // (3330) equate:	man_min_x	obj_temp1
+                                        // (3330) equate:	man_max_x	obj_temp2
+                                        // (3330) equate:	man_timer	obj_temp3
+                                        // (3330) equate:	man_dummy	obj_temp4
+                                        // (3330) equate:	man_guess	obj_temp5
+                                        // (3330) equate:	man_x8		obj_temp6
+                                        // (3330) equate: pod_x		obj_temp7
+                                        // (3330) equate: pod_y		obj_temp8
+                                        // (3330) equate: man_temp	obj_temp9
+                                        // (3330) equate: MAN_RUN_CONST	32
+                                        // (3330) equate: MAN_RUN_RND	96
+                                        // (3330) equate: MAN_SPEED	160
+                                        // (3330) equate: MAN_CHILL_DELAY 16
+                                        // (3330) name: ai_cycle_man
+                                        // (3330) @cycle_loop
+  COMMAND_MOVEI,0,obj_temp10,           // (3330) 	movei		0,path_0
+  COMMAND_STOP,                         // (3333) 	stop
+  COMMAND_FRAMEINC,                     // (3334) 	frameinc
+  COMMAND_GET_SPRITES_COORDS,obj_temp6,obj_temp7,obj_temp8,obj_temp9,// (3335) 	get_sprites_coords path_x1,path_y1,path_x2,path_y2
+  COMMAND_JMP,3330,                     // (3340) 	jmp	@cycle_loop
+                                        // (3342) name:	ai_survrs_die
+  COMMAND_THREAD,3412,                  // (3342) 	thread		ai_blow
+  COMMAND_MOVEI,0,obj_temp5,            // (3344) 	movei		0,particle_ddx	
+  COMMAND_MOVEI,2048,obj_temp6,         // (3347) 	movei		2048,particle_ddy
+                                        // (3350) :keep_particleing
+  COMMAND_STOP,                         // (3350) 	stop
+  COMMAND_MOVEI,10,obj_temp8,           // (3351) 	movei		10,particle_iter
+                                        // (3354) :next_piter
+  COMMAND_MOVERND,16,obj_temp1,         // (3354) 	movernd		16,particle_x
+  COMMAND_ADDI,-8,obj_temp1,            // (3357) 	addi		-8,particle_x
+  COMMAND_ADDV,obj_x,obj_temp1,         // (3360) 	addv		obj_x,particle_x
+  COMMAND_MOVERND,16,obj_temp2,         // (3363) 	movernd		16,particle_y
+  COMMAND_ADDI,-8,obj_temp2,            // (3366) 	addi		-8,particle_y
+  COMMAND_ADDV,obj_y,obj_temp2,         // (3369) 	addv		obj_y,particle_y
+  COMMAND_MOVERND,32767,obj_temp3,      // (3372) 	movernd		32767,particle_dx
+  COMMAND_ADDI,-16384,obj_temp3,        // (3375) 	addi		-16384,particle_dx
+  COMMAND_MULI,6,obj_temp3,obj_temp3,   // (3378) 	muli		6,particle_dx,particle_dx
+  COMMAND_MOVERND,32767,obj_temp4,      // (3382) 	movernd		32767,particle_dy
+  COMMAND_ADDI,-16384,obj_temp4,        // (3385) 	addi		-16384,particle_dy
+  COMMAND_ADDV,obj_temp4,obj_temp4,     // (3388) 	addv		particle_dy,particle_dy
+  COMMAND_MULI,6,obj_temp4,obj_temp4,   // (3391) 	muli		6,particle_dy,particle_dy
+  COMMAND_ADD_PARTICLE,obj_temp1,obj_temp2,obj_temp3,obj_temp4,obj_temp5,obj_temp6,// (3395) 	add_particle	particle_x,particle_y,particle_dx,particle_dy,particle_ddx,particle_ddy
+  COMMAND_SUBI,1,obj_temp8,             // (3402) 	subi		1,particle_iter
+  COMMAND_IFNEI,0,obj_temp8,3354,       // (3405) 	ifnei		0,particle_iter,:next_piter
+  COMMAND_JMP,3350,                     // (3409) 	jmp	 	:keep_particleing
+  COMMAND_WAIT,                         // (3411) 	wait
+                                        // (3412) name:	ai_blow
+  COMMAND_SETANIMWOUNDED,               // (3412) 	setanimwounded
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3413) 	animplayforwardonce
+  COMMAND_SETANIMDEATH,                 // (3414) 	setanimdeath
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3415) 	animplayforwardonce
+  COMMAND_DIE,                          // (3416) 	die
+  COMMAND_WAIT,                         // (3417) 	wait
+                                        // (3418) name:	ai_survrs
+  COMMAND_ON_HIT,3342,                  // (3418) 	on_hit	ai_survrs_die
+  COMMAND_SETANIMLEFT,                  // (3420) 	setanimleft
+  COMMAND_BG_COLLIDE,3664,              // (3421) 	bg_collide	:man_stuck
+  COMMAND_SETANIMRIGHT,                 // (3423) 	setanimright
+  COMMAND_BG_COLLIDE,3664,              // (3424) 	bg_collide	:man_stuck
+  COMMAND_MOVERND,96,obj_temp3,         // (3426) 	movernd		MAN_RUN_RND,man_timer
+  COMMAND_ADDI,32,obj_temp3,            // (3429) 	addi		MAN_RUN_CONST,man_timer
+  COMMAND_MOVEV,obj_x,obj_temp1,        // (3432) 	movev		obj_x,man_min_x
+  COMMAND_MOVEV,obj_x,obj_temp2,        // (3435) 	movev		obj_x,man_max_x
+  COMMAND_SHL,8,obj_x,obj_temp6,        // (3438) 	shl		8,obj_x,man_x8
+  COMMAND_SETANIMNORMAL,                // (3442) 	setanimnormal
+  COMMAND_OUTPUT_VAR,0,obj_temp1,       // (3443) 	output_var	0,man_min_x
+  COMMAND_OUTPUT_VAR,1,obj_temp2,       // (3446) 	output_var	1,man_max_x
+  COMMAND_THREAD,2791,                  // (3449) 	thread		ai_cycle
+                                        // (3451) :man_hang
+  COMMAND_INRANGE,128*128,3457,         // (3451) 	inrange		128*128,:man_turn_left
+  COMMAND_STOP,                         // (3454) 	stop
+  COMMAND_JMP,3451,                     // (3455) 	jmp		:man_hang
+                                        // (3457) :man_turn_left
+  COMMAND_THREAD,2780,                  // (3457) 	thread		ai_none
+  COMMAND_UPDATE_XY,                    // (3459) 	update_xy
+  COMMAND_SETANIMLEFT,                  // (3460) 	setanimleft
+                                        // (3461) :go_left
+  COMMAND_STOP,                         // (3461) 	stop
+  COMMAND_SUBI,1,obj_temp3,             // (3462) 	subi		1,man_timer
+  COMMAND_IFLEI,0,obj_temp3,3503,       // (3465) 	iflei		0,man_timer,:man_wave_or_jump
+  COMMAND_FRAMEINC,                     // (3469) 	frameinc
+  COMMAND_SUBI,160,obj_temp6,           // (3470) 	subi		MAN_SPEED,man_x8
+  COMMAND_SHR,8,obj_temp6,obj_x,        // (3473) 	shr		8,man_x8,obj_x
+  COMMAND_UPDATE_XY,                    // (3477) 	update_xy
+  COMMAND_BG_COLLIDE,3489,              // (3478) 	bg_collide	:assess_left
+  COMMAND_IFLEV,obj_x,obj_temp1,3461,   // (3480) 	iflev		obj_x,man_min_x,:go_left
+  COMMAND_MOVEV,obj_x,obj_temp1,        // (3484) 	movev		obj_x,man_min_x
+  COMMAND_JMP,3461,                     // (3487) 	jmp		:go_left
+                                        // (3489) :assess_left
+  COMMAND_IFLEV,obj_x,obj_temp1,3461,   // (3489) 	iflev		obj_x,man_min_x,:go_left
+  COMMAND_ADDI,160,obj_temp6,           // (3493) 	addi		MAN_SPEED,man_x8
+  COMMAND_SHR,8,obj_temp6,obj_x,        // (3496) 	shr		8,man_x8,obj_x
+  COMMAND_UPDATE_XY,                    // (3500) 	update_xy
+  COMMAND_JMP,3621,                     // (3501) 	jmp		:man_turn_right
+                                        // (3503) :man_wave_or_jump
+  COMMAND_SETANIMNORMAL,                // (3503) 	setanimnormal
+                                        // (3504) @haha
+  COMMAND_STOP,                         // (3504) 	stop
+  COMMAND_GET_POD_ID,obj_temp4,         // (3505) 	get_pod_id	man_dummy
+  COMMAND_GET_IDS_VAR,obj_temp4,obj_x,obj_temp7,// (3507) 	get_ids_var	man_dummy,obj_x,pod_x
+  COMMAND_GET_IDS_VAR,obj_temp4,obj_y,obj_temp8,// (3511) 	get_ids_var	man_dummy,obj_y,pod_y
+  COMMAND_SUBV,obj_y,obj_temp8,         // (3515) 	subv		obj_y,pod_y
+  COMMAND_IFGTI,0,obj_temp8,3524,       // (3518) 	ifgti		0,pod_y,@positive
+                                        // (3522) @negative
+  COMMAND_NEG,obj_temp8,                // (3522) 	neg		pod_y
+                                        // (3524) @positive
+  COMMAND_IFGTI,32,obj_temp8,3504,      // (3524) 	ifgti		32,pod_y,@haha
+  COMMAND_GET_IDS_VAR,obj_temp4,obj_temp2,obj_temp9,// (3528) 	get_ids_var	man_dummy,obj_temp2,man_temp
+  COMMAND_ADDI,1,obj_temp9,             // (3532) 	addi		1,man_temp
+  COMMAND_SET_IDS_VAR,obj_temp9,obj_temp4,obj_temp2,// (3535) 	set_ids_var	man_temp,man_dummy,obj_temp2
+  COMMAND_MOVERND,96,obj_temp3,         // (3539) 	movernd		MAN_RUN_RND,man_timer
+  COMMAND_ADDI,32,obj_temp3,            // (3542) 	addi		MAN_RUN_CONST,man_timer
+  COMMAND_IFGTV,obj_temp7,obj_x,3457,   // (3545) 	ifgtv		pod_x,obj_x,@man_turn_left
+  COMMAND_JMP,3621,                     // (3549) 	jmp		@man_turn_right
+  COMMAND_IFGTV,obj_temp7,obj_x,3562,   // (3551) 	ifgtv		pod_x,obj_x,@to_the_left
+                                        // (3555) @to_the_right
+  COMMAND_ADDI,1,obj_x,                 // (3555) 	addi		1,obj_x
+  COMMAND_UPDATE_XY,                    // (3558) 	update_xy
+  COMMAND_STOP,                         // (3559) 	stop
+  COMMAND_JMP,3504,                     // (3560) 	jmp		@haha	
+                                        // (3562) @to_the_left
+  COMMAND_SUBI,1,obj_x,                 // (3562) 	subi		1,obj_x
+  COMMAND_UPDATE_XY,                    // (3565) 	update_xy
+  COMMAND_STOP,                         // (3566) 	stop
+  COMMAND_JMP,3504,                     // (3567) 	jmp		@haha	
+  COMMAND_MOVEI,16,obj_temp4,           // (3569) 	movei		MAN_CHILL_DELAY,man_dummy
+  COMMAND_PAUSE,obj_temp4,              // (3572) 	pause		man_dummy
+  COMMAND_MOVERND,2,obj_temp4,          // (3574) 	movernd		2,man_dummy
+  COMMAND_ADDI,1,obj_temp4,             // (3577) 	addi		1,man_dummy
+                                        // (3580) :wave_again
+  COMMAND_MOVERND,2,obj_temp5,          // (3580) 	movernd		2,man_guess
+  COMMAND_SETANIMUP,                    // (3583) 	setanimup
+  COMMAND_IFEQI,0,obj_temp5,3589,       // (3584) 	ifeqi		0,man_guess,:man_jump
+  COMMAND_SETANIMNORMAL,                // (3588) 	setanimnormal
+                                        // (3589) :man_jump
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3589) 	animplayforwardonce
+  COMMAND_SUBI,1,obj_temp4,             // (3590) 	subi		1,man_dummy
+  COMMAND_IFNEI,0,obj_temp4,3580,       // (3593) 	ifnei		0,man_dummy,:wave_again
+  COMMAND_INRANGE,256*256,3602,         // (3597) 	inrange		256*256,:man_near
+  COMMAND_JMP,3503,                     // (3600) 	jmp		:man_wave_or_jump
+                                        // (3602) :man_near
+  COMMAND_MOVERND,96,obj_temp3,         // (3602) 	movernd		MAN_RUN_RND,man_timer
+  COMMAND_ADDI,32,obj_temp3,            // (3605) 	addi		MAN_RUN_CONST,man_timer
+  COMMAND_SETANIMNORMAL,                // (3608) 	setanimnormal
+  COMMAND_MOVEI,16,obj_temp4,           // (3609) 	movei		MAN_CHILL_DELAY,man_dummy
+  COMMAND_PAUSE,obj_temp4,              // (3612) 	pause		man_dummy
+  COMMAND_MOVERND,2,obj_temp4,          // (3614) 	movernd		2,man_dummy
+  COMMAND_IFEQI,0,obj_temp4,3457,       // (3617) 	ifeqi		0,man_dummy,:man_turn_left
+                                        // (3621) :man_turn_right
+  COMMAND_SETANIMRIGHT,                 // (3621) 	setanimright
+                                        // (3622) :go_right
+  COMMAND_SUBI,1,obj_temp3,             // (3622) 	subi		1,man_timer
+  COMMAND_IFLEI,0,obj_temp3,3503,       // (3625) 	iflei		0,man_timer,:man_wave_or_jump
+  COMMAND_STOP,                         // (3629) 	stop
+  COMMAND_FRAMEINC,                     // (3630) 	frameinc
+  COMMAND_ADDI,160,obj_temp6,           // (3631) 	addi		MAN_SPEED,man_x8
+  COMMAND_SHR,8,obj_temp6,obj_x,        // (3634) 	shr		8,man_x8,obj_x
+  COMMAND_UPDATE_XY,                    // (3638) 	update_xy
+  COMMAND_BG_COLLIDE,3650,              // (3639) 	bg_collide	:assess_right
+  COMMAND_IFGEV,obj_x,obj_temp2,3622,   // (3641) 	ifgev		obj_x,man_max_x,:go_right
+  COMMAND_MOVEV,obj_x,obj_temp2,        // (3645) 	movev		obj_x,man_max_x
+  COMMAND_JMP,3622,                     // (3648) 	jmp		:go_right
+                                        // (3650) :assess_right
+  COMMAND_IFGEV,obj_x,obj_temp2,3622,   // (3650) 	ifgev		obj_x,man_max_x,:go_right
+  COMMAND_SUBI,160,obj_temp6,           // (3654) 	subi		MAN_SPEED,man_x8
+  COMMAND_SHR,8,obj_temp6,obj_x,        // (3657) 	shr		8,man_x8,obj_x
+  COMMAND_UPDATE_XY,                    // (3661) 	update_xy
+  COMMAND_JMP,3457,                     // (3662) 	jmp		:man_turn_left
+                                        // (3664) :man_stuck
+  COMMAND_OUTPUT_VAR,0,obj_x,           // (3664) 	output_var	0,obj_x
+  COMMAND_OUTPUT_VAR,1,obj_y,           // (3667) 	output_var	1,obj_y
+  COMMAND_MOVERND,16,obj_temp4,         // (3670) 	movernd		MAN_CHILL_DELAY,man_dummy
+  COMMAND_PAUSE,obj_temp4,              // (3673) 	pause		man_dummy
+  COMMAND_SETANIMNORMAL,                // (3675) 	setanimnormal
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3676) 	animplayforwardonce
+  COMMAND_JMP,3664,                     // (3677) 	jmp	:man_stuck
+                                        // (3679) name:	ai_starfish_die
+  COMMAND_SETANIMWOUNDED,               // (3679) 	setanimwounded
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3680) 	animplayforwardonce
+  COMMAND_SETANIMDEATH,                 // (3681) 	setanimdeath
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3682) 	animplayforwardonce
+  COMMAND_DIE,                          // (3683) 	die
+  COMMAND_WAIT,                         // (3684) 	wait
+                                        // (3685) name:	ai_starfish
+  COMMAND_ON_HIT,2807,                  // (3685) 	on_hit	ai_death
+                                        // (3687) :starfish_anim
+  COMMAND_SETANIMNORMAL,                // (3687) 	setanimnormal
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3688) 	animplayforwardonce
+  COMMAND_JMP,3687,                     // (3689) 	jmp	:starfish_anim
+                                        // (3691) name:	ai_mussel_die
+  COMMAND_SHOOTABLE_OFF,                // (3691) 	shootable_off
+  COMMAND_THREAD,2780,                  // (3692) 	thread	ai_none
+  COMMAND_SETANIMWOUNDED,               // (3694) 	setanimwounded
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3695) 	animplayforwardonce
+  COMMAND_SETANIMDEATH,                 // (3696) 	setanimdeath
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3697) 	animplayforwardonce
+  COMMAND_THREAD,2795,                  // (3698) 	thread	ai_pingpong
+  COMMAND_WAIT,                         // (3700) 	wait
+  COMMAND_DIE,                          // (3701) 	die
+  COMMAND_WAIT,                         // (3702) 	wait
+                                        // (3703) name:	ai_mussel
+  COMMAND_ON_HIT,3691,                  // (3703) 	on_hit	ai_mussel_die
+  COMMAND_THREAD,2795,                  // (3705) 	thread	ai_pingpong
+  COMMAND_WAIT,                         // (3707) 	wait
+                                        // (3708) name:	ai_tentacle
+  COMMAND_ON_HIT,3725,                  // (3708) 	on_hit	ai_tentacle_hit
+                                        // (3710) :tentacle_loop
+  COMMAND_ANIMSPEED,4,                  // (3710) 	animspeed	4
+  COMMAND_MOVERND,16,obj_temp1,         // (3712) 	movernd	16,obj_temp1
+  COMMAND_ADDI,32,obj_temp1,            // (3715) 	addi	32,obj_temp1
+  COMMAND_PAUSE,obj_temp1,              // (3718) 	pause	obj_temp1
+  COMMAND_SETANIMNORMAL,                // (3720) 	setanimnormal
+  COMMAND_ANIMPLAYFORWARDONCE,          // (3721) 	animplayforwardonce
+  COMMAND_ANIMPLAYBACKONCE,             // (3722) 	animplaybackonce
+  COMMAND_JMP,3710,                     // (3723) 	jmp	:tentacle_loop
+                                        // (3725) name:	ai_tentacle_hit
+  COMMAND_ANIMSPEED,2,                  // (3725) 	animspeed	2
+  COMMAND_ANIMPLAYBACKONCE,             // (3727) 	animplaybackonce
+  COMMAND_JMP,3710,                     // (3728) 	jmp	:tentacle_loop
+};
+
+names_and_indexs ai_named[]= {
+	{"ai_null",0},		// (0)
+	{"ai_tele2",1},		// (1)
+	{"ai_tele1",44},		// (8)
+	{"ai_formation",80},		// (14)
+	{"ai_circle",239},		// (23)
+	{"ai_plunger",405},		// (36)
+	{"ai_plunger_dies",421},		// (38)
+	{"ai_playback",428},		// (39)
+	{"ai_die_spit",430},		// (40)
+	{"ai_mrspit",438},		// (41)
+	{"ai_msspit",450},		// (43)
+	{"ai_mrdrop",463},		// (45)
+	{"ai_msdrop",477},		// (46)
+	{"ai_new_man",530},		// (49)
+	{"ai_surface_hug",672},		// (60)
+	{"ai_lazer",785},		// (69)
+	{"ai_lazer_hit",875},		// (75)
+	{"ai_shite_lazer",885},		// (76)
+	{"ai_soft_rock",986},		// (81)
+	{"ai_rock_flash",989},		// (82)
+	{"ai_bugger",1034},		// (85)
+	{"ai_lem",1223},		// (93)
+	{"ai_flock",1459},		// (112)
+	{"ai_sperm",1645},		// (120)
+	{"ai_spermicide",1827},		// (128)
+	{"ai_tonsl1",1832},		// (129)
+	{"play_death_frames",1838},		// (130)
+	{"ai_flea",1841},		// (131)
+	{"throw_particles",1939},		// (135)
+	{"ai_polo",1992},		// (137)
+	{"ai_dissolve",2040},		// (141)
+	{"ai_path",2074},		// (143)
+	{"ai_test",2129},		// (146)
+	{"ai_floppy",2185},		// (151)
+	{"ai_floppy_sparks",2190},		// (152)
+	{"ai_flop_exp",2198},		// (153)
+	{"ai_pod",2203},		// (154)
+	{"ai_starfsh",2289},		// (162)
+	{"ai_spiral",2329},		// (167)
+	{"ai_swarm",2401},		// (170)
+	{"ai_tad_anim",2516},		// (178)
+	{"ai_tad_cycle",2561},		// (182)
+	{"ai_tad",2577},		// (184)
+	{"ai_tad_hit",2758},		// (191)
+	{"ai_star",2764},		// (193)
+	{"ai_none",2780},		// (195)
+	{"ai_flash",2781},		// (196)
+	{"ai_cycle",2791},		// (199)
+	{"ai_pingpong",2795},		// (202)
+	{"ai_explode",2799},		// (205)
+	{"ai_death",2807},		// (206)
+	{"ai_remove",2809},		// (207)
+	{"ai_test_ref",2811},		// (208)
+	{"ai_crystal",2865},		// (211)
+	{"ai_stream_crystal",2899},		// (214)
+	{"ai_blow_crystal",2978},		// (218)
+	{"ai_wind_tunnel",3046},		// (221)
+	{"ai_asteroid3",3138},		// (225)
+	{"ai_asteroid2",3142},		// (226)
+	{"ai_asteroid",3146},		// (227)
+	{"ai_asteroid_break",3251},		// (232)
+	{"ai_asteroid_break2",3257},		// (233)
+	{"ai_asteroid_break3",3263},		// (234)
+	{"ai_bug",3285},		// (237)
+	{"ai_cycle_man",3330},		// (242)
+	{"ai_survrs_die",3342},		// (244)
+	{"ai_blow",3412},		// (247)
+	{"ai_survrs",3418},		// (248)
+	{"ai_starfish_die",3679},		// (266)
+	{"ai_starfish",3685},		// (267)
+	{"ai_mussel_die",3691},		// (269)
+	{"ai_mussel",3703},		// (270)
+	{"ai_tentacle",3708},		// (271)
+	{"ai_tentacle_hit",3725},		// (273)
+	{"NULL",-1},
+};
+

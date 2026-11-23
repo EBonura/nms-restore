@@ -1,0 +1,135 @@
+# Written by `psoxide-test bless`; edit only by blessing again (decision 4: a bar changes by editing
+# psoxide-test.toml with a reason, never by hand-editing these numbers).
+schema = 1
+blessed_commit = "b969ab321d609de80317265c0fe455af163356a0"
+sdk_pin = "74e139d537035761d2b8844ebf34945a3aab4f0b"
+
+[size.qdup]
+text = 373916
+data = 63800
+bss = 514084
+free = 0
+
+[size.x360]
+text = 221632
+data = 107400
+bss = 331116
+free = 0
+
+[speed.qdup-shot]
+offsets = [-24, -12, 0, 12, 24, 36]
+flips = [379, 379, 379, 379, 379, 379]
+work_per_frame = [1021286, 1021433, 1021248, 1020273, 1020489, 1020382]
+frame_work_p99 = [1610896, 1610896, 1610896, 1610896, 1610896, 1610896]
+vblanks = ["2:219,3:145,4:12,5:1,26:1", "2:220,3:144,4:12,5:1,26:1", "2:220,3:144,4:12,5:1,26:1", "2:219,3:145,4:12,5:1,26:1", "2:219,3:145,4:12,5:1,26:1", "2:220,3:144,4:12,5:1,26:1"]
+layouts = []
+
+[speed.qdup-shot.identity]
+tape = "pgo/qdup-shot.pxtape"
+tape_sha256 = "261c5549e7fb6e4e9c0184853a74080c8010905da84773dbb3cfa0733174d22b"
+window = "polls 3000..3800"
+offsets = [-24, -12, 0, 12, 24, 36]
+launch_args = ["--digital-pad"]
+gate_revision = "97cd078f9d2a33eb6aff274541bccc118f5b12e8"
+
+[speed.x360-mission]
+offsets = [-24, -12, 0, 12, 24, 36]
+flips = [274, 274, 274, 274, 274, 274]
+work_per_frame = [627958, 629349, 629139, 630776, 631433, 629925]
+frame_work_p99 = [991259, 991259, 991259, 991258, 991259, 991259]
+vblanks = ["2:167,3:106", "2:167,3:106", "2:167,3:106", "2:167,3:106", "2:168,3:105", "2:167,3:106"]
+layouts = []
+
+[speed.x360-mission.identity]
+tape = "pgo/x360-boot-thrust.pxtape"
+tape_sha256 = "e2423ac48b9650227cf98f0c6e6190e249cb09d4faba9c6e58597b4fdef964ce"
+window = "polls 2850..3400"
+offsets = [-24, -12, 0, 12, 24, 36]
+launch_args = ["--digital-pad"]
+gate_revision = "97cd078f9d2a33eb6aff274541bccc118f5b12e8"
+
+[journeys.qdup-aim]
+ticks = 1736
+open_loop = 0
+clock_waits = 2
+
+[journeys.qdup-cd-fail]
+ticks = 1217
+open_loop = 0
+clock_waits = 2
+
+[journeys.qdup-cd-retry]
+ticks = 1901
+open_loop = 0
+clock_waits = 2
+
+[journeys.qdup-help]
+ticks = 3013
+open_loop = 0
+clock_waits = 7
+
+[journeys.qdup-menu-caption]
+ticks = 1367
+open_loop = 0
+clock_waits = 3
+
+[journeys.qdup-options]
+ticks = 1360
+open_loop = 0
+clock_waits = 2
+
+[journeys.qdup-title-loading]
+ticks = 586
+open_loop = 0
+clock_waits = 0
+
+[journeys.smoke-qdup]
+ticks = 2663
+open_loop = 0
+clock_waits = 7
+
+[journeys.smoke-x360]
+ticks = 3664
+open_loop = 0
+clock_waits = 12
+
+[journeys.x360-cd-fail]
+ticks = 41
+open_loop = 0
+clock_waits = 0
+
+[journeys.x360-help]
+ticks = 3769
+open_loop = 0
+clock_waits = 12
+
+[journeys.x360-quit-menu]
+ticks = 3976
+open_loop = 0
+clock_waits = 12
+
+[journeys.x360-shield-keys]
+ticks = 4140
+open_loop = 0
+clock_waits = 12
+
+[journeys.x360-start-heading]
+ticks = 3814
+open_loop = 0
+clock_waits = 12
+
+[journeys.x360-start-heading-analog]
+ticks = 3815
+open_loop = 0
+clock_waits = 12
+
+[journeys.x360-survivor-message]
+ticks = 4061
+open_loop = 0
+clock_waits = 12
+
+[host]
+
+[maps]
+qdup = "b67101ce98714a1053debddf825064edc76a98867d38f9c557b21badbec216d4"
+x360 = "9781bd6a32df818ef2bab3ea2ee2fdf62708577d14eda0210009457c56734b75"

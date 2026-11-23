@@ -1,0 +1,51 @@
+# QD Up: a read that fails every try stops the game on a screen naming the file (docs/DECISIONS.md, "A file that cannot be loaded").
+# The test disc t-cdfail arms the layer's CD fault hook after PLEASE WAIT so that every try of the first read of the
+# game's loads fails as a seek that spun out. Route as smoke-qdup.toml: title, option screen, the choice, 3D.
+name = "qdup-cd-fail"
+title = "QD Up: a read that never works shows LOAD FAILED with the file"
+disc = "build/t-cdfail/qdup.cue"
+symbols = "build/t-cdfail/qdup.map"
+pad = "digital"
+
+[[step]]
+label = "the title is up (PRESS START drawn)"
+wait_until = { kind = "ram", sym = "title_prompts", size = 4, op = "ge", value = 1 }
+timeout = 4000
+
+[[step]]
+label = "the game clock reaches 1000 (the title publishes no word of its own)"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1000 }
+timeout = 4000
+
+[[step]]
+label = "Start leaves the title for the option screen"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1010 }
+timeout = 300
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Cross on START opens the 2D or 3D choice"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "choosing", size = 1, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Cross confirms 3D; the first load fails five tries and the screen is up"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "PSYQ_LOAD_FAILED", size = 4, op = "ne", value = 0 }
+timeout = 3000
+
+[[step]]
+checkpoint = "load-failed"
+golden = false
+assert = [{ kind = "ram", sym = "cue_angle", size = 4, op = "eq", value = 0 }, { kind = "ram", sym = "PSYQ_LOAD_FAILED", size = 4, op = "ne", value = 0 }]

@@ -1,0 +1,18 @@
+[package]
+name    = "escher"
+version = "0.1.0"
+edition = "2021"
+description = "A PS1 renderer for QD Up's 3D table behind NMS's Escher interface (E_*), written for the restoration; not NMS's Escher."
+publish = false
+
+# RESTORE: PLATFORM. A library crate of the layer: psyq depends on it, so psyq's one static library holds
+# the layer, the renderer and each SDK crate once (two static libraries each embedded their own copy of
+# psx-math, whose assembly is one global symbol: a duplicate definition at SDK 3185a4a3 and later).
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+# PSoXide SDK, from the clone psyq/build.sh makes (build/psoxide).
+psx-gte = { path = "../build/psoxide/sdk/crates/psx-gte" }
+psx-hw  = { path = "../build/psoxide/crates/psx-hw" }
+psx-math = { path = "../build/psoxide/sdk/crates/psx-math" }

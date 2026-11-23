@@ -1,0 +1,14 @@
+[package]
+name = "asmpsx2gas"
+version = "0.1.0"
+edition = "2021"
+description = "Rewrites NMS's assembler source (SN asmpsx syntax) as GNU as source, instruction for instruction"
+publish = false
+
+# Its own workspace: the repository root has none.
+[workspace]
+
+[dependencies]
+
+[profile.release]
+codegen-units = 1

@@ -1,0 +1,35 @@
+
+ Volume in drive E is MS-RAMDRIVE
+ Directory of E:\LIB
+
+.              <DIR>        07-26-96  9:19a
+..             <DIR>        07-26-96  9:19a
+2MBYTE   OBJ           591  10-20-95  3:30a
+8MBYTE   OBJ           591  10-20-95  3:30a
+C63      OBJ           118  03-05-96  3:47p
+LIBAPI   LIB        12,075  11-20-95  6:06p
+LIBC     LIB        11,722  03-05-96  3:47p
+LIBC2    LIB        26,077  12-04-95  1:39p
+LIBCARD  LIB         2,226  11-22-95  1:23p
+LIBCD    LIB        54,185  12-04-95  1:40p
+LIBCOMB  LIB         9,339  11-22-95  1:25p
+LIBETC   LIB        10,354  12-04-95  1:41p
+LIBGPU   LIB        65,754  12-04-95  1:41p
+LIBGS    LIB       274,458  12-04-95  2:02p
+LIBGTE   LIB       239,132  11-30-95  4:59p
+LIBMATH  LIB        46,684  12-07-95  2:36p
+LIBPRESS LIB        84,943  12-04-95  2:33p
+LIBSN    LIB        20,137  10-20-95  3:30a
+LIBSND   LIB       103,812  12-04-95  2:37p
+LIBSPU   LIB        69,443  12-04-95  2:40p
+LIBSTR   LIB             4  01-17-96 11:25a
+LIBSTR24 LIB             4  01-17-96 11:25a
+LIBTAP   LIB        10,170  12-04-95  2:41p
+MALLOC   OBJ         3,337  10-20-95  3:30a
+NONE2    OBJ           244  10-20-95  3:30a
+NONE3    OBJ           295  10-18-95  7:18p
+PROFILE  LIB             4  01-17-96 11:25a
+VSDIE    OBJ        24,423  09-06-95  5:04p
+VSEX     OBJ           718  09-06-95  5:04p
+        27 file(s)      1,070,840 bytes
+         2 dir(s)         491,520 bytes free

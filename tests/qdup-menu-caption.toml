@@ -1,0 +1,93 @@
+# QD Up's front end tells what to press (owner's decisions 2026-11-18, new/viewchoice.c): PRESS START on the title
+# picture while MENU.C waits, and on the option screen a caption for the icon under the cursor (its name, its value,
+# the button that changes or opens it). The route is smoke-qdup.toml's.
+name = "qdup-menu-caption"
+title = "QD Up: PRESS START on the title, the option screen's caption follows the cursor"
+disc = "build/qdup-cd/qdup.cue"
+symbols = "build/qdup-cd/qdup.map"
+pad = "digital"
+
+[[step]]
+label = "the option screen is up with START under the cursor"
+wait_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 4 }
+timeout = 2500
+
+[[step]]
+checkpoint = "options"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "cursor"
+size = 4
+op = "eq"
+value = 4
+[[step.assert]]
+kind = "ram"
+sym = "cue_angle"
+size = 4
+op = "eq"
+value = 0
+
+[[step]]
+label = "Start (the game clock reaches 1000: the screens publish no word of their own)"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1000 }
+timeout = 4000
+
+[[step]]
+label = "Start leaves the title for the option screen"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1010 }
+timeout = 300
+
+[[step]]
+label = "Up"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1140 }
+timeout = 4000
+
+[[step]]
+label = "Up moves the cursor"
+press = ["up"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 3 }
+timeout = 600
+
+[[step]]
+checkpoint = "title-prompted"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "title_prompts"
+size = 4
+op = "ge"
+value = 1
+note = "PRESS START was drawn on the title picture"
+
+[[step]]
+label = "the caption follows the cursor (OPTIONS)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 3 }
+timeout = 300
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 300
+
+[[step]]
+label = "Up again: PLAYERS"
+press = ["up"]
+hold_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 2 }
+timeout = 300
+
+[[step]]
+label = "the caption follows (PLAYERS)"
+wait_until = { kind = "ram", sym = "caption_cursor", size = 4, op = "eq", value = 2 }
+timeout = 300
+
+[[step]]
+checkpoint = "caption-players"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "caption_cursor"
+size = 4
+op = "eq"
+value = 2

@@ -1,0 +1,130 @@
+Acronyms 
+========
+
+STC - Subject to change
+WIP - Work in progress
+
+Work completed on Saturn 360X - 23/JUL/96
+=========================================
+
+Titles  (STC)
+-------------
+ 	- Hiscore table
+
+ 	- Level Select screen
+
+ 	- Level briefing
+
+	- Credits Screen (2 types of)
+
+Game
+----
+	- Eight direction scroller
+	
+	- Dynamic VRAM manager for sprites and CLUTS
+	
+	- 16 color compressed sprites
+
+	- CD Audio implemented. Will put in SFX when I get some (!)
+
+	- Particles now use fixed point arithmetic and lookup tables from SGL.
+	  All particle processing carried out by slave CPU	  	
+	
+	- Craft dynamics in fixed point arithmetic and controlled by
+          slave CPU
+	
+	- Basics of firing implemented ; need to convert some of the
+	  calculations to fixed point look-up and implement new weapons
+	
+	- Background collision (needs to be made pixel perfect for craft)
+	
+	- In game functions done for GAMMA, CD and SFX volume. Will add more
+	  as I think of them
+	
+	- Current logic interpreter from PC fully implemented
+	
+	- CD file system code (from Offensive)
+
+	- Panel GFX and scoring
+
+	- Backup RAM done for system memory and cartridge
+
+
+
+Work TO BE completed on Saturn 360X 
+===================================
+
+Titles
+------
+	- working on plasma screen for credits screen as requested by
+	Lex Rutter. Need to speed up code for the compound sines.
+
+	- people think the intro looks tacky so will gauge opinions as
+	to what is considered to be cool...
+
+	- need to get in the planet level select screen (SEE BELOW)
+
+	- need to do some 3D code for the intro. 3DS models for the
+	title screen?
+
+
+Game
+----
+	- (V. IMP.) Need to get code into overlays! (SEE BELOW)
+
+	- Some mathematics to be replaced in the firing routines to use
+	the fast SGL maths code.
+
+	- Research into what other routines can be passed over to the slave
+	CPU. 
+
+	- Phils compression could be used for the map blocks to get some
+	memory back. May use the SCU-DSP to decompress these blocks.
+
+	- Need to update to new sprite object management system as recently
+	done by Phil.
+
+	- Need to implement path following code.
+
+	- Need to implement sprite collision
+
+	- Mention of FMV in the game; use Chris' code from Tilt
+
+	- Need to keep up to date with Phil as he chops and changes functions
+	in the logic processing code
+
+	- Lighting effects (as requested by Phil)
+
+	- Shadowing (cos I reckon this might look cool)
+
+
+
+
+Miscellaneous Issues
+====================
+
+Memory
+------
+	This is running VERY LOW at the moment. I have 3K left! Overlays
+should get me some memory back and Phils new sprite object manager will get
+me a little bit more back. I need to change things to be as level dependant
+as possible. This will be one of the big headaches.
+
+Grabber
+-------
+	Certain things are being held back because the grabber has an
+annoying limitation - it cannot grab sprites wider or higher than 128.
+I will be writing a grabber of my own soon which will take up some of
+my time.
+
+
+Convertors
+----------
+	Written many of these to convert PC text files into binary
+for myself and Paul. I need to update these to take account of the
+new object management for the sprites and the attributes. 
+ Main convertors to be changed are the attribute compiler and the MAP2BMF
+convertor.
+
+
+

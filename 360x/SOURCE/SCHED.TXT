@@ -1,0 +1,63 @@
+
+SCHEDULE FOR 360X - PSX & SATURN
+********************************
+
+THIS IS A ROUGH GUIDELINE ON HOW LONG IT WILL TAKE TO COMPLETE THE PSX & SATURN
+VERSIONS OF 360X. IF THE PC CODE DOES NOT TURN UP FAST ENOUGH THEN OUR DEADLINE
+WILL OBVIOUSLY HAVE TO BE EXTENDED.
+
+
+PSX                                     COMPLETE        TIME REMAINING
+***                                     ********        **************
+
+GENERAL CODE
+------------
+
+PAD CONTROL                     100%            N/A
+SOUND                            30%            WAITING FOR SOUND TO TURN UP (CODE FINISHED)
+CD LOADING                      100%            N/A
+BOOTABLE CD                      90%            WAITING TO GET AT THE BURNER
+SPEEDING UP OF CODE     50%             2 WEEKS
+
+FRONT END
+---------
+
+MEMORY CARD BACKUP               70%            WAITING ON PASS OF TILT BACKUP CODE
+CD AUDIO                          0%            1 DAY
+TITLE SCREEN                    100%            SUBJECT TO CHANGE (STC)
+HIGH SCORE SCREEN               100%            STC
+CREDIT SCREEN                   100%            STC
+OPTION SCREEN                   100%            STC
+PAD SELECT SCREEN               100%            NEED NEW PLAYSTATION PAD GRAPHIC
+LANGUAGE SELECT?                100%            IS THIS NEEDED?
+LEVEL SELECT                    100%            STC
+LEVEL BRIEFING                  100%            PENDING INFORMATION ON LEVEL (4 HOURS)
+END OF MISSION STATUS           100%            PENDING INFORMATION FOR STATUS (1 DAY)
+3D NICE BITS                    80%             NEED SOME MORE IDEAS!!
+PLASMA FIELDS                   0%              2 DAYS WORK
+HIGH SCORE ENTRY                100%            STC
+
+IN GAME
+-------
+
+PARTICLES                       70%             NEED TO SPEED UP TO FIXED POINT
+SPRITE PLACEMENT                80%             NEED NEW .MAP FILES FOR EACH LEVEL
+SHIP MOVEMENT                   60%             NEED TO CONVERT DYNAMICS TO FIXED POINT
+MAP COMPRESSION                 50%             IMPLEMTING COMPRESSED MAPS NOW
+SCROLLER                        90%             STOP MAP FROM SCROLLING ONTO BLANK AREAS
+SPRITE COLLISION                50%             BIT OF TWEAKING TO SORT OUT (1 DAY)
+ENEMY MOVEMENT                  30%             NEED NEW ENEMY AI FROM PHIL (DEPENDANT)
+FIRING LOGIC                    80%             NEED TO FINALISE WEAPONS (2 DAYS)
+GENERAL AI                      50%             NEED TO IMPLEMENT PHILS CODE (WHEN IT'S FINISHED)
+INGAME MENU                     90%             NEED TO KNOW WHAT YOU WANT ON THE MENU
+PAUSE                           100%            N/A
+
+
+GENERAL PC UTILS
+****************
+
+MAP2BMF CONVERTER               85%             NEED TO MODIFY FOR PATH FOLLOWING ALIENS (2 DAYS)
+MAP COMPRESSER                  100%            N/A
+GRAPHICS CONVERTED              50%             AWAITING RESIZED GRAPHICS FOR ENEMIES
+
+

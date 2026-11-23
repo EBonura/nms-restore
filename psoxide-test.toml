@@ -1,0 +1,385 @@
+# 360X and QD Up: the test description for psoxide-test (the SDK's harness, tools/psoxide-test).
+# Two C programs on a Psy-Q compatibility layer in one repository. The harness declares what to build and
+# check; the shell and python gameplay scripts stay what they are (a [[host]] check each, exit code decides),
+# and the gate journeys are the title-to-play smokes plus the CD conformance rules on the real, mister and
+# mister,gpu-irq=never models. Baseline: psoxide-test.baseline.toml.
+# The SDK checkout the layer pins comes from the machine-local config ([inputs] sdk).
+schema = 1
+name = "360X and QD Up"
+repository = "EBonura/nms-restore"
+
+# The SDK pin is written in the layer's build script (the hex after PSOXIDE_REV:- in psyq/build.sh).
+[sdk]
+file = "psyq/build.sh"
+after = "PSOXIDE_REV:-"
+
+# 360X's disc and QD Up's disc: two programs, two builds (they share the layer build and the SDK clone, so they
+# run in this order). The gameplay scripts take a build's output directory ({out}).
+[[build]]
+name = "x360"
+out = "build/360x-cd"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}" }
+disc = "360x.cue"
+map = "360x.map"
+
+[[build]]
+name = "qdup"
+out = "build/qdup-cd"
+commands = [["qdup/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}" }
+disc = "qdup.cue"
+map = "qdup.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-laser"
+out = "build/t-laser"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-laser", X360_CFLAGS = "-DX360_TEST_WARP=100 -DX360_TEST_WARP_EVERY=900 -DX360_TEST_WARP_HOLD=700 -DX360_TEST_WARP_NAMES=109 -DX360_TEST_WARP_DX=26 -DX360_TEST_WARP_DY=0" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-pod"
+out = "build/t-pod"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-pod", X360_CFLAGS = "-DX360_TEST_POD_X=650 -DX360_TEST_POD_Y=430 -DX360_TEST_START_X=676 -DX360_TEST_START_Y=434 -DX360_TEST_HEADING=16" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-podw"
+out = "build/t-podw"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-podw", X360_CFLAGS = "-DX360_TEST_POD_WATCH -DX360_TEST_START_X=615 -DX360_TEST_START_Y=441 -DX360_TEST_HEADING=16" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-touch"
+out = "build/t-touch"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-touch", X360_CFLAGS = "-DX360_TEST_TOUCH" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-pick0"
+out = "build/t-pick0"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-pick0", X360_CFLAGS = "-DX360_TEST_PICKUP=0 -DX360_TEST_START_X=676 -DX360_TEST_START_Y=434" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-pick1"
+out = "build/t-pick1"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-pick1", X360_CFLAGS = "-DX360_TEST_PICKUP=1 -DX360_TEST_START_X=676 -DX360_TEST_START_Y=434" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-pick2"
+out = "build/t-pick2"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-pick2", X360_CFLAGS = "-DX360_TEST_PICKUP=2 -DX360_TEST_START_X=676 -DX360_TEST_START_Y=434" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-tele1"
+out = "build/t-tele1"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-tele1", X360_CFLAGS = "-DX360_TEST_TELE=1" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-tele2"
+out = "build/t-tele2"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-tele2", X360_CFLAGS = "-DX360_TEST_TELE=2" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-wfire"
+out = "build/t-wfire"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-wfire", X360_CFLAGS = "-DX360_TEST_FIRE -DX360_TEST_WARP=100 -DX360_TEST_WARP_EVERY=900 -DX360_TEST_WARP_HOLD=700 -DX360_TEST_WARP_NAMES=109 -DX360_TEST_WARP_DX=30 -DX360_TEST_WARP_DY=150 -DX360_TEST_HEADING=16" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-wpocket"
+out = "build/t-wpocket"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-wpocket", X360_CFLAGS = "-DX360_TEST_FIRE -DX360_TEST_AT=100 -DX360_TEST_AT_X=40 -DX360_TEST_AT_Y=178 -DX360_TEST_HEADING=16" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-wring"
+out = "build/t-wring"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-wring", X360_CFLAGS = "-DX360_TEST_FIRE -DX360_TEST_WARP=100 -DX360_TEST_WARP_EVERY=900 -DX360_TEST_WARP_HOLD=700 -DX360_TEST_WARP_NAMES=109 -DX360_TEST_WARP_DX=30 -DX360_TEST_WARP_DY=150 -DX360_TEST_FIRE_DY=0 -DX360_TEST_HEADING=16" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-wshield"
+out = "build/t-wshield"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-wshield", X360_CFLAGS = "-DX360_TEST_FIRE -DX360_TEST_WARP=100 -DX360_TEST_WARP_EVERY=900 -DX360_TEST_WARP_HOLD=700 -DX360_TEST_WARP_NAMES=109 -DX360_TEST_WARP_DX=30 -DX360_TEST_WARP_DY=150 -DX360_TEST_FIRE_DX=0 -DX360_TEST_FIRE_DY=16 -DX360_TEST_HEADING=16" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-wopen"
+out = "build/t-wopen"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-wopen", X360_CFLAGS = "-DX360_TEST_FIRE -DX360_TEST_AT=100 -DX360_TEST_AT_X=120 -DX360_TEST_AT_Y=82 -DX360_TEST_NOHIT -DX360_TEST_HEADING=16" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/ (a build of 360X with -D flags that place the situation the script checks).
+[[build]]
+name = "t-wpocketnh"
+out = "build/t-wpocketnh"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-wpocketnh", X360_CFLAGS = "-DX360_TEST_FIRE -DX360_TEST_AT=100 -DX360_TEST_AT_X=40 -DX360_TEST_AT_Y=178 -DX360_TEST_NOHIT -DX360_TEST_HEADING=16" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/gameplay/x360-newlife.sh: every life starts on frame 16 (right, as the script was laid out) and the first
+# life's shields go to 0 at game cycle 1100, so it ends as a hit ends it (QUIT goes to the main menu since 2026-11-18).
+[[build]]
+name = "t-newlife"
+out = "build/t-newlife"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-newlife", X360_CFLAGS = "-DX360_TEST_HEADING=16 -DX360_TEST_DIE_AT=1100" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test disc for tests/x360-survivor-message.toml: the craft is put on the first survivor of Mission 1 from game cycle 100.
+[[build]]
+name = "t-surv"
+out = "build/t-surv"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-surv", X360_CFLAGS = "-DX360_TEST_WARP=100 -DX360_TEST_WARP_EVERY=900 -DX360_TEST_WARP_HOLD=700 -DX360_TEST_WARP_NAMES=29 -DX360_TEST_WARP_DX=0 -DX360_TEST_WARP_DY=0" }
+disc = "360x.cue"
+map = "360x.map"
+
+# Test discs for the load checks (tests/qdup-cd-retry.toml, qdup-cd-fail.toml, x360-cd-fail.toml): the layer built with its
+# CD fault hook (PSYQ_TEST_CD_FAULT=1, psyq/src/cd.rs CdTestFault, in its own library build/psyq-tcd) and the game arming
+# it. QD Up arms it after PLEASE WAIT, so the first read of the game's loads waits 300 vblanks (6 s) and then fails one
+# try (t-cdretry: the layer re-syncs the drive, the next try reads it and the game is played) or every try (t-cdfail: the
+# screen naming the file). 360X arms it before its second InitialiseFiles (the index of 360X.DAT, every try fails).
+[[build]]
+name = "t-cdretry"
+out = "build/t-cdretry"
+commands = [["qdup/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", QDUP_OUT = "build/t-cdretry", PSYQ_TEST_CD_FAULT = "1", QDUP_CFLAGS = "-DQDUP_TEST_CD_FAULT=1 -DQDUP_TEST_CD_DELAY=300" }
+disc = "qdup.cue"
+map = "qdup.map"
+
+[[build]]
+name = "t-cdfail"
+out = "build/t-cdfail"
+commands = [["qdup/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", QDUP_OUT = "build/t-cdfail", PSYQ_TEST_CD_FAULT = "1", QDUP_CFLAGS = "-DQDUP_TEST_CD_FAULT=99 -DQDUP_TEST_CD_DELAY=0" }
+disc = "qdup.cue"
+map = "qdup.map"
+
+[[build]]
+name = "t-x360cdfail"
+out = "build/t-x360cdfail"
+commands = [["360x/disc.sh"]]
+env = { PSOXIDE_REPO = "{input:sdk}", PSOXIDE_SRC = "{input:sdk}", X360_OUT = "build/t-x360cdfail", PSYQ_TEST_CD_FAULT = "1", X360_CFLAGS = "-DX360_TEST_CD_FAULT=99 -DX360_TEST_CD_DELAY=0" }
+disc = "360x.cue"
+map = "360x.map"
+
+[[size]]
+build = "x360"
+
+[[size]]
+build = "qdup"
+
+# Poll-bound tapes (the frontend's --press route, the smoke's presses, transcribed to PXITAPE2 with
+# --input-tape-transcribe): 360X in Mission 1 with Cross held, QD Up after the first table loads (cue left and
+# right, the strike). Windows are in the game's own pad polls.
+[[speed]]
+name = "x360-mission"
+build = "x360"
+tape = "pgo/x360-boot-thrust.pxtape"
+polls = [2850, 3400]
+offsets = [-24, -12, 0, 12, 24, 36]
+launch_args = ["--digital-pad"]
+
+[[speed]]
+name = "qdup-shot"
+build = "qdup"
+tape = "pgo/qdup-shot.pxtape"
+polls = [3000, 3800]
+offsets = [-24, -12, 0, 12, 24, 36]
+launch_args = ["--digital-pad"]
+
+[journeys]
+files = "tests/*.toml"
+# The analog start-heading journey forces a DualShock in analog mode: the owner plays that way, and the layer hands such a pad to the
+# game as a digital pad (docs/DECISIONS.md, "The pad works in digital and in analog mode"); the journey proves the thrust path through it.
+forced_analog = { "x360-start-heading-analog" = "the owner plays in analog mode; the start heading must work through the layer's analog-to-digital path" }
+# hw stays off: the hardware renderer matrix (--strict) refuses these games ("screen-offset display (hardware renderer defers to the CPU frame)" on the 360X and option screens, unclassified HW pixels in the QD Up 3D table); no old gate ran them that way.
+precheck = ["smoke-x360", "smoke-qdup"]
+
+[cross]
+smoke = ["tests/smoke-x360.toml", "tests/smoke-qdup.toml"]
+
+# Gameplay scripts (shell and python on the shared emulator build): one host check each, on the real model
+# and on mister; 360X and QD Up again on mister,gpu-irq=never.
+# Every check is in the one exclusive group "emu": the harness runs host checks in parallel, and these share a
+# script's output directory across its models (build/gameplay/<name>) and start emulators of their own.
+# Each gameplay check is keyed on what it reads (`inputs`, `uses`, and its build's bytes): the script, the
+# python drivers, the game and layer sources, the SDK's guest sources and the frontend. psyq/build.sh is left
+# out on purpose: it names the SDK pin, and a pin to another commit with the same guest tree changes nothing
+# a script sees (any other change to it changes the build bytes, which the key holds). The five checks that
+# also play other builds (craft, pod, pickup, tele, weapons) read their variant flags from this file. Each
+# holds one machine emulator slot while it runs (`emulators`).
+
+[[host]]
+name = "x360"
+build = "x360"
+command = ["zsh", "tests/gameplay/x360.sh", "{out}", "build/gameplay/x360"]
+models = ["real", "mister", "mister,gpu-irq=never"]
+exclusive = "emu"
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
+uses = ["sdk", "frontend"]
+emulators = 1
+
+[[host]]
+name = "qdup"
+build = "qdup"
+command = ["zsh", "tests/gameplay/qdup.sh", "{out}", "build/gameplay/qdup"]
+models = ["real", "mister", "mister,gpu-irq=never"]
+exclusive = "emu"
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
+uses = ["sdk", "frontend"]
+emulators = 1
+
+[[host]]
+name = "x360-newlife"
+build = "t-newlife"
+command = ["zsh", "tests/gameplay/x360-newlife.sh", "{out}", "build/gameplay/newlife"]
+models = ["real", "mister"]
+exclusive = "emu"
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
+uses = ["sdk", "frontend"]
+emulators = 1
+
+[[host]]
+name = "x360-craft"
+build = "x360"
+command = ["zsh", "tests/gameplay/x360-craft.sh", "{out}", "build/gameplay/craft", "build/t-touch"]
+models = ["real", "mister"]
+exclusive = "emu"
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
+uses = ["sdk", "frontend"]
+emulators = 1
+
+[[host]]
+name = "x360-laser"
+build = "t-laser"
+command = ["zsh", "tests/gameplay/x360-laser.sh", "{out}", "build/gameplay/laser"]
+models = ["real", "mister"]
+exclusive = "emu"
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
+uses = ["sdk", "frontend"]
+emulators = 1
+
+[[host]]
+name = "x360-pod"
+build = "t-pod"
+command = ["zsh", "tests/gameplay/x360-pod.sh", "{out}", "build/gameplay/pod", "build/t-podw"]
+models = ["real", "mister"]
+exclusive = "emu"
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
+uses = ["sdk", "frontend"]
+emulators = 1
+
+[[host]]
+name = "x360-pickup"
+build = "t-pick0"
+command = ["zsh", "tests/gameplay/x360-pickup.sh", "{out}", "build/t-pick1", "build/t-pick2", "build/gameplay/pickup"]
+models = ["real", "mister"]
+exclusive = "emu"
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
+uses = ["sdk", "frontend"]
+emulators = 1
+
+[[host]]
+name = "x360-tele"
+build = "t-tele1"
+command = ["zsh", "tests/gameplay/x360-tele.sh", "{out}", "build/t-tele2", "build/gameplay/tele"]
+models = ["real", "mister"]
+exclusive = "emu"
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
+uses = ["sdk", "frontend"]
+emulators = 1
+
+[[host]]
+name = "x360-weapons"
+build = "t-wfire"
+command = ["zsh", "tests/gameplay/x360-weapons.sh", "{out}", "build/t-wpocket", "build/t-wring", "build/t-wshield", "build/t-wopen", "build/t-wpocketnh", "build/gameplay/weapons"]
+models = ["real", "mister"]
+exclusive = "emu"
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
+uses = ["sdk", "frontend"]
+emulators = 1
+
+# One clean-clone proof per program: a fresh clone of the pushed commit rebuilds each disc and its executable byte for byte.
+[[clean]]
+build = "x360"
+compare = ["360x.bin", "360x.cue", "360x.exe"]
+
+[[clean]]
+build = "qdup"
+compare = ["qdup.bin", "qdup.cue", "qdup.exe"]
+
+[[install]]
+build = "x360"
+name = "360X (nms-restore)"
+
+[[install]]
+build = "qdup"
+name = "QD Up (nms-restore)"
+
+# QD Up's option screen draws both of its fields (GFX.C display_screen): the gate's frames of the title, the menu after three
+# changes, the 2D or 3D choice and PLEASE WAIT.
+[[host]]
+name = "qdup-fields"
+build = "qdup"
+command = ["zsh", "tests/gameplay/qdup-fields.sh", "{out}", "build/gameplay/fields", "{tool:gate}"]
+models = ["real", "mister", "mister,gpu-irq=never"]
+exclusive = "emu"
+emulators = 1
+
+# QD Up's disc build carries none of NMS's debug status text (GFX.C QDUP_DEBUG_TEXT): a check of the executable's bytes.
+[[host]]
+name = "qdup-nodebug"
+build = "qdup"
+command = ["zsh", "tests/gameplay/qdup-nodebug.sh", "{out}"]

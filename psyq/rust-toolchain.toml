@@ -1,0 +1,5 @@
+[toolchain]
+# The PSoXide SDK's pinned nightly (its rust-toolchain.toml at PSOXIDE_REV):
+# mipsel-sony-psx, build-std and asm_experimental_arch need nightly.
+channel    = "nightly-2026-03-25"
+components = ["rust-src", "llvm-tools"]

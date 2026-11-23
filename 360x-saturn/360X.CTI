@@ -1,0 +1,83 @@
+Disc CDROM CD.EMU
+
+  LeadIn MODE1
+
+    Empty       1000
+    PostGap     150
+
+  EndTrack
+
+  Track MODE1
+
+    Pause      150
+
+    Volume          ISO9660         cd.ISO
+ 
+    SystemArea ip.bin
+
+    PrimaryVolume
+
+    SystemIdentifier                    "SEGA SATURN"
+    VolumeIdentifier                    "360X"
+    LogicalBlockSize                    2048
+    VolumeSetIdentifier                 "360X"
+    PublisherIdentifier                 "SEGA"
+    DataPreparerIdentifier              "SEGA"
+    ApplicationIdentifier               "SEGA"
+
+    Lpath
+    Mpath
+
+    Hierarchy
+
+         File            playanim.bin;1
+	 Source          playanim.bin
+         EndFile
+
+         File            sat2.pat;1
+	 Source          anims\sat2.pat
+         EndFile
+
+         File            sat2.pal;1
+	 Source          anims\sat2.pal
+         EndFile
+
+         File            snddrv.bin;1
+	 Source          sound\snddrv.bin
+         EndFile
+
+         File            sfx1.bin;1
+	 Source          sound\sfx1.bin
+         EndFile
+
+         File            fonts.bin;1
+	 Source          bin\fonts.bin
+         EndFile
+
+         File            fonts.sat;1
+	 Source          bin\fonts.sat
+         EndFile
+
+    EndHierarchy
+
+  EndPrimaryVolume
+
+  Echo Writing Lead Out..       
+
+  EndVolume
+
+  PostGap     150
+
+  EndTrack
+
+  LeadOut MODE1
+
+    Empty 500
+
+  EndTrack
+
+Echo All Done                             
+
+EndDisc
+
+

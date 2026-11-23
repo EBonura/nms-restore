@@ -1,0 +1,50 @@
+[package]
+name    = "psyq"
+version = "0.1.0"
+edition = "2021"
+description = "Clean-room replacement for the parts of Sony's Psy-Q libraries NMS's games call, on the PSoXide SDK, with a C ABI."
+publish = false
+
+# Its own workspace: built for mipsel-sony-psx by psyq/build.sh.
+[workspace]
+
+[lib]
+path       = "src/lib.rs"
+crate-type = ["staticlib"]
+
+[dependencies]
+# PSoXide SDK, from the clean clone psyq/build.sh makes at PSOXIDE_REV.
+psx-rt   = { path = "../build/psoxide/sdk/crates/psx-rt" }
+psx-hw   = { path = "../build/psoxide/crates/psx-hw" }
+psx-io   = { path = "../build/psoxide/sdk/crates/psx-io" }
+psx-gpu  = { path = "../build/psoxide/sdk/crates/psx-gpu" }
+psx-gte  = { path = "../build/psoxide/sdk/crates/psx-gte" }
+psx-pad  = { path = "../build/psoxide/sdk/crates/psx-pad" }
+psx-vram = { path = "../build/psoxide/sdk/crates/psx-vram" }
+psx-font = { path = "../build/psoxide/sdk/crates/psx-font" }
+psx-spu  = { path = "../build/psoxide/sdk/crates/psx-spu" }
+psx-mc   = { path = "../build/psoxide/sdk/crates/psx-mc" }
+psx-fmv  = { path = "../build/psoxide/sdk/crates/psx-fmv" }
+psx-pack = { path = "../build/psoxide/sdk/crates/psx-pack" }
+psx-fx   = { path = "../build/psoxide/sdk/crates/psx-fx" }
+psx-display = { path = "../build/psoxide/sdk/crates/psx-display" }
+# RESTORE: PLATFORM. QD Up's 3D renderer (the E_* functions), part of this one static library so each SDK crate is linked once.
+escher   = { path = "../escher" }
+
+[features]
+# RESTORE: PLATFORM (owner's decision, 2026-11-13). The debug console (what NMS's printf writes and
+# the layer's own "psyq:" lines) is off unless a build asks for it: PSYQ_DEBUG=1 in psyq/build.sh.
+debug-console = ["psx-rt/host-tty"]
+# RESTORE: PLATFORM. Test builds only: CdTestFault (cd.rs) puts a read failure and a delay in at a load the game
+# chooses. PSYQ_TEST_CD_FAULT=1 in psyq/build.sh; the shipped discs never carry it (docs/DECISIONS.md, "A file that cannot be loaded").
+test-cd-fault = []
+
+[profile.release]
+panic         = "abort"
+opt-level     = 2
+codegen-units = 1
+lto           = true
+debug         = true
+
+[profile.dev]
+panic = "abort"

@@ -1,0 +1,254 @@
+# QD Up's flat (2D FLAT) view draws an aiming aid (GFX.C Aim_Line_2D, owner's decision 2026-11-20, a deliberate addition): a
+# dotted line from the cue ball along the shot's direction while a shot can be taken, gone while the balls move. The route plays the 2D view from the boot:
+# START, the choice screen's 2D FLAT, then Left and Right turn the aim to four angles (every wait is on a game variable),
+# Cross with Down draws the cue back, Cross with Up strikes, and the line goes while the balls roll.
+name = "qdup-aim"
+title = "QD Up flat view: the dotted aim line follows the aim at four angles"
+disc = "build/qdup-cd/qdup.cue"
+symbols = "build/qdup-cd/qdup.map"
+pad = "digital"
+
+[[step]]
+label = "the game clock reaches 1000"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1000 }
+timeout = 4000
+
+[[step]]
+label = "Start leaves the title for the option screen"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1010 }
+timeout = 300
+
+[[step]]
+label = "the option screen is up with START under the cursor"
+wait_until = { kind = "ram", sym = "caption_draws", size = 4, op = "ge", value = 4 }
+timeout = 4000
+
+[[step]]
+label = "Cross on START opens the 2D or 3D choice"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "choosing", size = 1, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Down: 2D FLAT"
+press = ["down"]
+hold_until = { kind = "ram", sym = "view_3d", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Cross confirms: the game runs"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "cue_angle", size = 4, op = "ne", value = 0 }
+timeout = 2500
+
+[[step]]
+label = "released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the game's first frames are drawn (the line's flag is its own word)"
+wait_until = { kind = "ram", sym = "aim_line_on", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the line is drawn (angle-0)"
+wait_until = { kind = "ram", sym = "aim_line_on", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the picture settles: the same line four passes in a row"
+wait_until = { kind = "ram", sym = "aim_line_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "angle-0"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "aim_line_on"
+size = 4
+op = "eq"
+value = 1
+note = "the dotted line is drawn"
+
+
+[[step.assert]]
+kind = "ram"
+sym = "aim_stick_on"
+size = 4
+op = "eq"
+value = 1
+note = "the cue stick is drawn"
+
+[[step.assert]]
+kind = "pixels"
+color = [77, 48, 32]
+color_tol = 14
+region = { x = 0, y = 52, w = 320, h = 200 }
+min_count = 30
+note = "the stick butt (brown) is on the screen"
+
+[[step]]
+label = "Left: down and to the right"
+press = ["left"]
+hold_until = { kind = "ram", sym = "cue_angle", size = 4, op = "ge", value = 1537 }
+timeout = 900
+
+[[step]]
+label = "released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the line is drawn (angle-1)"
+wait_until = { kind = "ram", sym = "aim_line_on", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the picture settles: the same line four passes in a row"
+wait_until = { kind = "ram", sym = "aim_line_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "angle-1"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "aim_line_on"
+size = 4
+op = "eq"
+value = 1
+note = "the dotted line is drawn"
+
+
+[[step.assert]]
+kind = "ram"
+sym = "aim_stick_on"
+size = 4
+op = "eq"
+value = 1
+note = "the cue stick is drawn"
+
+[[step.assert]]
+kind = "pixels"
+color = [77, 48, 32]
+color_tol = 14
+region = { x = 0, y = 52, w = 320, h = 200 }
+min_count = 30
+note = "the stick butt (brown) is on the screen"
+
+[[step]]
+label = "Right: back past the start, up and to the right"
+press = ["right"]
+hold_until = { kind = "ram", sym = "cue_angle", size = 4, op = "le", value = 513 }
+timeout = 900
+
+[[step]]
+label = "released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the line is drawn (angle-2)"
+wait_until = { kind = "ram", sym = "aim_line_on", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the picture settles: the same line four passes in a row"
+wait_until = { kind = "ram", sym = "aim_line_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "angle-2"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "aim_line_on"
+size = 4
+op = "eq"
+value = 1
+note = "the dotted line is drawn"
+
+
+[[step.assert]]
+kind = "ram"
+sym = "aim_stick_on"
+size = 4
+op = "eq"
+value = 1
+note = "the cue stick is drawn"
+
+[[step.assert]]
+kind = "pixels"
+color = [77, 48, 32]
+color_tol = 14
+region = { x = 0, y = 52, w = 320, h = 200 }
+min_count = 30
+note = "the stick butt (brown) is on the screen"
+
+[[step]]
+label = "Right: steeper"
+press = ["right"]
+hold_until = { kind = "ram", sym = "cue_angle", size = 4, op = "le", value = 257 }
+timeout = 900
+
+[[step]]
+label = "released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the line is drawn (angle-3)"
+wait_until = { kind = "ram", sym = "aim_line_on", size = 4, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the picture settles: the same line four passes in a row"
+wait_until = { kind = "ram", sym = "aim_line_draws", size = 4, op = "ge", value = 4 }
+timeout = 600
+
+[[step]]
+checkpoint = "angle-3"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "aim_line_on"
+size = 4
+op = "eq"
+value = 1
+note = "the dotted line is drawn"
+
+
+[[step.assert]]
+kind = "ram"
+sym = "aim_stick_on"
+size = 4
+op = "eq"
+value = 1
+note = "the cue stick is drawn"
+
+[[step.assert]]
+kind = "pixels"
+color = [77, 48, 32]
+color_tol = 14
+region = { x = 0, y = 52, w = 320, h = 200 }
+min_count = 30
+note = "the stick butt (brown) is on the screen"
+

@@ -1,0 +1,52 @@
+# QD Up: a read that fails once is tried again and the game is played (docs/DECISIONS.md, "A file that cannot be loaded").
+# The test disc t-cdretry arms the layer's CD fault hook after PLEASE WAIT: the first read of the game's loads waits
+# 300 vblanks (6 s, a drive slow after idling) and its first try fails as a seek that spun out; the layer re-syncs the
+# drive and the second try reads it. Route as smoke-qdup.toml: title, option screen, the choice, 3D.
+name = "qdup-cd-retry"
+title = "QD Up: one failed read is tried again and the table loads"
+disc = "build/t-cdretry/qdup.cue"
+symbols = "build/t-cdretry/qdup.map"
+pad = "digital"
+
+[[step]]
+label = "the title is up (PRESS START drawn)"
+wait_until = { kind = "ram", sym = "title_prompts", size = 4, op = "ge", value = 1 }
+timeout = 4000
+
+[[step]]
+label = "the game clock reaches 1000 (the title publishes no word of its own)"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1000 }
+timeout = 4000
+
+[[step]]
+label = "Start leaves the title for the option screen"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 1010 }
+timeout = 300
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Cross on START opens the 2D or 3D choice"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "choosing", size = 1, op = "eq", value = 1 }
+timeout = 600
+
+[[step]]
+label = "the game has read the pad released"
+wait_until = { kind = "ram", sym = "PadDataIn", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "Cross confirms 3D; the loads run through the failed try and the table is up"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "cue_angle", size = 4, op = "ne", value = 0 }
+timeout = 3000
+
+[[step]]
+checkpoint = "table"
+golden = false
+assert = [{ kind = "ram", sym = "cue_angle", size = 4, op = "ne", value = 0 }, { kind = "ram", sym = "view_3d", size = 4, op = "eq", value = 1 }, { kind = "ram", sym = "PSYQ_LOAD_FAILED", size = 4, op = "eq", value = 0 }]

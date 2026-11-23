@@ -1,0 +1,182 @@
+# Cross-emulator smoke (psoxide-test [cross]) for 360X, closed loop on the game's own variables (360x.map):
+# the intro film plays to its end (the SDK movie player, no skip: gamecycle only counts once the title loop
+# runs, so a film that stalls never reaches it), the title runs, Start shows the title screen (selectno 241), Start again leaves it (INTOGAME, 240) and
+# the next Start begins a new game (craftremaining 5), Start presses paced on the game's vblank counter reach Mission 1 (fuel set), and Cross burns fuel. A film that does not play on an emulator fails the
+# first wait: that is the known red on PCSX-Redux and PCSX-ReARMed at this SDK (movies do not play
+# there with this SDK). The player keeps its frame counter on the stack, so no "frames decoded" word exists to read.
+name = "x360-smoke"
+title = "360X smoke: film, title, Start, new game"
+disc = "build/360x-cd/360x.cue"
+symbols = "build/360x-cd/360x.map"
+pad = "digital"
+
+[[step]]
+label = "the film plays and the title loop runs"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 100 }
+timeout = 3000
+
+[[step]]
+checkpoint = "title"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "gamecycle"
+size = 4
+op = "ge"
+value = 100
+[[step.assert]]
+kind = "ram"
+sym = "craftremaining"
+size = 2
+op = "eq"
+value = 0
+
+[[step]]
+label = "Start at the title screen (selectno INTOTITLE, 241)"
+press = ["start"]
+hold_until = { kind = "ram", sym = "selectno", size = 1, op = "eq", value = 241 }
+timeout = 600
+
+[[step]]
+label = "the screen changes (gamecycle restarts)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "lt", value = 40 }
+timeout = 600
+
+[[step]]
+label = "the next screen has run for a while (gamecycle restarts on every screen)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 60 }
+timeout = 600
+
+[[step]]
+label = "Start again leaves the title for the game (selectno INTOGAME, 240)"
+press = ["start"]
+hold_until = { kind = "ram", sym = "selectno", size = 1, op = "eq", value = 240 }
+timeout = 600
+
+[[step]]
+label = "the screen changes (gamecycle restarts)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "lt", value = 40 }
+timeout = 600
+
+[[step]]
+label = "the next screen has run for a while (gamecycle restarts on every screen)"
+wait_until = { kind = "ram", sym = "gamecycle", size = 4, op = "ge", value = 60 }
+timeout = 600
+
+[[step]]
+press = ["start"]
+hold_until = { kind = "ram", sym = "craftremaining", size = 2, op = "eq", value = 5 }
+timeout = 900
+
+[[step]]
+checkpoint = "new-game"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "craftremaining"
+size = 2
+op = "eq"
+value = 5
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2050"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2050 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2060 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2250"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2250 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2260 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2450"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2450 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2460 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2650"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2650 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2660 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 2850"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2850 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2860 }
+timeout = 300
+
+[[step]]
+label = "the option and planet screens publish no clock: wait for the game clock to reach 3050"
+wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 3050 }
+timeout = 4000
+
+[[step]]
+label = "Start"
+press = ["start"]
+hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 3060 }
+timeout = 300
+
+[[step]]
+label = "Mission 1 loads and starts (Init_Level sets the fuel)"
+wait_until = { kind = "ram", sym = "fuel", size = 2, op = "gt", value = 0 }
+timeout = 2500
+
+[[step]]
+checkpoint = "play"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "fuel"
+size = 2
+op = "eq"
+value = 192
+[[step.assert]]
+kind = "ram"
+sym = "pause"
+size = 1
+op = "eq"
+value = 0
+
+[[step]]
+label = "Cross thrusts and burns fuel (input moves the game)"
+press = ["cross"]
+hold_until = { kind = "ram", sym = "fuel", size = 2, op = "lt", value = 192 }
+timeout = 600
+
+[[step]]
+checkpoint = "thrust"
+golden = false
+[[step.assert]]
+kind = "ram"
+sym = "fuel"
+size = 2
+op = "lt"
+value = 192

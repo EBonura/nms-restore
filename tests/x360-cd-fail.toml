@@ -1,0 +1,26 @@
+# 360X: a read that fails every try stops the game on a screen naming the file (docs/DECISIONS.md, "A file that cannot be loaded").
+# The test disc t-x360cdfail arms the layer's CD fault hook before the boot's second InitialiseFiles, so every try of
+# the read of 360X.DAT's index fails as a seek that spun out.
+name = "x360-cd-fail"
+title = "360X: a read that never works shows LOAD FAILED with the file"
+disc = "build/t-x360cdfail/360x.cue"
+symbols = "build/t-x360cdfail/360x.map"
+pad = "digital"
+
+# Before the program clears its .bss the flag's word holds whatever the boot left there (0x340824 at tick 0 on the
+# emulator's HLE boot once the layout of 2026-11-22 moved it to 0x80062cd4), so the first wait is for the program's
+# own zero, then for the failure.
+[[step]]
+label = "the program has cleared its memory (the flag reads 0)"
+wait_until = { kind = "ram", sym = "PSYQ_LOAD_FAILED", size = 4, op = "eq", value = 0 }
+timeout = 600
+
+[[step]]
+label = "the index read fails five tries and the screen is up"
+wait_until = { kind = "ram", sym = "PSYQ_LOAD_FAILED", size = 4, op = "ne", value = 0 }
+timeout = 3000
+
+[[step]]
+checkpoint = "load-failed"
+golden = false
+assert = [{ kind = "ram", sym = "PSYQ_LOAD_FAILED", size = 4, op = "ne", value = 0 }]

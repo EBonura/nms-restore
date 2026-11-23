@@ -1,0 +1,46 @@
+	org	$06004000
+
+
+text	group
+bss	group	bss
+
+
+	section .text,text
+	section	.bss,bss
+	
+
+	include	vdp\init.obj
+	include	vcd\file_io.obj
+	include	pad\readpad.obj
+        include vdp\vdp1_1.obj
+        include vdp\vdp1_ 2.obj
+	include	vdp\vdp1_3.obj
+	include	vdp\vdp1_4.obj
+	include	vdp\vdp1_5.obj
+	include	vdp\vdp2_1.obj
+	include logic\random.obj
+	include logic\level.obj
+	include logic\sprite.obj
+	include	logic\process.obj
+        include logic\particle.obj
+        include logic\control.obj
+        include logic\firecode.obj
+	include	shcode\maths.o
+	include	shcode\bit2raw.o
+	include	shcode\runlen.o
+        include shcode\main.o
+        include shcode\memset.o
+        include shcode\scroll.o
+	include bupram\bupram.obj
+        include workarea.obj
+	include	360x.obj
+
+        inclib  c:\sgl2.1\lib\libsgl.lib
+	inclib	c:\gnush\lib\libgcc.lib
+	inclib	c:\gnush\lib\libc.lib
+        inclib  c:\gnush\lib\libm.lib           ;urrgh!
+	inclib	c:\gnush\lib\libsn.lib
+	inclib	c:\sbl6\lib\sega_cdc.lib
+	inclib	c:\sbl6\lib\sega_gfs.lib
+
+	regs	pc=SGL_Start
