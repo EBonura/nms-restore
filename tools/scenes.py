@@ -6,8 +6,12 @@ into one shared region, docs/DECISIONS.md "Scene images").
     scenes.py wrap    SCENES.TXT OUT.s                      the wrapped entry points (GNU as)
     scenes.py check   SCENES.TXT ELF MAP OBJ... ARCHIVE     fail on a reference into an image that
                                                             may not be loaded
-    scenes.py pack    SCENES.TXT ELF OUT.IMG [--list TXT]   cut the images out of the link, write
-                                                            SCENES.IMG (table sector, then images)
+    scenes.py cut     SCENES.TXT ELF OUTDIR                 cut each image out of the link:
+                                                            OUTDIR/SCENES.<NAME>.bin and .map
+    scenes.py patch   EXE MAP BIN BINMAP TOOLDIR            patch an image's load-delay hazards
+                                                            (the SDK's hazard-patch, through the
+                                                            program's trampolines; EXE is updated)
+    scenes.py pack    SCENES.TXT OUTDIR OUT.IMG [--list TXT]  SCENES.IMG (table sector, then images)
     scenes.py flags   SCENES.TXT                            the linker's --wrap flags
 
 SCENES.TXT, one directive a line, `#` starts a comment:
@@ -21,6 +25,8 @@ SCENES.TXT, one directive a line, `#` starts a comment:
                                reload never resets a variable
     functions NAME FN...       single functions of an object built with -ffunction-sections
                                (.text.FN of NAME.o)
+    code NAME...               NMS objects whose code goes in the image and whose constants stay in
+                               the base (data the base reads points at them)
     rodata NAME...             the constant data of objects whose functions are listed one by one
     except NAME FN...          every function of NAME.o (built with -ffunction-sections) but these,
                                which stay in the base, and its constant data
@@ -32,11 +38,13 @@ SCENES.TXT, one directive a line, `#` starts a comment:
     allow FN IMAGE  # reason   the base function FN (or the whole object FN.o) may refer to IMAGE
                                directly (it runs only while IMAGE is loaded, for the reason given)
 
-The check reads each object's relocations (readelf) and the link map: a reference from a section
-placed in one image to a section placed in another is an error, a reference from the base into an
-image is an error unless it is a wrapped entry, the image's own data kept in the base, or an
-`allow` line, and a wrapped entry of one image referred to from inside another image is an error
-(it would load over the code that called it).
+The check reads each object's relocations (readelf), the link map and the ELF's symbols, and treats
+every linked input section as a node and every relocation (a call, a jump, an address taken, a
+pointer in data) as an edge. For each image, whatever is reachable from the program's entry or from
+another image's code without going through one of the image's wrapped entries can run while the
+image is not loaded: none of it may refer into the image, unless an `allow` line names the base
+function or object (the flow guarantees the image is loaded there). A wrapped entry referred to
+from inside another image is an error too (it would load over the code that called it).
 
 SCENES.IMG: sector 0 is the scene table in the core's format (scene-system CORE-ABI.md section 1:
 64-byte header "PSXSCN01", 64-byte rows), then each image from a sector boundary. Row 0 is the
@@ -62,7 +70,7 @@ class Image:
     def __init__(self, sid, name):
         self.id, self.name = sid, name
         self.objects, self.functions, self.layer, self.entries, self.rodata = [], [], [], [], []
-        self.excepts = []
+        self.excepts, self.code = [], []
 
 
 def parse(path):
@@ -81,6 +89,8 @@ def parse(path):
             images[-1].objects += args
         elif kind == 'functions':
             images[-1].functions += [(args[0], f) for f in args[1:]]
+        elif kind == 'code':
+            images[-1].code += args
         elif kind == 'except':
             images[-1].excepts.append((args[0], args[1:]))
             images[-1].rodata.append(args[0])
@@ -120,7 +130,7 @@ def cmd_ld(scenes, out, objdir):
          '    __scene_region_start = __scene_data_end + ((%#x - __scene_data_end) & %#x);' % (offset, align - 1)]
     for im in images:
         pats = []
-        for o in im.objects:
+        for o in im.objects + im.code:
             pats.append('        *-%s.o(.text .text.*)' % o)
         for o, f in im.functions:
             pats.append('        *-%s.o(.text.%s)' % (o, f))
@@ -286,23 +296,22 @@ def readelf_objects(paths):
 
 
 def cmd_check(scenes, elf, mapfile, objpaths):
+    """Every linked input section is a node, every relocation an edge. For each image Y, the code that
+    can run while Y is not loaded is what is reachable from the program's entry and from the other
+    images' code without entering Y (a wrapped entry of Y is the door: it loads Y first). None of
+    that may refer to Y, except where an `allow` line says the flow guarantees Y is loaded."""
     _, images, allows = parse(scenes)
-    owner = {}
-    for im in images:
-        for o in im.objects + im.rodata:
-            owner[o + '.o'] = im.name
     entry_image = {fn: im.name for im in images for fn in im.entries}
     allowed = {(fn, im) for fn, im in allows}
-    placed = {}         # (object key, section) -> output image
-    ranges = []         # (lo, hi, image)
-    where = {}          # symbol -> (object key, section)
-    for vma, size, key, sec, out in read_map(mapfile, where):
+    placed = {}
+    for vma, size, key, sec, out in read_map(mapfile):
         if out.startswith('.scene_'):
             placed[(key, sec)] = out[len('.scene_'):]
         elif out in ('.text', '.data', '.bss'):
             placed[(key, sec)] = BASE
     syms = elf_symbols(elf)
     gplace = elf_placement(elf)
+    ranges = []
     for im in images:
         lo, hi = syms.get('__scene_%s_start' % im.name), syms.get('__scene_%s_end' % im.name)
         if lo is None or hi is None:
@@ -310,62 +319,67 @@ def cmd_check(scenes, elf, mapfile, objpaths):
         ranges.append((lo, hi, im.name))
     region = (syms['__scene_region_start'], syms['__scene_region_end'])
 
-    def at(addr):
-        for lo, hi, name in ranges:
-            if lo <= addr < hi:
-                return name
-        if region[0] <= addr < region[1]:
-            return '?'      # padding of the region
-        return BASE
-
-    # which global symbol a function-level section belongs to, for the allow lines and messages
-    def section_function(sec):
-        return sec.split('.text.', 1)[1] if sec.startswith('.text.') else sec
-
     objs = readelf_objects(objpaths)
-    errors, seen_entries = [], set()
+    # Merged constants (.rodata.str*, .rodata.cst*) appear in the map only as `<internal>`: they went to
+    # the output section whose pattern matched them, which is the image that lists the object's
+    # constants, else the base (when the object is linked at all).
+    consts = {o + '.o': im.name for im in images for o in im.objects + im.rodata}
+    linked = {k for k, _ in placed}
+    for key, (sections, symbols, relocs) in objs.items():
+        for sec in sections.values():
+            if sec.startswith(('.rodata.str', '.rodata.cst')) and (key, sec) not in placed and key in linked:
+                placed[(key, sec)] = consts.get(key, BASE)
+    defs = {}           # global symbol -> node that defines it
+    for key, (sections, symbols, relocs) in objs.items():
+        for name, ndx, typ, bind in symbols:
+            if bind in ('GLOBAL', 'WEAK') and isinstance(ndx, int) and name and (key, sections.get(ndx)) in placed:
+                defs.setdefault(name, (key, sections[ndx]))
+    edges = {}          # node -> [(target node, symbol name)]
+    errors = []
     for key, (sections, symbols, relocs) in objs.items():
         for src_sec, refs in relocs.items():
-            src_img = placed.get((key, src_sec))
-            if src_img is None:
-                continue        # not linked (--gc-sections)
-            src_owner = owner.get(key, src_img)
+            src = (key, src_sec)
+            if src not in placed:
+                continue        # not linked (--gc-sections), or not loaded (debug)
+            out = edges.setdefault(src, [])
             for si in refs:
                 if si >= len(symbols):
                     continue
                 name, ndx, typ, bind = symbols[si]
                 if isinstance(ndx, int) and ndx in sections:
-                    target_sec = sections[ndx]
-                    tgt_img = placed.get((key, target_sec))
-                    if tgt_img is None:
-                        continue
-                    what = '%s(%s)' % (key, target_sec) if typ == 'SECTION' else name
+                    t = (key, sections[ndx])
+                    if t in placed:
+                        out.append((t, name if typ != 'SECTION' else sections[ndx]))
                 elif ndx == 'UND' and name:
                     if name in entry_image:
-                        tgt = entry_image[name]
-                        seen_entries.add(name)
-                        if src_img not in (BASE, tgt):
-                            errors.append(f'{key}({src_sec}) in {src_img} calls the entry {name} of {tgt}: '
-                                          'it would load over the code that called it')
+                        t = ('scenes_wrap.o', '.text.__wrap_' + name)
+                        if placed.get(src) not in (BASE, entry_image[name]):
+                            errors.append(f'{key}({src_sec}) in {placed[src]} calls the entry {name} of '
+                                          f'{entry_image[name]}: it would load over the code that called it')
+                    else:
+                        t = defs.get(name[len('__real_'):] if name.startswith('__real_') else name)
+                    if t is not None:
+                        out.append((t, name))
+    roots = [defs[n] for n in ('__core_boot', '_start') if n in defs]
+    for im in images:
+        y = im.name
+        seen = set(roots) | {n for n, p in placed.items() if p not in (BASE, y)}
+        todo = list(seen)
+        while todo:
+            n = todo.pop()
+            for t, name in edges.get(n, []):
+                if placed.get(t) == y:
+                    if n[0] == 'scenes_wrap.o' and name.startswith('__real_'):
+                        continue    # the door: the wrapper has loaded the image
+                    fn = n[1].split('.text.', 1)[1] if n[1].startswith('.text.') else n[1]
+                    stem = n[0][:-2] if n[0].endswith('.o') else n[0]
+                    if placed[n] == BASE and ((fn, y) in allowed or (stem, y) in allowed):
                         continue
-                    real = name[len('__real_'):] if name.startswith('__real_') else name
-                    if real not in gplace or real.startswith('__scene_'):
-                        continue
-                    tgt_img = gplace[real]
-                    what = real
-                    if name.startswith('__real_') and key == 'scenes_wrap.o':
-                        continue
-                else:
-                    continue
-                if tgt_img == BASE or tgt_img == src_img:
-                    continue
-                if src_img == BASE and src_owner == tgt_img:
-                    continue        # the image's own data, kept in the base
-                fn = section_function(src_sec)
-                stem = key[:-2] if key.endswith('.o') else key
-                if src_img == BASE and ((fn, tgt_img) in allowed or (stem, tgt_img) in allowed):
-                    continue
-                errors.append(f'{key}({src_sec}) in {src_img} refers to {what} in {tgt_img}')
+                    errors.append(f'{n[0]}({n[1]}) in {placed[n]}, which runs while {y} may not be loaded, '
+                                  f'refers to {name} in {y}')
+                elif t not in seen:
+                    seen.add(t)
+                    todo.append(t)
     for im in images:
         for fn in im.entries:
             if fn not in gplace:
@@ -391,26 +405,104 @@ def word_fnv(data):
     return h
 
 
-def cmd_pack(scenes, elf, out, listing):
+def image_map(mapfile, name, out):
+    """The lines of one image's output section, as the map of a headerless blob (what the SDK's
+    hazard tools read with --raw: its code is the span of its .text input sections)."""
+    lines, inside = [], False
+    for line in open(mapfile):
+        m = ROW.match(line)
+        if m and len(m.group(5)) - len(m.group(5).lstrip(' ')) == 0:
+            inside = m.group(5).strip() == '.scene_' + name
+            continue
+        if inside and m:
+            lines.append(line)
+    open(out, 'w').write('     VMA      LMA     Size Align Out     In      Symbol\n' + ''.join(lines))
+
+
+def cmd_cut(scenes, elf, outdir):
+    """Each image's bytes (padded to whole sectors) and its map, SCENES.<NAME>.bin and .map in OUTDIR."""
     _, images, _ = parse(scenes)
     syms = elf_symbols(elf)
     region = (syms['__scene_region_start'], syms['__scene_region_end'])
-    blobs = []
     for im in images:
-        tmp = out + '.%s.tmp' % im.name
-        subprocess.run([OBJCOPY, '-O', 'binary', '-j', '.scene_' + im.name, elf, tmp], check=True)
-        data = open(tmp, 'rb').read()
-        os.remove(tmp)
+        base = os.path.join(outdir, 'SCENES.%s' % im.name)
+        subprocess.run([OBJCOPY, '-O', 'binary', '-j', '.scene_' + im.name, elf, base + '.bin'], check=True)
+        data = open(base + '.bin', 'rb').read()
         data += b'\0' * ((-len(data)) % SECTOR)
         start = syms['__scene_%s_start' % im.name]
         if start != region[0] or start + len(data) > region[1]:
-            sys.exit(f'scenes.py pack: {im.name} is not inside the region')
-        blobs.append((im, start, data))
+            sys.exit(f'scenes.py cut: {im.name} is not inside the region')
+        open(base + '.bin', 'wb').write(data)
+        image_map(os.path.splitext(elf)[0] + '.map', im.name, base + '.map')
+
+
+def cmd_patch(exe, mapfile, blob, blobmap, tools):
+    """Patch the load-delay hazards of one image's layer code with the SDK's hazard-patch, through the
+    resident trampoline array, the way it patches a boot-only overlay: a copy of the program with the
+    image stored after its load and a map that declares it as the overlay (`.boot`, `__boot_start`,
+    `__boot_load_end`). The program's array and the image come back patched; the scan must find none."""
+    import shutil
+    import tempfile
+    prog = bytearray(open(exe, 'rb').read())
+    image = open(blob, 'rb').read()
+    rows = [ROW.match(l) for l in open(blobmap)]
+    rows = [m for m in rows if m]
+    run = int(rows[0].group(1), 16)
+    text_lo = struct.unpack_from('<I', prog, 0x18)[0]
+    pc, payload = struct.unpack_from('<I', prog, 0x10)[0], struct.unpack_from('<I', prog, 0x1C)[0]
+    lma = text_lo + len(prog) - 0x800
+    lines, inside, start_at = [], False, None
+    for line in open(mapfile):
+        m = ROW.match(line)
+        if m and len(m.group(5)) - len(m.group(5).lstrip(' ')) == 0:
+            inside = m.group(5).strip().startswith('.scene_')
+        if inside:
+            continue
+        lines.append(line)
+        if m and m.group(5).strip() == '_start':
+            start_at = int(m.group(1), 16)
+            lines.append(line.replace('_start', '__boot_entry'))
+    end = run + len(image)
+    lines.append('%8x %8x %8x     8 .boot\n' % (run, lma, len(image)))
+    lines.append('%8x %8x        0     1         __boot_start = .\n' % (run, run))
+    lines += open(blobmap).readlines()[1:]
+    lines.append('%8x %8x        0     1         __boot_load_end = .\n' % (end, end))
+    tmp = tempfile.mkdtemp()
+    try:
+        texe, tmap = os.path.join(tmp, 'p.exe'), os.path.join(tmp, 'p.map')
+        open(tmap, 'w').write(''.join(lines))
+        t = bytearray(prog) + image
+        t += b'\0' * ((-len(t)) % SECTOR)
+        struct.pack_into('<II', t, 0x10, start_at, 0)
+        struct.pack_into('<I', t, 0x1C, len(t) - 0x800)
+        open(texe, 'wb').write(t)
+        for tool in ('hazard-patch', 'hazard-scan'):
+            r = subprocess.run([os.path.join(tools, tool), '--map', tmap, texe])
+            if r.returncode:
+                sys.exit(f'scenes.py patch: {tool} failed on {blob}')
+        t = open(texe, 'rb').read()
+        out = bytearray(t[:len(prog)])
+        struct.pack_into('<I', out, 0x10, pc)
+        struct.pack_into('<I', out, 0x1C, payload)
+        open(exe, 'wb').write(out)
+        open(blob, 'wb').write(t[len(prog):len(prog) + len(image)])
+    finally:
+        shutil.rmtree(tmp)
+
+
+def cmd_pack(scenes, outdir, out, listing):
+    """SCENES.IMG from the images cmd_cut wrote (and cmd_patch patched): the table sector, then each."""
+    _, images, _ = parse(scenes)
+    by_id = {}
+    for im in images:
+        base = os.path.join(outdir, 'SCENES.%s' % im.name)
+        data = open(base + '.bin', 'rb').read()
+        start = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)
+        by_id[im.id] = (im, start, data)
     rows, lba = [], 1
     rows.append(struct.pack('<HBBIIIIIIIIHBBHH20s', 0, 0, 0, 0, 0, 0x80010000, 0,
                             0, 0, 0, 0, 0xFFFF, 0, 1, 0, 0, b'PROGRAM'))
     count = max(im.id for im in images) + 1
-    by_id = {im.id: (im, start, data) for im, start, data in blobs}
     lines = []
     for sid in range(1, count):
         if sid not in by_id:
@@ -427,9 +519,8 @@ def cmd_pack(scenes, elf, out, listing):
         sys.exit('scenes.py pack: more rows than one table sector holds')
     body = b''.join(rows)
     header = b'PSXSCN01' + struct.pack('<HHHHHHI', 1, count, 64, 1, 0, 0, word_fnv(body)) + b'\0' * 40
-    table = (header + body).ljust(SECTOR, b'\0')
     with open(out, 'wb') as f:
-        f.write(table)
+        f.write((header + body).ljust(SECTOR, b'\0'))
         for sid in range(1, count):
             if sid in by_id:
                 f.write(by_id[sid][2])
@@ -451,6 +542,10 @@ def main():
         cmd_check(args[0], args[1], args[2], args[3:])
     elif cmd == 'flags' and len(args) == 1:
         print(' '.join('--wrap=%s' % fn for im in parse(args[0])[1] for fn in im.entries))
+    elif cmd == 'cut' and len(args) == 3:
+        cmd_cut(*args)
+    elif cmd == 'patch' and len(args) == 5:
+        cmd_patch(*args)
     elif cmd == 'pack' and len(args) in (3, 5):
         cmd_pack(args[0], args[1], args[2], args[4] if len(args) == 5 else None)
     else:

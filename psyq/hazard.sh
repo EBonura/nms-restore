@@ -5,6 +5,8 @@
 # EXE: the scene tool scans them on their own.
 #
 #   psyq/hazard.sh EXE MAP
+#   psyq/hazard.sh --image EXE MAP BIN BINMAP   after EXE's own run: a scene image (tools/scenes.py cut
+#                                        writes BIN and BINMAP), patched through EXE's trampolines
 #
 # The tools are built from the SDK checkout the disc recipes build mkisopsx from (tools/sdk.sh), as
 # stamp.sh builds psx-gate; the checkout must have the boot-overlay form of hazard-patch.
@@ -14,6 +16,10 @@ root=$(cd "$here/.." && pwd)
 . "$root/tools/sdk.sh"
 cargo build -q --release --locked $offline --manifest-path "$psoxide/tools/psoxide-hazard/Cargo.toml" \
 	--target-dir "$root/build/psx-gate-target" --bin hazard-patch --bin hazard-scan
+if [ "$1" = --image ]; then
+	python3 -I "$root/tools/scenes.py" patch "$2" "$3" "$4" "$5" "$root/build/psx-gate-target/release"
+	exit
+fi
 # RESTORE: PLATFORM. The program starts at `__core_boot` (src/boot.rs, the scene core's entry ahead of
 # psx-rt's `_start`), which the tools do not know as an entry yet: they check that the header's initial PC
 # is the map's `_start`. So they run with the PC set to `_start`, and the real one goes back after.

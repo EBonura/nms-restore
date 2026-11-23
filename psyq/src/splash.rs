@@ -41,7 +41,6 @@ static CREDIT: [u8; 33] = *b"in collaboration with PSX Archive";
 /// own display up afterwards, as it does after `FmvPlay`. VRAM is left as the SDK's splash used it
 /// (its doc lists the columns), which a game's own uploads overwrite.
 #[no_mangle]
-#[link_section = ".boot_only.text.PsxSplash"]
 pub unsafe extern "C" fn PsxSplash(line: *const u8) {
     let mut len = 0;
     // SAFETY: the game passes a NUL-terminated string.

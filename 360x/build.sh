@@ -122,7 +122,7 @@ case $ram in
 		# RESTORE: PLATFORM. No code may refer into an image that may not be loaded.
 		python3 -I "$root/tools/scenes.py" check "$here/scenes.txt" "$out/360x.elf" "$out/360x.map" $objs \
 			"$root/build/psyq${PSYQ_TEST_CD_FAULT:+-tcd}/libpsyq.a"
-		python3 -I "$root/tools/scenes.py" pack "$here/scenes.txt" "$out/360x.elf" "$out/SCENES.IMG" --list "$out/SCENES.IMG.txt" ;;
+		python3 -I "$root/tools/scenes.py" cut "$here/scenes.txt" "$out/360x.elf" "$out" ;;
 	*) link ;;
 esac
 mipsel-none-elf-objcopy -O binary -j .ps_exe_head -j .text -j .data "$out/360x.elf" "$out/360x.exe"
@@ -131,6 +131,14 @@ pad=$(( (2048 - size % 2048) % 2048 ))
 [ $pad = 0 ] || head -c $pad /dev/zero >> "$out/360x.exe"
 # The layer is built with every delay-slot filler search on (psyq/build.sh): reroute what it leaves, prove none remains.
 "$root/psyq/hazard.sh" "$out/360x.exe" "$out/360x.map"
+if [ "$ram" = cd ]; then
+	# RESTORE: PLATFORM. The images' layer code too (the film player's), through the program's trampolines;
+	# then the images go into SCENES.IMG with the table.
+	for f in "$out"/SCENES.*.bin; do
+		"$root/psyq/hazard.sh" --image "$out/360x.exe" "$out/360x.map" "$f" "${f%.bin}.map"
+	done
+	python3 -I "$root/tools/scenes.py" pack "$here/scenes.txt" "$out" "$out/SCENES.IMG" --list "$out/SCENES.IMG.txt"
+fi
 # RESTORE: PLATFORM. A disc's executable carries the gate's receipt (sdk/docs/GATE.md): psx-gate over the
 # layer, then the stamp, as the last change to the file.
 [ "$ram" = cd ] && "$root/psyq/stamp.sh" "$out/360x.exe"

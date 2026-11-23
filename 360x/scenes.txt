@@ -13,13 +13,16 @@ region 0x1000 0x000
 # only the start of the game uses. Loaded once, then overwritten by the language screen.
 image 1 BOOT
 layer .boot_only .boot_only.* .text.FmvPlay .text.FmvMemoryBytes .text.*psx_fmv* .rodata.*psx_fmv* .bss.*psx_fmv*
-layer .text.*psx_splash* .rodata.*psx_splash*
+layer .text.PsxSplash .text.*psx_splash* .rodata.*psx_splash*
 entry PsxSplash FmvPlay FmvMemoryBytes
 
 # The front end: language, title and attract loop, main menu with the memory card, planet select,
 # high-score entry.
 image 2 FRONT
-objects LANGUAGE TITLE SHIPDEMO HIGH CREDITS OPTIONS LOADSAVE PLANETS
+objects LANGUAGE TITLE SHIPDEMO HIGH CREDITS OPTIONS PLANETS
+# LOADSAVE's strings stay in the base: please_w[] (LOADSAVE.C:59) points at them and Loading_Message
+# (GENERAL.C:1447) prints it under every load, the mission's included.
+code LOADSAVE
 entry Select_Language Title_Screen Ship_Description High_Scores Display_Credits Game_Options Show_Planets Warp_To_Planet Check_High_Score
 
 # The mission: briefing, the mission, status: the code only a mission runs (the scroller, controls,
