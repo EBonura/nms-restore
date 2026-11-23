@@ -10,7 +10,7 @@
 
 region 0x1000 0x000
 
-# The boot scene: the splash (the SDK's, with the PSX Archive credit). POOL.C calls it first thing, before
+# Boot-only code, not a scene (PLAN.md "Splash: one mechanism"): the splash (the SDK's, with the PSX Archive credit). POOL.C calls it first thing, before
 # grab_available_ram_for_us takes and clears the heap it runs in. The EXE carries it: no read before the splash.
 image 1 BOOT boot
 layer .boot_only .boot_only.* .text.PsxSplash .text.*psx_splash* .rodata.*psx_splash*

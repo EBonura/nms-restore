@@ -9,7 +9,7 @@
 
 region 0x1000 0x000
 
-# The boot scene: the splash (the SDK's, with the PSX Archive credit) and the film player, which
+# Boot-only code, not a scene (PLAN.md "Splash: one mechanism"): the splash (the SDK's, with the PSX Archive credit) and the film player, which
 # only the start of the game uses. The EXE carries it; it runs at the start of the heap, which the game
 # fills from the top down (JALLOC.C), as psyq-boot.ld's overlay did. No read before the splash.
 image 1 BOOT boot

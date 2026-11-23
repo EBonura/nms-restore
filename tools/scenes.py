@@ -559,6 +559,8 @@ def cmd_pack(scenes, outdir, out, listing):
     _, images, _ = parse(scenes)
     by_id = {}
     for im in images:
+        if im.boot:
+            continue    # boot-only code, carried by the EXE: not a scene of the table
         base = os.path.join(outdir, 'SCENES.%s' % im.name)
         data = open(base + '.bin', 'rb').read()
         start = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)

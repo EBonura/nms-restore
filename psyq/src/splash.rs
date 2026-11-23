@@ -11,9 +11,11 @@
 //! the partner: the PSX Archive logo, packed from `psyq/art/psxarchive-logo.png` by
 //! `tools/psxarchive_logo.py` at build time, and the line "in collaboration with PSX Archive".
 //!
-//! It is the boot scene: its code, the SDK's splash and the logo are the BOOT scene image (scenes.txt,
-//! tools/scenes.py), loaded into the scene region by the wrapped entry and overwritten by the first
-//! front-end screen, so it costs the running game no RAM.
+//! It is boot-only code (PLAN.md "Splash: one mechanism"): its code, the SDK's splash and the logo are the
+//! boot image the EXE carries (scenes.txt `boot`, tools/scenes.py), loaded in the same read as the EXE,
+//! moved to the start of the heap by `__core_boot` and run once there; the heap then takes its memory, so
+//! nothing of it stays resident. Only a disc's first program plays it: a program the scene core switched to
+//! (`core_shim::entered_by_core`) does not.
 
 use psx_display::Brightness;
 use psx_gpu::display::{DisplayConfig, DoubleBuffer, Resolution, VideoMode};
@@ -42,6 +44,10 @@ static CREDIT: [u8; 33] = *b"in collaboration with PSX Archive";
 /// (its doc lists the columns), which a game's own uploads overwrite.
 #[no_mangle]
 pub unsafe extern "C" fn PsxSplash(line: *const u8) {
+    // Only a disc's first program plays the splash: one the scene core switched to does not play it again.
+    if crate::core_shim::entered_by_core() {
+        return;
+    }
     let mut len = 0;
     // SAFETY: the game passes a NUL-terminated string.
     while unsafe { *line.add(len) } != 0 {

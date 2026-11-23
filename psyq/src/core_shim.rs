@@ -312,10 +312,40 @@ fn block_u32(off: usize, v: u32) {
     unsafe { core::ptr::write_volatile((BLOCK + off) as *mut u32, v) };
 }
 
-/// What the core's `__psx_core_attach` does on a cold entry (CORE-ABI.md 4.3, step 4): a fresh
-/// block, the program's row (scene 0) current, no previous scene. Called once by the layer's
-/// `main`; it goes when the core lands. `a0..a2` are psx-rt's entry registers (`disc_base`).
+/// Whether the scene core started this program (a switch, CORE-ABI.md 4.3: the handoff block valid
+/// with flag bit 0 set), rather than the BIOS (or the demo disc's chain loader) booting it.
+// SAFETY: foreground-only static, written once by `attach`.
+static mut ENTERED_BY_CORE: bool = false;
+
+/// Whether the scene core started this program: the boot splash is the disc's first program's alone,
+/// so a program the core switched to does not play it again.
+pub(crate) fn entered_by_core() -> bool {
+    // SAFETY: see the static.
+    unsafe { ENTERED_BY_CORE }
+}
+
+/// What the core's `__psx_core_attach` does (CORE-ABI.md 4.3, step 4), the part a program needs before
+/// the core exists: on a core entry the block is the core's and stays; on a BIOS boot a fresh block,
+/// the preloaded front end current, no previous scene. Called once by the layer's `main`; it goes when
+/// the core lands. The lba offset and CD-DA base are psx-rt's entry registers (`disc_base`).
 pub(crate) fn attach() {
+    // SAFETY: as block_u16; the block is RAM above the program's stack.
+    let (magic, inverse, flags) = unsafe {
+        (
+            core::ptr::read_volatile(BLOCK as *const u32),
+            core::ptr::read_volatile((BLOCK + 0xFC) as *const u32),
+            core::ptr::read_volatile((BLOCK + 0x18) as *const u32),
+        )
+    };
+    // The images the EXE carries come in with the program (tools/scenes.py `preload` and `boot`).
+    let (pre, boot) = (&raw const __scene_preloaded as u32, &raw const __scene_boot_id as u32);
+    // SAFETY: see the statics.
+    unsafe { RESIDENT = bit(pre) | bit(boot) };
+    if magic == BLOCK_MAGIC && inverse == !BLOCK_MAGIC && flags & 1 != 0 {
+        // SAFETY: see the static.
+        unsafe { ENTERED_BY_CORE = true };
+        return;
+    }
     for off in (0..0x100).step_by(4) {
         block_u32(off, 0);
     }
@@ -324,12 +354,7 @@ pub(crate) fn attach() {
     block_u16(0x06, 0x100);
     block_u32(0x0C, psx_io::disc_base::lba_offset());
     block_u32(0x10, u32::from(psx_io::disc_base::cdda_track_base()));
-    // The images the EXE carries come in with the program (tools/scenes.py `preload` and `boot`): the
-    // program starts in the boot scene, with the front end's image already in the region.
-    let (pre, boot) = (&raw const __scene_preloaded as u32, &raw const __scene_boot_id as u32);
-    // SAFETY: see the statics.
-    unsafe { RESIDENT = bit(pre) | bit(boot) };
-    block_u16(OFF_CURRENT, if boot != 0 { boot } else { pre } as u16);
+    block_u16(OFF_CURRENT, pre as u16);
     block_u16(OFF_PREVIOUS, 0xFFFF);
     block_u32(0xFC, !BLOCK_MAGIC);
 }
@@ -443,8 +468,14 @@ pub extern "C" fn core_load_image(scene: u32) -> u32 {
             RESIDENT &= !bit(boot);
         }
         if RESIDENT & bit(scene) != 0 {
-            entered(scene);
+            // The boot code (splash, film player) is not a scene of its own: running it records nothing.
+            if scene != boot {
+                entered(scene);
+            }
             return 0;
+        }
+        if scene == boot {
+            return STAGE_NO_ROW;
         }
     }
     // SAFETY: see the statics.
