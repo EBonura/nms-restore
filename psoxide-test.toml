@@ -268,7 +268,7 @@ build = "x360"
 command = ["zsh", "tests/gameplay/x360.sh", "{out}", "build/gameplay/x360"]
 models = ["real", "mister", "mister,gpu-irq=never"]
 exclusive = "emu"
-inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
 uses = ["sdk", "frontend"]
 emulators = 1
 
@@ -278,7 +278,7 @@ build = "qdup"
 command = ["zsh", "tests/gameplay/qdup.sh", "{out}", "build/gameplay/qdup"]
 models = ["real", "mister", "mister,gpu-irq=never"]
 exclusive = "emu"
-inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
 uses = ["sdk", "frontend"]
 emulators = 1
 
@@ -288,7 +288,7 @@ build = "t-newlife"
 command = ["zsh", "tests/gameplay/x360-newlife.sh", "{out}", "build/gameplay/newlife"]
 models = ["real", "mister"]
 exclusive = "emu"
-inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
 uses = ["sdk", "frontend"]
 emulators = 1
 
@@ -298,7 +298,7 @@ build = "x360"
 command = ["zsh", "tests/gameplay/x360-craft.sh", "{out}", "build/gameplay/craft", "build/t-touch"]
 models = ["real", "mister"]
 exclusive = "emu"
-inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
 uses = ["sdk", "frontend"]
 emulators = 1
 
@@ -308,7 +308,7 @@ build = "t-laser"
 command = ["zsh", "tests/gameplay/x360-laser.sh", "{out}", "build/gameplay/laser"]
 models = ["real", "mister"]
 exclusive = "emu"
-inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh"]
 uses = ["sdk", "frontend"]
 emulators = 1
 
@@ -318,7 +318,7 @@ build = "t-pod"
 command = ["zsh", "tests/gameplay/x360-pod.sh", "{out}", "build/gameplay/pod", "build/t-podw"]
 models = ["real", "mister"]
 exclusive = "emu"
-inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
 uses = ["sdk", "frontend"]
 emulators = 1
 
@@ -328,7 +328,7 @@ build = "t-pick0"
 command = ["zsh", "tests/gameplay/x360-pickup.sh", "{out}", "build/t-pick1", "build/t-pick2", "build/gameplay/pickup"]
 models = ["real", "mister"]
 exclusive = "emu"
-inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
 uses = ["sdk", "frontend"]
 emulators = 1
 
@@ -338,7 +338,7 @@ build = "t-tele1"
 command = ["zsh", "tests/gameplay/x360-tele.sh", "{out}", "build/t-tele2", "build/gameplay/tele"]
 models = ["real", "mister"]
 exclusive = "emu"
-inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
 uses = ["sdk", "frontend"]
 emulators = 1
 
@@ -348,7 +348,7 @@ build = "t-wfire"
 command = ["zsh", "tests/gameplay/x360-weapons.sh", "{out}", "build/t-wpocket", "build/t-wring", "build/t-wshield", "build/t-wopen", "build/t-wpocketnh", "build/gameplay/weapons"]
 models = ["real", "mister"]
 exclusive = "emu"
-inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/check-boot.sh", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq-boot.ld", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
+inputs = ["tests/gameplay/", "tools/", "360x/", "qdup/", "psoxide-c/", "escher/", "psyq/include/", "psyq/src/", "psyq/.cargo", "psyq/Cargo.lock", "psyq/Cargo.toml", "psyq/hazard.sh", "psyq/lld.sh", "psyq/psyq.ld", "psyq/rust-toolchain.toml", "psyq/stamp.sh", "psoxide-test.toml"]
 uses = ["sdk", "frontend"]
 emulators = 1
 

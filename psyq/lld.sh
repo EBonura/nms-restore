@@ -3,8 +3,8 @@
 # psoxide.ld program links. It takes the arguments mipsel-none-elf-ld took. Its map is ld.lld's,
 # the form the SDK's hazard-patch reads. GNU as's and gcc's objects are first rewritten by
 # llvm-objcopy (lld wants locals before globals in the symbol table) into a temporary folder;
-# archives are passed as they are. The boot-only overlay's LMA overlaps `.bss` by design
-# (psyq-boot.ld), so the section-overlap check is off.
+# archives are passed as they are. Scene images (tools/scenes.py) share one address range by
+# design, so the section-overlap check is off.
 set -e
 here=$(cd "$(dirname "$0")" && pwd)
 bin=$(cd "$here" && echo "$(rustc --print sysroot)/lib/rustlib/$(rustc -vV | sed -n 's/^host: //p')/bin")

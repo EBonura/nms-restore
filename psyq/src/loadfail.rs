@@ -4,8 +4,8 @@
 //! buffer), which on a console showed as a freeze with nothing on the screen to say why. Their
 //! loaders now call `PsyqLoadFailed` instead: it takes the screen over (320 x 240, not
 //! interlaced, at VRAM 0,0, in the video standard the game set), writes in the SDK's 8 x 8 font
-//! (psx-font's bitmap, copied to VRAM glyph by glyph, so no code that 360X keeps in boot-only
-//! memory is needed) the file, the loader's step and, when the drive failed, the drive's side of
+//! (psx-font's bitmap, copied to VRAM glyph by glyph, so no code that is in a scene image
+//! is needed) the file, the loader's step and, when the drive failed, the drive's side of
 //! it (cd.rs: which part of the read, the tries, the reader's diagnostic bytes, the sector), and
 //! stops there. One look at the console says what went wrong. It draws once and then spins with
 //! no interrupt, DMA or drive use, so nothing it relies on can fail after it.
