@@ -16,9 +16,12 @@
 # QUIT to the menu +26 VBlanks (the FRONT read; +38 at the first one, which also reads the scene table).
 # overlap (the shim's): FRONT and MISSION share the region, a read at every briefing too (+31). resident with FRONT
 # in the region: no read at a switch, but the room goes to -19,268 B (maxmalloc, MAIN.C:51, would have to shrink).
+# region: offset 0x7c0 puts MISSION's code where the x360-mission window's I-cache refill stalls match df8934c's
+# (gate frontend, polls 2850..3400: 4.66M cycles, df8934c 4.71M; offset 0 5.96M, 0x800 4.82M, 0x840 8.71M, 0xa00
+# 8.84M: a cliff just above 0x800). Harness speed at 0x7c0: 629,129 cycles a frame (df8934c 629,139; offset 0 639,558).
 core
 arrange resident
-region 0x1000 0x000
+region 0x1000 0x7c0
 
 # Boot-only code, not a scene (PLAN.md "Splash: one mechanism"): the splash (the SDK's, with the PSX Archive credit) and the film player, which
 # only the start of the game uses. The EXE carries it; it runs at the start of the heap, which the game
