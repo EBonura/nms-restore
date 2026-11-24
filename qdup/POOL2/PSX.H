@@ -124,6 +124,7 @@ ControllerPacket	pad1;
 ControllerPacket	pad2;
 u_long		PadDataIn;
 u_long		PadBounce;
+extern	u_long	PadPressed;	// RESTORE: BUG FIX, PAD.C
 u_long		lastpad;
 	// 3D Stuff
 u_long		*TablePMD;

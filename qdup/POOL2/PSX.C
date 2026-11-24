@@ -483,6 +483,10 @@ void	draw_title_screen( void )
 	text	tempname[256];
 
 	SetVideoRes(MED_RES);
+	// RESTORE: BUG FIX. The title comes back after a match (POOL.C's loop) with the game's graphics still in the
+	// heap; the picture's 300 KB load on top of them ran past the block (LOAD FAILED, RAM BLOCK). The heap is
+	// emptied below once the picture is shown, so nothing in it is needed here: empty it first as well.
+	Reset_Memory_Ptr();
 	BackScreen = LoadTGA("gfx/front.tga");
 	setRECT(&rect, 0,0,320,480);
 	LoadImage(&rect, BackScreen);

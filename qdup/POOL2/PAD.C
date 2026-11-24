@@ -1,6 +1,10 @@
 #include	"globals.h"
 
 //ллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллл
+// RESTORE: BUG FIX (GAME.C Show_potted_balls). Every button pressed since the end-of-frame screen began, as the
+// PC's keyboard buffer kept a key struck while the replay was busy elsewhere; GAME.C clears it.
+u_long	PadPressed;
+
 void get_pad()
 {
 #ifdef	PSX
@@ -33,6 +37,7 @@ void get_pad()
 //		}
 //
 	PadBounce = ((PadDataIn&lastpad)^PadDataIn);
+	PadPressed |= PadBounce;	// RESTORE: see PadPressed above
 #else
 	Uint16 data;
 
