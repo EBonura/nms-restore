@@ -232,11 +232,19 @@ polls = [2850, 3400]
 offsets = [-24, -12, 0, 12, 24, 36]
 launch_args = ["--digital-pad"]
 
+# Anchored on the table (owner, 11-24: "yes re-anchor the QD Up shot recording"): the same presses, split at the poll the
+# table's game loop first sets cue_angle (poll 1926 on the build the tape was recorded on). The menu presses replay from
+# power-on (pgo/qdup-shot-menu.pxtape); the aim and the shot (pgo/qdup-shot-after.pxtape) and the window count from the
+# poll cue_angle turns non-zero on the build under test, so a faster or slower table load no longer moves the aim onto
+# another frame phase. polls = the old [3000, 3800] less 1926.
 [[speed]]
 name = "qdup-shot"
 build = "qdup"
-tape = "pgo/qdup-shot.pxtape"
-polls = [3000, 3800]
+anchor = { kind = "ram", sym = "cue_angle", size = 4, op = "ne", value = 0 }
+anchor_max_polls = 2400
+anchor_tape = "pgo/qdup-shot-menu.pxtape"
+tape = "pgo/qdup-shot-after.pxtape"
+polls = [1074, 1874]
 offsets = [-24, -12, 0, 12, 24, 36]
 launch_args = ["--digital-pad"]
 
