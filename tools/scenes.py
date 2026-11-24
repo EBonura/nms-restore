@@ -252,6 +252,7 @@ def cmd_ld(scenes, out, objdir):
               '    ASSERT(STACK_INIT == 0x801FDF00, "a program on the core has RAM_SIZE 0x1FE000")',
               '    ASSERT(__psx_core_store_end - __psx_core_store <= 0x2000, "the core image must fit the window")',
               '    ASSERT(__psx_core_store_end > __psx_core_store, "psx-core is not linked with feature link")',
+              '    ASSERT(__core_boot >= __text_start && __core_boot < __text_end, "__core_boot is outside .text: psyq.ld must place .text_entry.* in .text")',
               '}',
               'INSERT AFTER .bss;', '']
     w += ['__scene_overlap = %d;' % (1 if ARRANGE == 'overlap' else 0),

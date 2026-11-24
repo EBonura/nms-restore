@@ -346,10 +346,14 @@ pub(crate) fn attach() {
     }
 }
 
-/// The scene the handoff block says is current.
+/// The scene the handoff block says is current. A launcher's switch into this disc writes NO_SCENE
+/// (0xFFFF, CORE-ABI stage 3): that is this table's boot scene, 0.
 #[no_mangle]
 pub extern "C" fn core_current_scene() -> u32 {
-    psx_core::link::block_word(0x14) & 0xFFFF
+    match psx_core::link::block_word(0x14) & 0xFFFF {
+        0xFFFF => 0,
+        scene => scene,
+    }
 }
 
 /// `psx_core_load_image(image_index, table)`: overlay `image` into its range unless it is in RAM, FNV

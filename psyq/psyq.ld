@@ -92,6 +92,9 @@ SECTIONS {
            draw-done confirmation, `.psx_cold.psx_rt_flip_confirm`, which a program that presents links.
            Left out of the text, it would be an orphan section the executable does not carry. */
         *(.psx_cold .psx_cold.*)
+        /* Once-only entry code, last of all (psx-core's `__core_boot` and `__core_boot_rs`, psx-rt's boot mover),
+           as the SDK's psoxide.ld places it: psoxide-core.ld refuses a `__core_boot` outside .text. */
+        *(.text_entry .text_entry.*)
         __text_end = .;
     }
     __psx_direct_access_guard = __psx_guard_window_end > __psx_guard_window_start ? __psx_guard_window_start : 0;
