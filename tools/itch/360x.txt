@@ -4,7 +4,7 @@
 360X is a cave-flying shooter by NMS Software. BMG Interactive was due to
 publish it in 1996, and it was never released. This disc is rebuilt from
 NMS's own July 1996 PlayStation source, which lead programmer Paul Griffiths
-kept and the PlayStation Museum preserved.
+kept and PSX Archive (the PlayStation Museum) preserved.
 
 What NMS left unfinished was completed from their own PC and Saturn versions
 of the game. Where no version had something, the game says so (touching a
@@ -30,8 +30,8 @@ Credits (from the game's own credits screen, Saturn version, 1996):
 This game and QD Up are also on the PSoXide Demo Disc:
 https://bonnie-studios.itch.io/psoxide-demo-disc
 
-Released together with PSX Archive (the PlayStation Museum), who preserved
-the source and the original builds.
+Released together with PSX Archive, who preserved the source and the
+original builds.
 Restoration and the PSoXide SDK: Manny, Bonnie Studios.
 https://bonnie-studios.itch.io
 
