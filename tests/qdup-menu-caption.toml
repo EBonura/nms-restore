@@ -7,6 +7,13 @@ disc = "build/qdup-cd/qdup.cue"
 symbols = "build/qdup-cd/qdup.map"
 pad = "digital"
 
+# The program has started (psx-rt's __psx_rt_started reads "run_"): before that a .bss symbol reads the bytes the
+# scene-core EXE stores there. The SDK's rule for journeys until psoxide-gate applies it itself (EMU-GATE-STARTED-RULE).
+[[step]]
+label = "the program has started"
+wait_until = { kind = "ram", sym = "__psx_rt_started", size = 4, op = "eq", value = 0x5F6E7572 }
+timeout = 3000
+
 [[step]]
 label = "the option screen is up with START under the cursor"
 wait_until = { kind = "ram", sym = "cursor", size = 4, op = "eq", value = 4 }

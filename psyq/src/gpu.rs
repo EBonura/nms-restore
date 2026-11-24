@@ -199,7 +199,10 @@ pub extern "C" fn ResetGraph(mode: i32) -> i32 {
     match mode {
         // 0: the whole GPU; 3: the same but the display settings are kept,
         // which here means only the command side is reset.
-        0 => write_display_control(gp1::RESET),
+        // GP1(00h)'s reset but the display: GP1(00h) would turn it off and blank the loading frame a
+        // launcher put up. The game sets its own display mode and ranges and turns it on after this, as
+        // it did; the first frame's display write clears the loading frame (psx-io).
+        0 => psx_io::gpu::reset_keeping_display(),
         _ => write_display_control(gp1::RESET_CMD_BUFFER),
     }
     psx_io::dma::enable_channel(psx_io::dma::Channel::Gpu);

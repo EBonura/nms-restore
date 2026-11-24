@@ -93,7 +93,13 @@ pub unsafe extern "C" fn FmvPlay(
             (!(lo | hi << 8)) & skip_mask & 0xffff != 0
         }
     };
+    // RESTORE: PLATFORM. The player streams with a drive of its own: it holds the drive as the scene
+    // core's stream client while it plays (core_shim.rs), so no scene image loads meanwhile.
+    if crate::core_shim::core_client_attach() != 0 {
+        return 2;
+    }
     let out = player::play(&m, &config, memory, &mut poll);
+    crate::core_shim::core_client_detach();
     // One line on the debug console, as the layer does for what it stubs.
     crate::console::puts("psyq: FmvPlay stop=");
     num(out.stop as u32);

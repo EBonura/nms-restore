@@ -1,33 +1,33 @@
 # Written by `psoxide-test bless`; edit only by blessing again (decision 4: a bar changes by editing
 # psoxide-test.toml with a reason, never by hand-editing these numbers).
 schema = 1
-blessed_commit = "b969ab321d609de80317265c0fe455af163356a0"
-sdk_pin = "74e139d537035761d2b8844ebf34945a3aab4f0b"
+blessed_commit = "7f5bae642e47d717ba649154a6b417f8799ecbc9"
+sdk_pin = "80d432926e69dc0bc6ac328c3c9b143a8d875754"
 
 [size.qdup]
-text = 373916
-data = 63800
-bss = 514084
+text = 322100
+data = 62920
+bss = 516028
 free = 0
 
 [size.x360]
-text = 221632
-data = 107400
-bss = 331116
+text = 144200
+data = 101976
+bss = 333188
 free = 0
 
 [speed.qdup-shot]
 offsets = [-24, -12, 0, 12, 24, 36]
-flips = [379, 379, 379, 379, 379, 379]
-work_per_frame = [1021286, 1021433, 1021248, 1020273, 1020489, 1020382]
-frame_work_p99 = [1610896, 1610896, 1610896, 1610896, 1610896, 1610896]
-vblanks = ["2:219,3:145,4:12,5:1,26:1", "2:220,3:144,4:12,5:1,26:1", "2:220,3:144,4:12,5:1,26:1", "2:219,3:145,4:12,5:1,26:1", "2:219,3:145,4:12,5:1,26:1", "2:220,3:144,4:12,5:1,26:1"]
+flips = [380, 380, 380, 380, 380, 380]
+work_per_frame = [1016708, 1016871, 1016990, 1015762, 1016011, 1016235]
+frame_work_p99 = [1544513, 1544513, 1544513, 1544513, 1544513, 1544513]
+vblanks = ["2:220,3:148,4:10,26:1", "2:219,3:149,4:10,26:1", "2:220,3:148,4:10,26:1", "2:220,3:148,4:10,26:1", "2:219,3:149,4:10,26:1", "2:220,3:148,4:10,26:1"]
 layouts = []
 
 [speed.qdup-shot.identity]
-tape = "pgo/qdup-shot.pxtape"
-tape_sha256 = "261c5549e7fb6e4e9c0184853a74080c8010905da84773dbb3cfa0733174d22b"
-window = "polls 3000..3800"
+tape = "pgo/qdup-shot-after.pxtape"
+tape_sha256 = "09d594f01659ed4282fc7d684332fec4f18d35fad5b555da4fb15a07f682536c"
+window = 'anchored at {"kind":"ram","op":"ne","size":4,"sym":"cue_angle","value":0} within 2400 polls; polls 1074..1874 from the anchor; reached by anchor_tape pgo/qdup-shot-menu.pxtape 0a578c35ac66db57bceee2ae9ac0d0a224ac03feb0df826f7e115c12e8a3bfc9'
 offsets = [-24, -12, 0, 12, 24, 36]
 launch_args = ["--digital-pad"]
 gate_revision = "97cd078f9d2a33eb6aff274541bccc118f5b12e8"
@@ -35,8 +35,8 @@ gate_revision = "97cd078f9d2a33eb6aff274541bccc118f5b12e8"
 [speed.x360-mission]
 offsets = [-24, -12, 0, 12, 24, 36]
 flips = [274, 274, 274, 274, 274, 274]
-work_per_frame = [627958, 629349, 629139, 630776, 631433, 629925]
-frame_work_p99 = [991259, 991259, 991259, 991258, 991259, 991259]
+work_per_frame = [628172, 629517, 629371, 630999, 631643, 630156]
+frame_work_p99 = [990922, 990923, 990923, 990923, 990923, 990923]
 vblanks = ["2:167,3:106", "2:167,3:106", "2:167,3:106", "2:167,3:106", "2:168,3:105", "2:167,3:106"]
 layouts = []
 
@@ -49,7 +49,7 @@ launch_args = ["--digital-pad"]
 gate_revision = "97cd078f9d2a33eb6aff274541bccc118f5b12e8"
 
 [journeys.qdup-aim]
-ticks = 1736
+ticks = 1735
 open_loop = 0
 clock_waits = 2
 
@@ -64,7 +64,7 @@ open_loop = 0
 clock_waits = 2
 
 [journeys.qdup-help]
-ticks = 3013
+ticks = 3012
 open_loop = 0
 clock_waits = 7
 
@@ -79,17 +79,17 @@ open_loop = 0
 clock_waits = 2
 
 [journeys.qdup-title-loading]
-ticks = 586
+ticks = 588
 open_loop = 0
 clock_waits = 0
 
 [journeys.smoke-qdup]
-ticks = 2663
+ticks = 2662
 open_loop = 0
 clock_waits = 7
 
 [journeys.smoke-x360]
-ticks = 3664
+ticks = 3667
 open_loop = 0
 clock_waits = 12
 
@@ -99,37 +99,49 @@ open_loop = 0
 clock_waits = 0
 
 [journeys.x360-help]
-ticks = 3769
+ticks = 3768
 open_loop = 0
 clock_waits = 12
 
 [journeys.x360-quit-menu]
-ticks = 3976
+ticks = 3973
 open_loop = 0
 clock_waits = 12
 
 [journeys.x360-shield-keys]
-ticks = 4140
+ticks = 4138
 open_loop = 0
 clock_waits = 12
 
 [journeys.x360-start-heading]
-ticks = 3814
+ticks = 3812
 open_loop = 0
 clock_waits = 12
 
 [journeys.x360-start-heading-analog]
-ticks = 3815
+ticks = 3816
 open_loop = 0
 clock_waits = 12
 
 [journeys.x360-survivor-message]
-ticks = 4061
+ticks = 4062
 open_loop = 0
 clock_waits = 12
 
 [host]
 
 [maps]
-qdup = "b67101ce98714a1053debddf825064edc76a98867d38f9c557b21badbec216d4"
-x360 = "9781bd6a32df818ef2bab3ea2ee2fdf62708577d14eda0210009457c56734b75"
+qdup = "a3ba1b7195899f205d9bfdcabafc5d27d1e93687d91c02ce9034674ed44f0361"
+x360 = "1a2580d3e411eae95a1ea0179856cf1f2d2ada7b82c084a956a57a5fd397998b"
+
+[stack]
+smoke-qdup = 15676
+smoke-x360 = 15788
+
+[load.x360-boot]
+vblanks = 1291
+cycles = 737724262
+
+[load.x360-mission1]
+vblanks = 1339
+cycles = 764894804

@@ -1,6 +1,6 @@
 # 360X and QD Up: NMS Software restoration
 
-360X and QD Up are two PlayStation games by NMS Software. BMG Interactive was due to publish them in 1996, but neither came out in any territory. Lead programmer Paul Griffiths kept backups of the work, and the PlayStation Museum preserved them.
+360X and QD Up are two PlayStation games by NMS Software. BMG Interactive was due to publish them in 1996, but neither came out in any territory. Lead programmer Paul Griffiths kept backups of the work, and PSX Archive (the PlayStation Museum) preserved them.
 
 This repository rebuilds both games from NMS's original C source so they run on a standard PlayStation. NMS's code stays as close to how they left it as possible. Sony's Psy-Q libraries, which the games were written against, are replaced by a clean-room compatibility layer built on [PSoXide](https://github.com/EBonura/PSoXide), an open-source PS1 SDK written in Rust. There is no Sony code, header, library or documentation in this repository.
 
@@ -18,6 +18,7 @@ The restored games are released together with PSX Archive.
 | Rebuilt from source | Yes, no Sony code | Yes, no Sony code |
 | Retail console, 2 MB | Fits; boots from a CD image | Fits; boots from a CD image; all nine missions play (chosen on the planet select) |
 | Memory card | Not used by the game | High scores save and load |
+| Real hardware | Runs on a PlayStation console from a burned disc | Runs on a PlayStation console from a burned disc |
 
 NMS's full 3D pool table (the "Escher" renderer) was written for the DOS (PC CD-ROM) version, and its PS1 entry points were left empty. NMS did try a 3D table on the PS1 earlier: `GLENN/POOL.C` ("NMS - 3D - POOL, Comenced 29/04/96, Glenn Benson") draws `models/pmd/uktable2.pmd` with `RotPMD`, and `GLENN/POOL.CPE` (10 Jul) and `PPP.CPE` (4 Jun) are table viewers with no game logic. The 3D view in `escher/` is new work for the restoration, not a port of that viewer. The 2D view is NMS's own.
 
@@ -43,9 +44,6 @@ Every choice made in the restoration, including what was kept as NMS left it and
 - **Original code first.** The first commit is the source exactly as found. Every later change to an NMS file is marked with a `RESTORE:` comment and explained in its commit message.
 - **Clean-room Psy-Q layer.** `psyq/` implements the Psy-Q functions the games call, in Rust on the PSoXide SDK, with C headers written for this project. Each function was written from how NMS's code uses it, from documented hardware behaviour, and from what NMS's 1996 builds observably do in the emulator. See [`psyq/README.md`](psyq/README.md).
 - **Checked against the originals.** NMS's 1996 builds run in the PSoXide emulator, which loads dev kit executables, serves files the way the dev kit's PC link did and can model the dev kit's 8 MB of RAM. Rebuilt code is compared against those builds: recorded shots, RAM state and screenshots side by side.
-
-
-| The film player is boot-only memory; the heap block is 1319 KB and the stack keeps 16 KB | Platform | 2026-11-22: the block went from 1323 to 1319 KB (`MAIN.C` `maxmalloc`), 4 KB for the program: the pause screen's icons left the weapons test build 156 bytes over the block, and the SDK of that night's move adds 256 bytes, which took it 100 bytes short. Mission 1's peak still leaves 56.2 KB. Before that: The logic's data (15 KB), the wider sprite records (23 KB) and the interpreter (10 KB) come out of the same 2 MB, and so do the film player's 34 KB. Mission 1 on the disc needs 1262.8 KB of heap (1313.5 before the one-sector file rule, 1309.5 before the Saturn sprites); with everything resident and the layer's 32 KB stack reserve only 1288 KB were left and Mission 1 could not load. Two changes make room without touching the game's content. The film player's code, tables and statics (25 KB: `psx-fmv`, `FmvPlay`) are linked at the start of the heap (`psyq/psyq-boot.ld`, opt-in; `psyq/src/boot.rs` moves them there at entry), so 360X's heap block lies over them: the film plays first thing with the heap all but empty, NMS's allocator fills its block from the top down, and the last 25 KB are reached only in Mission 1, long after the film. And the stack reserve can be set at link time (`--defsym=STACK_RESERVE`): 360X's 2 MB builds keep 16 KB. QD Up links as before (32 KB, nothing boot-only). 1328 KB can be had; the block is 1324 KB. Still available if more is wanted: smaller pieces for the effects bank. The boot splash (`PsxSplash`, `psyq/src/splash.rs`, the SDK's `psx-splash`) is boot-only memory too, and runs before the film: see the splash's row under Both games. |
 
 ## Left out of the repository
 
@@ -77,7 +75,7 @@ Every choice made in the restoration, including what was kept as NMS left it and
 You need:
 - `mipsel-none-elf-gcc` 14 (Homebrew: `brew install mipsel-none-elf-gcc`), Rust `nightly-2026-03-25` with `rust-src` (rustup installs it from `psyq/rust-toolchain.toml`), Python 3, `git` and `unzip`.
 - `ffmpeg`, for the 360X disc only (it decodes NMS's intro film).
-- NMS's original archives `360X.ZIP`, `20SEPT96.ZIP` and `P_200996.ZIP`. They hold the game data, which is not in this repository.
+- NMS's original archives `360X.ZIP`, `20SEPT96.ZIP` and `P_200996.ZIP`. They hold the game data, which is not in this repository. They come from PSX Archive's set of NMS's backups. An earlier, partial copy of NMS's backup CD is on archive.org ([NMS Backup CD](https://archive.org/details/nms_backup_cd)); it does not include these three archives.
 
 Unpack the archives once (the script checks each one's sha256 and repairs five known bit flips in `P_200996.ZIP`):
 
@@ -92,7 +90,9 @@ Then build the CD images:
 qdup/disc.sh           # build/qdup-cd/qdup.cue, both views
 ```
 
-The first build clones the PSoXide SDK at the commit `psyq/build.sh` pins into `build/`. Set `PSOXIDE_REPO` to use a checkout you already have; it has to be at the same commit for the discs to come out byte for byte the same. The architecture gate's receipt in each executable also records the repository name from `remote.origin.url`, so the discs match the released images when built from a clone of this repository. The data folders can also be given directly with `X360_DATA`, `X360_SATURN` and `QDUP_DATA`.
+The first build clones the PSoXide SDK at the commit `psyq/build.sh` pins into `build/`. Set `PSOXIDE_REPO` to use a checkout you already have, at the same commit. The architecture gate's receipt in each executable records the repository name from `remote.origin.url`, so build from a clone of this repository.
+
+These discs are built for the SDK's resident scene core: each game is a resident base plus scene images (the boot splash, the front end, the game proper) that load into one region of RAM where the game already loads from the CD (`360x/scenes.txt`, `qdup/scenes.txt`, `tools/scenes.py`, docs/DECISIONS.md "Scene images"). So they are not the released v0.5 images, and the byte-for-byte promise of v0.5 ends with them (owner's decision, 2026-11-23). The released v0.5 images stay reproducible from the commit they were released from: build that commit as above to get them byte for byte. The data folders can also be given directly with `X360_DATA`, `X360_SATURN` and `QDUP_DATA`.
 
 Executables without a disc, for the emulator's dev kit mode:
 
@@ -121,6 +121,6 @@ Everything written for the restoration (`psyq/`, `escher/`, `psoxide-c/`, `tools
 
 QD Up has no credits screen in the surviving source. Its files name Glenn Benson as the author of the early 3D table viewer.
 
-NMS's backups were preserved by the PlayStation Museum. The restored games are released together with PSX Archive.
+NMS's backups were preserved by PSX Archive (the PlayStation Museum), and the restored games are released together with them.
 
 Restoration by Bonnie Studios.

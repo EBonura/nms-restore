@@ -48,7 +48,7 @@ BYTE	temppad;					/* TEMP JOYPAD VARIABLE */
 	pal=YES;						/* NO=NTSC, YES=PAL */
 	multilanguage=YES;				/* NO=ENGLISH, YES=FRENCH & GERMAN */
 
-	maxmalloc=2048-729;				/* RESTORE: was 2048-384 (2048-725 until 2026-11-22: 4 KB went to the program, the pause screen's icons and the SDK of that night, docs/DECISIONS.md "the heap block"; Mission 1's peak still leaves 56 KB). Platform: the program takes 668 KB of the 2 MB (602 KB at first, 34 KB for the layer's film player and 49 KB for the July 1996 creature logic, less what the build left out), the stack keeps 16 KB (360x/build.sh), and on the disc this block also lies over the film player's 25 KB, which only the boot uses (psyq/psyq-boot.ld). 1328 KB can be had; Mission 1 on the disc uses 1309.5 KB at its peak */
+	maxmalloc=2048-729;				/* RESTORE: was 2048-384 (2048-725 until 2026-11-22: 4 KB went to the program, the pause screen's icons and the SDK of that night, docs/DECISIONS.md "the heap block"; Mission 1's peak still leaves 56 KB). Platform: the program takes 668 KB of the 2 MB (602 KB at first, 34 KB for the layer's film player and 49 KB for the July 1996 creature logic, less what the build left out), the stack keeps 16 KB (360x/build.sh), and on the disc the film player and the splash are a scene image that the front end's replaces (360x/scenes.txt, 2026-11-23). 1328 KB can be had; Mission 1 on the disc uses 1309.5 KB at its peak */
 
 	if (finalmaster==NO)			/* CHECK FOR FINAL MASTER */
 	{
@@ -117,7 +117,7 @@ BYTE	temppad;					/* TEMP JOYPAD VARIABLE */
 	VSyncCallBack((ULONG)VblCallback);		/* SETUP VSYNC CALLBACK */
 
 #ifdef CDMASTER
-	/* RESTORE: owner's decision (2026-11-13: "Standard splash, new line"). THE DISC OPENS WITH THE STANDARD PSOXIDE STUDIO SPLASH, THE LINE READING "Rebuilt with PSoXide", BEFORE THE INTRO FILM. NMS'S GAME HAD NONE. THE PAD IS PORT 1 AS StartPAD ABOVE FILLS pad1; Cross, Circle OR Start SKIPS IT. IT RUNS FROM THE LAYER'S BOOT-ONLY MEMORY (psyq/psyq-boot.ld), LIKE THE FILM, SO THE HEAP KEEPS ALL OF ITS BLOCK. THE FILM AND Init_Screen640x240 SET THE SCREEN UP AGAIN AFTER IT */
+	/* RESTORE: owner's decision (2026-11-13: "Standard splash, new line"). THE DISC OPENS WITH THE STANDARD PSOXIDE STUDIO SPLASH, THE LINE READING "Rebuilt with PSoXide", BEFORE THE INTRO FILM. NMS'S GAME HAD NONE. THE PAD IS PORT 1 AS StartPAD ABOVE FILLS pad1; Cross, Circle OR Start SKIPS IT. IT RUNS FROM THE LAYER'S BOOT SCENE IMAGE (360x/scenes.txt), LIKE THE FILM, SO THE HEAP KEEPS ALL OF ITS BLOCK. THE FILM AND Init_Screen640x240 SET THE SCREEN UP AGAIN AFTER IT */
 	PsxSplash("Rebuilt with PSoXide");
 #endif
 

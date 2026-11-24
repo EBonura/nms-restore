@@ -11,7 +11,7 @@
 set -e
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
-rev=${PSOXIDE_REV:-6bfe478ff0e0c6e226cdf67b164df311c1658fec}
+rev=${PSOXIDE_REV:-e27e5e8b1bea2dfe0b494241c8398a06a0ac0911}
 src=${PSOXIDE_SRC:-https://github.com/EBonura/PSoXide}
 sdk=$root/build/psoxide
 
@@ -40,10 +40,11 @@ policy() { sed -n "s/^$1 := //p" "$sdk/tools/sdk-examples.mk" | tr -d '"' | tr '
 delay_slot=$(policy PSX_DELAY_SLOT_FLAGS)
 panic_abort=$(policy PSX_PANIC_ABORT_FLAGS)
 [ -n "$delay_slot" ] && [ -n "$panic_abort" ] || { echo "psyq/build.sh: no flag policy in $sdk/tools/sdk-examples.mk" >&2; exit 1; }
-# psyq.ld is a fork of the SDK's sdk/psoxide.ld (GNU ld and lld, RAM size, the boot overlay and the
+# psyq.ld is a fork of the SDK's sdk/psoxide.ld (GNU ld and lld, RAM size, the scene region and the
 # I-cache placement are the layer's). Its PS-X EXE header block is the SDK's text: stop when the SDK's
 # header changes, so the layer's copy is never left behind silently.
-header_words() { grep -o 'LONG([^)]*)[^;]*;' "$1" | sed -e 's/ *\/\*.*//' -e 's/DEFINED(__initial_pc) ? __initial_pc : _start/_start/'; }
+header_words() { grep -o 'LONG([^)]*)[^;]*;' "$1" | sed -e 's/ *\/\*.*//' -e 's/DEFINED(__initial_pc) ? __initial_pc : DEFINED(__boot_initial) ? __boot_initial : _start/_start/' \
+	-e 's/DEFINED(__initial_pc) ? __initial_pc : _start/_start/'; }
 [ "$(header_words "$sdk/sdk/psoxide.ld")" = "$(header_words "$here/psyq.ld")" ] \
 	|| { echo "psyq/build.sh: the PS-X EXE header block of psyq.ld differs from $sdk/sdk/psoxide.ld: port the SDK's change" >&2; exit 1; }
 # RESTORE: PLATFORM (owner's decision, 2026-11-13: "gate the debug printout"). The debug console
@@ -52,13 +53,10 @@ header_words() { grep -o 'LONG([^)]*)[^;]*;' "$1" | sed -e 's/ *\/\*.*//' -e 's/
 # A test build with the CD fault hook (PSYQ_TEST_CD_FAULT=1, cd.rs CdTestFault) gets its own target and library,
 # build/psyq-tcd, so the shipped builds' library is never one with the hook.
 lib=psyq${PSYQ_TEST_CD_FAULT:+-tcd}
-# RESTORE: PLATFORM (owner's request, 2026-11-22). The boot splash (src/splash.rs) draws the SDK's
-# Bonnie Studios mark, cooked from the pinned SDK's psx-splash source into build/bonniemark.bin, beside
-# the PSX Archive logo, packed from art/psxarchive-logo.png into build/psxarchive.bin; the layer includes both.
+# RESTORE: PLATFORM (owner's requests, 2026-11-22 and 2026-11-23). The boot splash (src/splash.rs) is the
+# SDK's psx-splash with the PSX Archive logo beside its mark, packed from art/psxarchive-logo.png into
+# build/psxarchive.bin; the layer includes it.
 mkdir -p "$root/build"
-python3 -I "$root/tools/bonnie_mark.py" "$sdk/sdk/crates/psx-splash/src/logo.rs" "$root/build/bonniemark.bin.tmp"
-cmp -s "$root/build/bonniemark.bin.tmp" "$root/build/bonniemark.bin" 2>/dev/null && rm "$root/build/bonniemark.bin.tmp" \
-	|| mv "$root/build/bonniemark.bin.tmp" "$root/build/bonniemark.bin"
 python3 -I "$root/tools/psxarchive_logo.py" "$here/art/psxarchive-logo.png" "$root/build/psxarchive.bin.tmp"
 cmp -s "$root/build/psxarchive.bin.tmp" "$root/build/psxarchive.bin" 2>/dev/null && rm "$root/build/psxarchive.bin.tmp" \
 	|| mv "$root/build/psxarchive.bin.tmp" "$root/build/psxarchive.bin"

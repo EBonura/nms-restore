@@ -5,7 +5,10 @@
 #   qdup/disc.sh [DATA]      DATA: the 1996 data folder (POOL2 of P_200996)
 #
 # The game is built with `qdup/build.sh cd` (files read from the CD through
-# the Psy-Q layer's libcd). The disc holds SYSTEM.CNF, PSX.EXE and QDUP.DAT,
+# the Psy-Q layer's libcd). The disc holds SYSTEM.CNF, SCENES.TBL, PSX.EXE (the
+# SDK scene core's table and the program, which carries the core, the boot splash and,
+# arranged resident, both scene images), FRONT.OVL and TABLE.OVL (the images as files of
+# the table, tools/scenes.py; mkisopsx --scenes) and QDUP.DAT,
 # which tools/qdup_dat.py makes from the files the game opens (the format and
 # the reason, a one-sector root directory, are in its header; FILE_IO.C
 # LoadFile reads it as 360X's loader reads 360X.DAT). The list is what a dev
@@ -67,4 +70,5 @@ python3 -I "$root/tools/qdup_dat.py" "$data" "$out/QDUP.DAT" --list "$out/QDUP.D
 
 cargo build -q --release --locked $offline --manifest-path "$psoxide/tools/mkisopsx/Cargo.toml" \
 	--target-dir "$root/build/mkiso-target"
-"$root/build/mkiso-target/release/mkisopsx" --exe "$out/qdup.exe" --out "$out/qdup.bin" --gate-file "$root/psx-gate.toml" ${MKISO_DIAG:+--diag} --volume QDUP --file "$out/QDUP.DAT"
+"$root/build/mkiso-target/release/mkisopsx" --exe "$out/qdup.exe" --out "$out/qdup.bin" --gate-file "$root/psx-gate.toml" ${MKISO_DIAG:+--diag} --volume QDUP --scenes "$out/scenes.manifest" --core-image "$psoxide/sdk/crates/psx-core/prebuilt/psx-core.bin" --file "$out/QDUP.DAT" > "$out/mkisopsx.log" 2>&1 || { cat "$out/mkisopsx.log"; exit 1; }
+cat "$out/mkisopsx.log"

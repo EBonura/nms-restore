@@ -28,6 +28,10 @@ psx-fmv  = { path = "../build/psoxide/sdk/crates/psx-fmv" }
 psx-pack = { path = "../build/psoxide/sdk/crates/psx-pack" }
 psx-fx   = { path = "../build/psoxide/sdk/crates/psx-fx" }
 psx-display = { path = "../build/psoxide/sdk/crates/psx-display" }
+# RESTORE: PLATFORM (owner, 2026-11-23: one splash, the SDK's): the boot splash (src/splash.rs).
+psx-splash = { path = "../build/psoxide/sdk/crates/psx-splash" }
+# RESTORE: PLATFORM. The SDK scene core: its image in every program, __core_boot and the calls (src/core_shim.rs).
+psx-core = { path = "../build/psoxide/sdk/crates/psx-core", features = ["link"] }
 # RESTORE: PLATFORM. QD Up's 3D renderer (the E_* functions), part of this one static library so each SDK crate is linked once.
 escher   = { path = "../escher" }
 

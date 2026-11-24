@@ -1,52 +1,41 @@
-//! Entry for programs linked with boot-only memory (`psyq/psyq-boot.ld`).
+//! Where the scene core's `__core_boot` (psx-core, the header's initial PC) goes next (psyq.ld `__core_next`).
 //!
-//! The boot-only sections are stored after `.data` in the EXE file, where
-//! `.bss` will be, and run at the start of the heap. `__boot_entry` is the
-//! EXE's initial PC for such programs: it moves them up (from the end
-//! backwards, the two ranges may overlap), zeroes their own `.bss` part and
-//! goes on to `_start`, which clears `.bss` and flushes the instruction
-//! cache before any of the moved code runs. It uses no stack and leaves the
-//! loader's argument registers alone. A program linked without
-//! `psyq-boot.ld` never references it and the linker drops it.
+//! RESTORE: PLATFORM. What the scene core's `__core_boot` will do ahead of psx-rt's `_start`
+//! (scene-system CORE-ABI.md 4.3), the part a program needs before the core exists: move `$sp` to
+//! the program's own stack top (`STACK_INIT`, under the core's window). A BIOS boot hands over the
+//! `$sp` SYSTEM.CNF names (0x801FFFF0, inside the handoff block), not the header's. The loader's
+//! argument registers `$a0..$a2` are left as they came, for `_start`.
+//!
+//! First, a program whose EXE carries a boot scene image (tools/scenes.py `boot`: the splash and the film
+//! player) has it moved from where the EXE stored it (after the preloaded front end, over what will be
+//! `.bss`) up to the start of the heap, where it runs, from the end backwards; `_start` then clears `.bss`
+//! and sets the machine's entry state, which flushes the instruction cache, before any of it runs. The
+//! symbols are psyq.ld's zeros for a program without one.
 
 #[cfg(target_arch = "mips")]
 core::arch::global_asm!(
     r#"
-    .section .text.__boot_entry,"ax",@progbits
-    .globl __boot_entry
-    .weak __boot_lma
-    .weak __boot_start
-    .weak __boot_load_end
-    .weak __boot_end
+    .section .text.__psyq_boot_entry,"ax",@progbits
+    .globl __psyq_boot_entry
     .set push
     .set noreorder
-    .set noat
-__boot_entry:
-    lui   $t0, %hi(__boot_lma)
-    addiu $t0, $t0, %lo(__boot_lma)
-    lui   $t1, %hi(__boot_start)
-    addiu $t1, $t1, %lo(__boot_start)
-    lui   $t2, %hi(__boot_load_end)
-    addiu $t2, $t2, %lo(__boot_load_end)
-    subu  $t3, $t2, $t1
-    addu  $t4, $t0, $t3
-1:  beq   $t2, $t1, 2f
-    nop
-    addiu $t4, $t4, -4
-    lw    $t5, 0($t4)
+__psyq_boot_entry:
+    lui   $t0, %hi(__scene_boot_lma)
+    addiu $t0, $t0, %lo(__scene_boot_lma)
+    lui   $t1, %hi(__scene_boot_vma)
+    addiu $t1, $t1, %lo(__scene_boot_vma)
+    lui   $t2, %hi(__scene_boot_size)
+    addiu $t2, $t2, %lo(__scene_boot_size)
+    beq   $t2, $zero, 2f
+    addu  $t0, $t0, $t2
+    addu  $t1, $t1, $t2
+1:  addiu $t0, $t0, -4
+    lw    $t3, 0($t0)
+    addiu $t1, $t1, -4
     addiu $t2, $t2, -4
-    b     1b
-    sw    $t5, 0($t2)
-2:  lui   $t1, %hi(__boot_load_end)
-    addiu $t1, $t1, %lo(__boot_load_end)
-    lui   $t2, %hi(__boot_end)
-    addiu $t2, $t2, %lo(__boot_end)
-3:  beq   $t1, $t2, 4f
-    nop
-    sw    $zero, 0($t1)
-    b     3b
-    addiu $t1, $t1, 4
-4:  j     _start
+    bnez  $t2, 1b
+    sw    $t3, 0($t1)
+2:  j     _start
     nop
     .set pop
 "#

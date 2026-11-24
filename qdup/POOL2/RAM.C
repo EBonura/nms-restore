@@ -30,7 +30,11 @@ ext	long		get_ram_available( int, int );
 ext	ubyte*	get_ram_start( long size );
 
 static	int	_stacksize = 0x4000;
+#ifdef	PSYQ_RAM_SIZE	// RESTORE: PLATFORM. The heap ends 16 KB under the stack top psyq.ld sets (RAM_SIZE less 100h), which is under the SDK scene core's window; qdup/build.sh passes the one RAM_SIZE. Was 0x00200000
+static	int	_ramsize = PSYQ_RAM_SIZE - 0x100;
+#else
 static	int	_ramsize = 0x00200000;
+#endif
 
 /* ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß */
 
@@ -135,6 +139,12 @@ ubyte*  Get_Ram_Ptr( int length )
       printf("Gone Over By %d \n", Allocated_Memory_Block - MAX_MEMORY_BLOCK);
 //g      exit_game();
      }
+#ifdef	PSYQ_RAM_SIZE
+    // RESTORE: PLATFORM. The block ends under the scene core's window and the stack (_ramsize above): an allocation past its
+    // end would write into them, so it stops on the LOAD FAILED screen, as LoadFile does for a file with no room (FILE_IO.C).
+    // NMS's check above is against its 1 MB cap only, and carries on.
+    if ( Allocated_Memory_Block+((length+3)&~3) > TOTALramallocated ) PsyqLoadFailed("RAM BLOCK", "MEMORY");
+#endif
    
     address = memory_block+Allocated_Memory_Block;
 	length+=3;

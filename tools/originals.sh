@@ -4,7 +4,7 @@
 #
 #   tools/originals.sh DIR
 #
-# DIR holds the three archives (the names they have in the PlayStation Museum's set):
+# DIR holds the three archives (the names they have in PSX Archive's set):
 #   360X.ZIP          360X for the PS1, July 1996: source, data, 1996 builds
 #   20SEPT96.ZIP      360X for the Saturn, 19 Sep 1996 (the 360X disc takes some sprites from it)
 #   P_200996.ZIP      QD Up, 19 Sep 1996
