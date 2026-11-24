@@ -11,9 +11,7 @@ into one shared region, docs/DECISIONS.md "Scene images").
     scenes.py patch   EXE MAP BIN BINMAP TOOLDIR            patch an image's load-delay hazards
                                                             (the SDK's hazard-patch, through the
                                                             program's trampolines; EXE is updated)
-    scenes.py pack    SCENES.TXT OUTDIR OUT.IMG [--list TXT]  SCENES.IMG (table sector, then images)
     scenes.py splice  SCENES.TXT OUTDIR EXE                 the preloaded image into the EXE
-    scenes.py embed   SCENES.IMG EXE LBA                    the table's rows into the EXE, SCENES.IMG at LBA
     scenes.py flags   SCENES.TXT                            the linker's --wrap flags
 
 SCENES.TXT, one directive a line, `#` starts a comment:
@@ -70,12 +68,6 @@ another image's code without going through one of the image's wrapped entries ca
 image is not loaded: none of it may refer into the image, unless an `allow` line names the base
 function or object (the flow guarantees the image is loaded there). A wrapped entry referred to
 from inside another image is an error too (it would load over the code that called it).
-
-SCENES.IMG: sector 0 is the scene table in the core's format (scene-system CORE-ABI.md section 1:
-64-byte header "PSXSCN01", 64-byte rows), then each image from a sector boundary. Row 0 is the
-program itself (its LBA and size are the boot exe's, which only the disc tool knows: 0 here). Image
-rows are kind 1; their LBA is counted from the start of SCENES.IMG, not the disc (the core's table
-will carry disc LBAs once mkisopsx writes it; the layer adds the file's own LBA meanwhile).
 """
 import fnmatch
 import os
@@ -510,15 +502,6 @@ def cmd_check(scenes, elf, mapfile, objpaths):
     print(f'scenes: region {region[0]:#x}..{region[1]:#x} {region[1] - region[0]} bytes; no reference crosses')
 
 
-# -------------------------------------------------------------------------------------- pack
-
-def word_fnv(data):
-    h = 0x811C9DC5
-    for (w,) in struct.iter_unpack('<I', data):
-        h = ((h ^ w) * 0x01000193) & 0xFFFFFFFF
-    return h
-
-
 def image_map(mapfile, name, out):
     """The lines of one image's output section, as the map of a headerless blob (what the SDK's
     hazard tools read with --raw: its code is the span of its .text input sections)."""
@@ -670,78 +653,6 @@ def cmd_manifest(scenes, outdir, out):
     open(out, 'w').write('\n'.join(text) + '\n')
 
 
-def cmd_embed(img, exe, base_lba):
-    """Write SCENES.IMG's rows, with disc LBAs (the file at BASE_LBA), into the program's PSYQ_SCENE_ROWS
-    (psyq/src/core_shim.rs), so a switch reads no table."""
-    table = open(img, 'rb').read(SECTOR)
-    count = struct.unpack_from('<H', table, 0x0A)[0]
-    syms = elf_symbols(os.path.splitext(exe)[0] + '.elf')
-    prog = bytearray(open(exe, 'rb').read())
-    at = 0x800 + syms['PSYQ_SCENE_ROWS'] - struct.unpack_from('<I', prog, 0x18)[0]
-    if prog[at:at + 4] != b'PSQT':
-        sys.exit('scenes.py embed: no PSYQ_SCENE_ROWS in the EXE')
-    rows = bytearray(table[0x40:0x40 + 64 * count])
-    for i in range(count):
-        kind = rows[i * 64 + 2]
-        if kind == 1:
-            lba = struct.unpack_from('<I', rows, i * 64 + 4)[0]
-            struct.pack_into('<I', rows, i * 64 + 4, lba + base_lba)
-    cap = (struct.calcsize('<I') * (2 + 16 * 8))
-    if 8 + len(rows) > cap:
-        sys.exit('scenes.py embed: more rows than PSYQ_SCENE_ROWS holds')
-    prog[at + 4:at + 8] = struct.pack('<I', count)
-    prog[at + 8:at + 8 + len(rows)] = rows
-    open(exe, 'wb').write(prog)
-    print(f'scenes: {count} rows embedded, SCENES.IMG at LBA {base_lba}')
-
-
-def boot_lma(outdir, exe):
-    syms = elf_symbols(os.path.splitext(exe)[0] + '.elf')
-    return syms['__scene_boot_lma']
-
-
-def cmd_pack(scenes, outdir, out, listing):
-    """SCENES.IMG from the images cmd_cut wrote (and cmd_patch patched): the table sector, then each."""
-    _, images, _ = parse(scenes)
-    by_id = {}
-    for im in images:
-        if im.boot:
-            continue    # boot-only code, carried by the EXE: not a scene of the table
-        base = os.path.join(outdir, 'SCENES.%s' % im.name)
-        data = open(base + '.bin', 'rb').read()
-        start = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)
-        by_id[im.id] = (im, start, data)
-    rows, lba = [], 1
-    rows.append(struct.pack('<HBBIIIIIIIIHBBHH20s', 0, 0, 0, 0, 0, 0x80010000, 0,
-                            0, 0, 0, 0, 0xFFFF, 0, 1, 0, 0, b'PROGRAM'))
-    count = max(im.id for im in images) + 1
-    lines = []
-    for sid in range(1, count):
-        if sid not in by_id:
-            rows.append(b'\0' * 64)
-            continue
-        im, start, data = by_id[sid]
-        sectors = len(data) // SECTOR
-        fnv = word_fnv(data)
-        rows.append(struct.pack('<HBBIIIIIIIIHBBHH20s', sid, 1, 0, lba, sectors, start, len(data), 0,
-                                fnv, 0, 0, 0xFFFF, 5, 1, 0, 0, im.name.encode()))
-        lines.append(f'{sid} {im.name} lba {lba} sectors {sectors} t_addr {start:#x} t_size {len(data)} fnv {fnv:#010x}')
-        lba += sectors
-    if count > 31:
-        sys.exit('scenes.py pack: more rows than one table sector holds')
-    body = b''.join(rows)
-    header = b'PSXSCN01' + struct.pack('<HHHHHHI', 1, count, 64, 1, 0, 0, word_fnv(body)) + b'\0' * 40
-    with open(out, 'wb') as f:
-        f.write((header + body).ljust(SECTOR, b'\0'))
-        for sid in range(1, count):
-            if sid in by_id:
-                f.write(by_id[sid][2])
-    if listing:
-        open(listing, 'w').write('\n'.join(lines) + '\n')
-    for line in lines:
-        print('scenes:', line)
-
-
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
@@ -758,14 +669,10 @@ def main():
         cmd_cut(*args)
     elif cmd == 'patch' and len(args) == 5:
         cmd_patch(*args)
-    elif cmd == 'embed' and len(args) == 3:
-        cmd_embed(args[0], args[1], int(args[2], 0))
     elif cmd == 'manifest' and len(args) == 3:
         cmd_manifest(*args)
     elif cmd == 'splice' and len(args) == 3:
         cmd_splice(*args)
-    elif cmd == 'pack' and len(args) in (3, 5):
-        cmd_pack(args[0], args[1], args[2], args[4] if len(args) == 5 else None)
     else:
         sys.exit(__doc__)
 
