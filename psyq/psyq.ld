@@ -82,7 +82,9 @@ SECTIONS {
            hot lines (measured: lines 35 to 214 are the sprite and map code, 129 to 130 the VSync wait) */
         . = ALIGN(16);
         . += (0xfc0 - (. & 0xfff)) & 0xfff;
+        __layer_hot_start = .;              /* named for 360x/icache.ld's check */
         *(.text.layer_hot)
+        __layer_hot_end = .;
         *(.text .text.*)
         /* Cold code after everything else (the SDK's psoxide.ld does the same): the VBlank handler's
            draw-done confirmation, `.psx_cold.psx_rt_flip_confirm`, which a program that presents links.

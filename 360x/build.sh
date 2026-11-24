@@ -111,7 +111,7 @@ if [ "$ram" = cd ]; then
 	python3 -I "$root/tools/scenes.py" wrap "$here/scenes.txt" "$obj/scenes_wrap.s"
 	mipsel-none-elf-as -march=r3000 -mabi=32 -msoft-float -G0 -o "$obj/scenes_wrap.o" "$obj/scenes_wrap.s"
 	objs="$objs $obj/scenes_wrap.o"
-	scenes="-T $out/scenes.ld $(python3 -I "$root/tools/scenes.py" flags "$here/scenes.txt")"
+	scenes="-T $out/scenes.ld -T $here/icache.ld $(python3 -I "$root/tools/scenes.py" flags "$here/scenes.txt")"
 fi
 link() {	# link [more ld arguments]
 	"$root/psyq/lld.sh" --defsym=RAM_SIZE=$ramsize $stack "$@" $scenes -T "$root/psyq/psyq.ld" --gc-sections -Map "$out/360x.map" \

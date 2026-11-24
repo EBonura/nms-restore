@@ -18,12 +18,15 @@
 # reached by Mission 1, a volatile overlay read again at every QUIT: 210 the first time, 197 later.
 # overlap (the shim's): FRONT and MISSION share the region, a read at every briefing too (+31). resident with FRONT
 # in the region: no read at a switch, but the room goes to -19,268 B (maxmalloc, MAIN.C:51, would have to shrink).
-# region: offset 0x7c0 puts MISSION's code where the x360-mission window's I-cache refill stalls match df8934c's
-# (gate frontend, polls 2850..3400: 4.66M cycles, df8934c 4.71M; offset 0 5.96M, 0x800 4.82M, 0x840 8.71M, 0xa00
-# 8.84M: a cliff just above 0x800). Harness speed at 0x7c0: 629,129 cycles a frame (df8934c 629,139; offset 0 639,558).
+# region: MISSION starts 0x780 past a 4 KB boundary. Its I-cache sets are fixed that way, and the code it competes with is
+# fixed too: the game's own objects at the start of .text (Print_Sprite for Print_Sprites, MISSION's first function) and
+# the layer's hot functions pinned at line 252 (psyq.ld). Refill stalls over the x360-mission window (gate frontend, polls
+# 2850..3400; df8934c 4.71M): offset 0 5.85M, 0x700 4.88M, 0x740 4.76M, 0x780 4.60M, 0x7c0 4.55M, 0x800 4.71M, 0x840
+# 8.59M, 0x880 10.57M. The cliff is Print_The_Map's tile loop meeting GsSortFastSprite and sort_sprt (layer_hot);
+# 360x/icache.ld stops the link when they share a line: offsets 0x7a0 to 0xb50 (0x7c0 by its last lines only).
 core
 arrange resident
-region 0x1000 0x7c0
+region 0x1000 0x780
 
 # Boot-only code, not a scene (PLAN.md "Splash: one mechanism"): the splash (the SDK's, with the PSX Archive credit) and the film player, which
 # only the start of the game uses. The EXE carries it; it runs at the start of the heap, which the game
