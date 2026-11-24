@@ -1,6 +1,6 @@
 # 360X and QD Up: NMS Software restoration
 
-360X and QD Up are two PlayStation games by NMS Software. BMG Interactive was due to publish them in 1996, but neither came out in any territory. Lead programmer Paul Griffiths kept backups of the work, and the PlayStation Museum preserved them.
+360X and QD Up are two PlayStation games by NMS Software. BMG Interactive was due to publish them in 1996, but neither came out in any territory. Lead programmer Paul Griffiths kept backups of the work, and PSX Archive (the PlayStation Museum) preserved them.
 
 This repository rebuilds both games from NMS's original C source so they run on a standard PlayStation. NMS's code stays as close to how they left it as possible. Sony's Psy-Q libraries, which the games were written against, are replaced by a clean-room compatibility layer built on [PSoXide](https://github.com/EBonura/PSoXide), an open-source PS1 SDK written in Rust. There is no Sony code, header, library or documentation in this repository.
 
@@ -78,7 +78,7 @@ Every choice made in the restoration, including what was kept as NMS left it and
 You need:
 - `mipsel-none-elf-gcc` 14 (Homebrew: `brew install mipsel-none-elf-gcc`), Rust `nightly-2026-03-25` with `rust-src` (rustup installs it from `psyq/rust-toolchain.toml`), Python 3, `git` and `unzip`.
 - `ffmpeg`, for the 360X disc only (it decodes NMS's intro film).
-- NMS's original archives `360X.ZIP`, `20SEPT96.ZIP` and `P_200996.ZIP`. They hold the game data, which is not in this repository. They come from the PlayStation Museum's set of NMS's backups. An earlier, partial copy of NMS's backup CD is on archive.org ([NMS Backup CD](https://archive.org/details/nms_backup_cd)); it does not include these three archives.
+- NMS's original archives `360X.ZIP`, `20SEPT96.ZIP` and `P_200996.ZIP`. They hold the game data, which is not in this repository. They come from PSX Archive's set of NMS's backups. An earlier, partial copy of NMS's backup CD is on archive.org ([NMS Backup CD](https://archive.org/details/nms_backup_cd)); it does not include these three archives.
 
 Unpack the archives once (the script checks each one's sha256 and repairs five known bit flips in `P_200996.ZIP`):
 
@@ -122,6 +122,6 @@ Everything written for the restoration (`psyq/`, `escher/`, `psoxide-c/`, `tools
 
 QD Up has no credits screen in the surviving source. Its files name Glenn Benson as the author of the early 3D table viewer.
 
-NMS's backups were preserved by the PlayStation Museum. The restored games are released together with PSX Archive.
+NMS's backups were preserved by PSX Archive (the PlayStation Museum), and the restored games are released together with them.
 
 Restoration by Bonnie Studios.
