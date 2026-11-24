@@ -193,27 +193,17 @@ fn busy() -> bool {
         || !psx_io::gpu::status().contains(psx_hw::gpu::GpuStat::READY_CMD)
 }
 
-/// Whether `ResetGraph` has cleared the loading frame yet.
-static mut LOADING_FRAME_CLEARED: bool = false;
-
 #[no_mangle]
 pub extern "C" fn ResetGraph(mode: i32) -> i32 {
     psx_io::dma::abort(psx_io::dma::Channel::Gpu);
     match mode {
         // 0: the whole GPU; 3: the same but the display settings are kept,
         // which here means only the command side is reset.
-        0 => write_display_control(gp1::RESET),
+        // GP1(00h)'s reset but the display: GP1(00h) would turn it off and blank the loading frame a
+        // launcher put up. The game sets its own display mode and ranges and turns it on after this, as
+        // it did; the first frame's display write clears the loading frame (psx-io).
+        0 => psx_io::gpu::reset_keeping_display(),
         _ => write_display_control(gp1::RESET_CMD_BUFFER),
-    }
-    // The program's first display set-up clears the loading frame a launcher left on screen (psx-rt's
-    // entry state blacks the rest of VRAM), as psx-gpu's `Gpu::new` does; later resets keep VRAM as
-    // Psy-Q's do.
-    // SAFETY: foreground only.
-    unsafe {
-        if !LOADING_FRAME_CLEARED {
-            LOADING_FRAME_CLEARED = true;
-            psx_io::gpu::clear_loading_frame();
-        }
     }
     psx_io::dma::enable_channel(psx_io::dma::Channel::Gpu);
     crate::kernel::ensure_interrupts();
