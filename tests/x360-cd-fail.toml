@@ -10,6 +10,13 @@ pad = "digital"
 # Before the program clears its .bss the flag's word holds whatever the boot left there (0x340824 at tick 0 on the
 # emulator's HLE boot once the layout of 2026-11-22 moved it to 0x80062cd4), so the first wait is for the program's
 # own zero, then for the failure.
+# The program has started (psx-rt's __psx_rt_started reads "run_"): before that a .bss symbol reads the bytes the
+# scene-core EXE stores there. The SDK's rule for journeys until psoxide-gate applies it itself (EMU-GATE-STARTED-RULE).
+[[step]]
+label = "the program has started"
+wait_until = { kind = "ram", sym = "__psx_rt_started", size = 4, op = "eq", value = 0x5F6E7572 }
+timeout = 600
+
 [[step]]
 label = "the program has cleared its memory (the flag reads 0)"
 wait_until = { kind = "ram", sym = "PSYQ_LOAD_FAILED", size = 4, op = "eq", value = 0 }
