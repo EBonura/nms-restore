@@ -111,7 +111,11 @@ if [ "$ram" = cd ]; then
 	python3 -I "$root/tools/scenes.py" wrap "$here/scenes.txt" "$obj/scenes_wrap.s"
 	mipsel-none-elf-as -march=r3000 -mabi=32 -msoft-float -G0 -o "$obj/scenes_wrap.o" "$obj/scenes_wrap.s"
 	objs="$objs $obj/scenes_wrap.o"
-	scenes="-T $out/scenes.ld -T $here/icache.ld $(python3 -I "$root/tools/scenes.py" flags "$here/scenes.txt")"
+	# the shipping disc's I-cache placement is checked (360x/icache.ld); a test disc's X360_CFLAGS grow CONTROL.C,
+	# which moves the map code, and no speed window runs on one
+	icache=""
+	[ -z "$X360_CFLAGS" ] && icache="-T $here/icache.ld"
+	scenes="-T $out/scenes.ld $icache $(python3 -I "$root/tools/scenes.py" flags "$here/scenes.txt")"
 fi
 link() {	# link [more ld arguments]
 	"$root/psyq/lld.sh" --defsym=RAM_SIZE=$ramsize $stack "$@" $scenes -T "$root/psyq/psyq.ld" --gc-sections -Map "$out/360x.map" \

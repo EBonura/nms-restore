@@ -24,6 +24,8 @@
 # 2850..3400; df8934c 4.71M): offset 0 5.85M, 0x700 4.88M, 0x740 4.76M, 0x780 4.60M, 0x7c0 4.55M, 0x800 4.71M, 0x840
 # 8.59M, 0x880 10.57M. The cliff is Print_The_Map's tile loop meeting GsSortFastSprite and sort_sprt (layer_hot);
 # 360x/icache.ld stops the link when they share a line: offsets 0x7a0 to 0xb50 (0x7c0 by its last lines only).
+# (SCROLLER first in MISSION, which would keep the map code in place on test discs too, is slower at every offset:
+# 4.99M at best, 0xd00; CONTROL stays first. Test discs, whose X360_CFLAGS grow CONTROL.C, are not checked.)
 core
 arrange resident
 region 0x1000 0x780

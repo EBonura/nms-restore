@@ -1,5 +1,5 @@
 /* RESTORE: PLATFORM. 360X's I-cache placement on the disc build, checked at link time (360x/build.sh adds this
- * script to the scene build's link; docs: 360x/scenes.txt `region`).
+ * script to the shipping scene build's link, not to a test disc's: docs: 360x/scenes.txt `region`).
  *
  * The R3000's I-cache is 4 KB, direct mapped, 16-byte lines: two pieces of code whose addresses are equal modulo
  * 4 KB evict each other. Print_The_Map (SCROLLER.C, in the MISSION image) draws the map with one call to
