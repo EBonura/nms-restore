@@ -115,6 +115,8 @@ SECTIONS {
     }
 
     __heap_start = __bss_end;
+    /* what psx-rt's `_start` zeroes (the SDK's psoxide.ld starts it at an overlay host buffer; the layer has none) */
+    __zero_start = __bss_start;
     /* The scene core's handoff block (CORE-ABI.md 2, src/core_shim.rs) and its current scene's word, named
        for the tools that watch it. */
     __psx_handoff_block = 0x801FFF00;
