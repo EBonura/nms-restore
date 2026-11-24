@@ -91,6 +91,12 @@ for f in $cfiles; do
 		status=1
 	fi
 done
+# RESTORE: PLATFORM (I-cache placement). The scene split moved gatof (COMMON.C) against fixdiv (FIXMATH.C), which it
+# calls for every number of the table's text files: they shared 18 I-cache lines instead of 9 and the table load
+# took 3 VBlanks more than df8934c (refill stalls +1.08M cycles over its CPU part, same instructions; NOTES-R3). The
+# disc build links gatof last in .text (psyq.ld `.text_late`), where it shares none with fixdiv; the code after it
+# moves 452 B down, and the qdup-shot window's refill stalls stay as they were (14.47M; df8934c 14.72M).
+[ "$ram" = cd ] && mipsel-none-elf-objcopy --rename-section .text.gatof=.text_late.gatof "$obj/common.o"
 # Restoration work in C that is not NMS's (qdup/new): the game's flags, at -O2
 newfiles=""
 for f in "$here"/new/*.c; do

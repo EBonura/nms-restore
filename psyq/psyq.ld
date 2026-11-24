@@ -86,6 +86,8 @@ SECTIONS {
         *(.text.layer_hot)
         __layer_hot_end = .;
         *(.text .text.*)
+        /* code a game places last for the I-cache (QD Up's gatof, qdup/build.sh); not matched by `.text.*` above */
+        *(.text_late .text_late.*)
         /* Cold code after everything else (the SDK's psoxide.ld does the same): the VBlank handler's
            draw-done confirmation, `.psx_cold.psx_rt_flip_confirm`, which a program that presents links.
            Left out of the text, it would be an orphan section the executable does not carry. */
