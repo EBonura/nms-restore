@@ -44,10 +44,6 @@ static CREDIT: [u8; 33] = *b"in collaboration with PSX Archive";
 /// (its doc lists the columns), which a game's own uploads overwrite.
 #[no_mangle]
 pub unsafe extern "C" fn PsxSplash(line: *const u8) {
-    // Only a disc's first program plays the splash: one the scene core switched to does not play it again.
-    if crate::core_shim::entered_by_core() {
-        return;
-    }
     let mut len = 0;
     // SAFETY: the game passes a NUL-terminated string.
     while unsafe { *line.add(len) } != 0 {
@@ -65,6 +61,13 @@ pub unsafe extern "C" fn PsxSplash(line: *const u8) {
     let mut gpu = Gpu::new(unsafe { GpuDma::steal() }, DisplayConfig::new(mode, Resolution::R320X240));
     let mut buffers = DoubleBuffer::new(Resolution::R320X240);
     buffers.apply_draw_target(&mut gpu);
+    // Only a disc's first program plays the splash: one the scene core switched to does not play it again.
+    // It still leaves the display as the splash does after a BIOS boot (Gpu::new: reset, 320 by 240, the
+    // display on, the loading frame cleared; psx-rt's entry state blacked the rest of VRAM): 360X's film
+    // sets only the display start and shows nothing on a display a launcher left off.
+    if crate::core_shim::entered_by_core() {
+        return;
+    }
     // SAFETY: LOGO is word aligned and every part of it a whole number of 16-bit words.
     let logo: &[u16] = unsafe { core::slice::from_raw_parts(LOGO.0.as_ptr().cast::<u16>(), LOGO_LEN / 2) };
     let palette: &[u16; 256] = logo[2..258].try_into().unwrap_or(&[0; 256]);
