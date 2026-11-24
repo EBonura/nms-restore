@@ -337,10 +337,12 @@ pub(crate) fn attach() {
     // SAFETY: see the statics.
     unsafe {
         ENTERED_BY_CORE = psx_core::link::block_valid() && flags & psx_core::abi::block::FLAG_CORE_ENTRY != 0;
-        IN_RAM = &raw const __scene_preloaded as u32 | &raw const __scene_heap as u32;
-        if !ENTERED_BY_CORE {
-            IN_RAM |= bit(&raw const __scene_boot_id as u32);
-        }
+        // The boot code is in RAM however the program was started: the core's switch loads the program
+        // image with the boot store in it, and `__psyq_boot_entry` moves it up on every entry. A core
+        // entry skips only the splash (`PsxSplash`), not the boot image (the film player is in it).
+        IN_RAM = &raw const __scene_preloaded as u32
+            | &raw const __scene_heap as u32
+            | bit(&raw const __scene_boot_id as u32);
     }
 }
 
