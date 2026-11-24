@@ -53,6 +53,11 @@ SCENES.TXT, one directive a line, `#` starts a comment:
     layer PATTERN...           input sections of the layer (libpsyq.a) by section-name glob, any
                                kind: code, constants, data and bss alike (only BOOT, loaded once,
                                may hold layer data)
+    image ... heap             (core, with a boot image) the image runs in the heap's bottom, right above
+                               the boot code: the EXE carries it after the boot code and the boot mover
+                               moves both, so the first screen needs no read. The game's heap takes the
+                               memory back once another image runs (a volatile overlay of the table:
+                               the core reads it again at every load); the image costs no resident RAM
     entry FN...                functions the base calls to enter the image: ld --wrap=FN sends
                                every call through __wrap_FN, which loads the image first
     allow FN IMAGE  # reason   the base function FN (or the whole object FN.o) may refer to IMAGE
@@ -114,6 +119,7 @@ def parse(path):
             images.append(Image(int(args[0]), args[1]))
             images[-1].preload = 'preload' in args[2:]
             images[-1].boot = 'boot' in args[2:]
+            images[-1].heap = 'heap' in args[2:]
             if sum(i.boot for i in images) > 1:
                 sys.exit(f'{path}:{n}: one preloaded image and one boot image at most')
         elif kind == 'objects':
@@ -140,8 +146,10 @@ def parse(path):
         sys.exit(f'{path}: arrange is overlap or resident')
     if ARRANGE == 'resident':
         for im in images:
-            if not im.boot:
+            if not im.boot and not im.heap:
                 im.preload = True
+    if any(im.heap for im in images) and not (CORE and any(im.boot for im in images)):
+        sys.exit(f'{path}: a heap image needs the core and a boot image (it is moved up with the boot code)')
     ids = [i.id for i in images]
     if len(set(ids)) != len(ids) or 0 in ids:
         sys.exit(f'{path}: image ids must be distinct and not 0 (row 0 is the program)')
@@ -186,8 +194,9 @@ def cmd_ld(scenes, out, objdir):
                  '        __scene_%s_end = .;' % im.name,
                  '        . = %s + ((. - %s + %d) & ~%d);' % (base, base, SECTOR - 1, SECTOR - 1),
                  '    }'])
-    region = [im for im in images if not im.boot]
+    region = [im for im in images if not im.boot and not im.heap]
     boot = [im for im in images if im.boot]
+    heap = [im for im in images if im.heap]
     pre = [im for im in images if im.preload]
     at = '__scene_region_start'
     for im in region:
@@ -217,8 +226,15 @@ def cmd_ld(scenes, out, objdir):
               '    __scene_boot_vma = ALIGN(ADDR(.bss) + SIZEOF(.bss), 16);',
               '    __scene_boot_lma = %s;' % lma,
               '    .scene_%s __scene_boot_vma : AT(__scene_boot_lma) {' % im.name] + body(im, '__scene_boot_vma')
+        end = 'ADDR(.scene_%s) + SIZEOF(.scene_%s)' % (im.name, im.name)
+        for h in heap:
+            # run right above the boot code, stored at the same distance after its store: one move takes both
+            w += ['    __scene_%s_at = ALIGN(%s, 16);' % (h.name, end),
+                  '    .scene_%s __scene_%s_at : AT(__scene_boot_lma + (__scene_%s_at - __scene_boot_vma)) {'
+                  % (h.name, h.name, h.name)] + body(h, '__scene_%s_at' % h.name)
+            end = 'ADDR(.scene_%s) + SIZEOF(.scene_%s)' % (h.name, h.name)
         w += ['    __scene_boot_id = %d;' % im.id,
-              '    __scene_boot_size = SIZEOF(.scene_%s);' % im.name,
+              '    __scene_boot_size = %s - __scene_boot_vma;' % end,
               '    ASSERT(__scene_boot_lma + __scene_boot_size <= __scene_boot_vma, "the boot image would be moved over itself")',
               '}',
               'INSERT AFTER .bss;', '']
@@ -246,7 +262,8 @@ def cmd_ld(scenes, out, objdir):
               '    ASSERT(__psx_core_store_end > __psx_core_store, "psx-core is not linked with feature link")',
               '}',
               'INSERT AFTER .bss;', '']
-    w += ['__scene_overlap = %d;' % (1 if ARRANGE == 'overlap' else 0), '']
+    w += ['__scene_overlap = %d;' % (1 if ARRANGE == 'overlap' else 0),
+          '__scene_heap = %d;' % sum(1 << im.id for im in heap), '']
     open(out, 'w').write('\n'.join(w))
 
 
@@ -527,7 +544,7 @@ def cmd_cut(scenes, elf, outdir):
         data = open(base + '.bin', 'rb').read()
         data += b'\0' * ((-len(data)) % SECTOR)
         start = syms['__scene_%s_start' % im.name]
-        if not im.boot and (start < region[0] or start + len(data) > region[1] or (ARRANGE == 'overlap' and start != region[0])):
+        if not im.boot and not im.heap and (start < region[0] or start + len(data) > region[1] or (ARRANGE == 'overlap' and start != region[0])):
             sys.exit(f'scenes.py cut: {im.name} is not inside the region')
         open(base + '.bin', 'wb').write(data)
         image_map(os.path.splitext(elf)[0] + '.map', im.name, base + '.map')
@@ -600,10 +617,14 @@ def cmd_splice(scenes, outdir, exe):
     load = struct.unpack_from('<I', prog, 0x18)[0]
     data_end = syms['__data_end']
     pieces = []
-    for im in [i for i in images if i.preload] + [i for i in images if i.boot]:
+    for im in [i for i in images if i.preload] + [i for i in images if i.boot or i.heap]:
         base = os.path.join(outdir, 'SCENES.%s' % im.name)
         run = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)
-        pieces.append((im.name, run if im.preload else syms['__scene_boot_lma'], open(base + '.bin', 'rb').read()))
+        if im.preload:
+            at = run
+        else:   # the boot code and the heap images, stored as they run, from the boot code's store
+            at = syms['__scene_boot_lma'] + run - syms['__scene_boot_vma']
+        pieces.append((im.name, at, open(base + '.bin', 'rb').read()))
     for name, addr, data in pieces:
         if addr < data_end:
             sys.exit(f'scenes.py splice: {name} would be stored inside the program')
@@ -625,6 +646,10 @@ def cmd_manifest(scenes, outdir, out):
     syms = elf_symbols(os.path.join(outdir, [f for f in os.listdir(outdir) if f.endswith('.elf')][0]))
     lo, hi = syms['__scene_region_start'], syms['__scene_region_end']
     hi = lo + ((hi - lo + SECTOR - 1) & ~(SECTOR - 1))
+    for im in region:
+        if im.heap:     # the reserve reaches up over the heap image
+            end = syms['__scene_%s_at' % im.name] + os.path.getsize(os.path.join(outdir, 'SCENES.%s.bin' % im.name))
+            hi = max(hi, end)
     ids = [im.id for im in region]
     if ids != list(range(1, len(ids) + 1)):
         sys.exit('scenes.py manifest: the region images must have ids 1..n (their image index)')
@@ -635,8 +660,10 @@ def cmd_manifest(scenes, outdir, out):
     for im in region:
         base = os.path.join(outdir, 'SCENES.%s' % im.name)
         starts[im.name] = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)
+        # a heap image's memory is the game's heap once another image runs: volatile, read at every load
+        cls = 'volatile' if im.heap else 'resident' if ARRANGE == 'resident' else 'swap'
         text.append('overlay %s.OVL SCENES.%s.bin owner=PSX.EXE load=%#x class=%s' %
-                    (im.name, im.name, starts[im.name], 'resident' if ARRANGE == 'resident' else 'swap'))
+                    (im.name, im.name, starts[im.name], cls))
     text += ['scene BOOT PSX.EXE start']
     for im in region:
         text.append('scene %s %s.OVL entry=%#x' % (im.name, im.name, starts[im.name]))

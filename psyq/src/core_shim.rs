@@ -314,6 +314,9 @@ extern "C" {
     static __scene_preloaded: u8;
     /// 1 when the region images share one address (`arrange overlap`): a load replaces every other.
     static __scene_overlap: u8;
+    /// The images that run in the heap's bottom (tools/scenes.py `heap`), one bit an image index: the
+    /// game's heap takes their memory back once another image runs.
+    static __scene_heap: u8;
 }
 
 fn bit(image: u32) -> u32 {
@@ -334,7 +337,7 @@ pub(crate) fn attach() {
     // SAFETY: see the statics.
     unsafe {
         ENTERED_BY_CORE = psx_core::link::block_valid() && flags & psx_core::abi::block::FLAG_CORE_ENTRY != 0;
-        IN_RAM = &raw const __scene_preloaded as u32;
+        IN_RAM = &raw const __scene_preloaded as u32 | &raw const __scene_heap as u32;
         if !ENTERED_BY_CORE {
             IN_RAM |= bit(&raw const __scene_boot_id as u32);
         }
@@ -355,9 +358,14 @@ pub extern "C" fn core_current_scene() -> u32 {
 pub extern "C" fn core_load_image(image: u32, _table: *const u32) -> u32 {
     let boot = &raw const __scene_boot_id as u32;
     // SAFETY: see the statics.
+    let heap = &raw const __scene_heap as u32;
     unsafe {
         if image != boot {
             IN_RAM &= !bit(boot);
+            if heap & bit(image) == 0 {
+                // the game is about to fill its heap again (360X: Load_Level's Jalloc_Init)
+                IN_RAM &= !heap;
+            }
         }
         if IN_RAM & bit(image) != 0 {
             return 0;

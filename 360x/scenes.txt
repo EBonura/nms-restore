@@ -7,13 +7,17 @@
 # gives back is the smaller of FRONT and MISSION: MISSION is only as large as it needs to be (at
 # least FRONT), and every byte of it is read at the Load_Level switch.
 
-# arrange: the per-game setting (owner, 2026-11-23). overlap (this; the EXE carries FRONT, `preload`, and the program's
-# row tells the core so): FRONT and MISSION share one region and load at
-# the switches (a 19-sector read at a game over or QUIT, 27 at each mission's briefing, about 0.4 to 0.6 s each in the
-# emulator); heap room above the 1319 KB block 19,644 B (4,164 B before the split). resident: no read at a switch, but
-# the room goes to -19,268 B, so maxmalloc (MAIN.C:51) would lose 19 KB of Mission 1's 56.2 KB margin.
+# arrange: the per-game setting (owner, 2026-11-23). This: MISSION resident in the region (the EXE carries it, the
+# program's row tells the core so), FRONT in the heap's bottom (`heap`: carried in the EXE after the boot code and moved
+# up with it; the front end's allocations fill the 1319 KB block from the top down and never reach it, the mission's
+# do, so it is a volatile overlay that the core reads again after a mission, at a QUIT or game over: 19 sectors).
+# So no read before a briefing, as before the split, and the region is MISSION's 55,296 B: heap room above the
+# 1319 KB block 21,884 B on the core (4,164 B before the split). Measured against df8934c (NOTES-R3): briefing equal,
+# QUIT to the menu +26 VBlanks (the FRONT read; +38 at the first one, which also reads the scene table).
+# overlap (the shim's): FRONT and MISSION share the region, a read at every briefing too (+31). resident with FRONT
+# in the region: no read at a switch, but the room goes to -19,268 B (maxmalloc, MAIN.C:51, would have to shrink).
 core
-arrange overlap
+arrange resident
 region 0x1000 0x000
 
 # Boot-only code, not a scene (PLAN.md "Splash: one mechanism"): the splash (the SDK's, with the PSX Archive credit) and the film player, which
@@ -26,7 +30,7 @@ entry PsxSplash FmvPlay FmvMemoryBytes
 
 # The front end (the EXE carries it too, so the first screen needs no read): language, title and attract loop, main menu with the memory card, planet select,
 # high-score entry.
-image 1 FRONT preload
+image 1 FRONT heap
 objects LANGUAGE TITLE SHIPDEMO HIGH CREDITS OPTIONS PLANETS
 # LOADSAVE's strings stay in the base: please_w[] (LOADSAVE.C:59) points at them and Loading_Message
 # (GENERAL.C:1447) prints it under every load, the mission's included.

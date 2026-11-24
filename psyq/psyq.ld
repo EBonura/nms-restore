@@ -122,6 +122,7 @@ SECTIONS {
     PROVIDE(__scene_region_end = 0);
     PROVIDE(__scene_preloaded = 0);
     PROVIDE(__scene_overlap = 0);
+    PROVIDE(__scene_heap = 0);
     PROVIDE(__scene_boot_id = 0);
     PROVIDE(__scene_boot_lma = 0);
     PROVIDE(__scene_boot_vma = 0);
