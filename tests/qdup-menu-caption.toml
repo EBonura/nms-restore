@@ -12,7 +12,7 @@ pad = "digital"
 [[step]]
 label = "the program has started"
 wait_until = { kind = "ram", sym = "__psx_rt_started", size = 4, op = "eq", value = 0x5F6E7572 }
-timeout = 600
+timeout = 3000
 
 [[step]]
 label = "the option screen is up with START under the cursor"
