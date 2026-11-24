@@ -304,7 +304,7 @@ static mut ENTERED_BY_CORE: bool = false;
 /// The images in RAM, one bit an image index: at boot the ones the EXE carries (the program's row says
 /// the same to the core, tools/scenes.py `manifest`) and the boot code; then what the core loaded. The
 /// layer asks the core only for an image not in it, so a game that never leaves its carried images
-/// (QD Up, resident) never reads the table.
+/// (QD Up, resident; 360X, MISSION resident and FRONT in the heap's bottom) never reads the table.
 static mut IN_RAM: u32 = 0;
 
 extern "C" {
@@ -314,8 +314,8 @@ extern "C" {
     static __scene_preloaded: u8;
     /// 1 when the region images share one address (`arrange overlap`): a load replaces every other.
     static __scene_overlap: u8;
-    /// The images that run in the heap's bottom (tools/scenes.py `heap`), one bit an image index: the
-    /// game's heap takes their memory back once another image runs.
+    /// The images that run at the heap's very bottom (tools/scenes.py `heap`), one bit an image index:
+    /// the EXE carries them and the game never allocates that low, so they stay in RAM for good.
     static __scene_heap: u8;
 }
 
@@ -358,14 +358,9 @@ pub extern "C" fn core_current_scene() -> u32 {
 pub extern "C" fn core_load_image(image: u32, _table: *const u32) -> u32 {
     let boot = &raw const __scene_boot_id as u32;
     // SAFETY: see the statics.
-    let heap = &raw const __scene_heap as u32;
     unsafe {
         if image != boot {
             IN_RAM &= !bit(boot);
-            if heap & bit(image) == 0 {
-                // the game is about to fill its heap again (360X: Load_Level's Jalloc_Init)
-                IN_RAM &= !heap;
-            }
         }
         if IN_RAM & bit(image) != 0 {
             return 0;

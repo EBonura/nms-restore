@@ -53,11 +53,11 @@ SCENES.TXT, one directive a line, `#` starts a comment:
     layer PATTERN...           input sections of the layer (libpsyq.a) by section-name glob, any
                                kind: code, constants, data and bss alike (only BOOT, loaded once,
                                may hold layer data)
-    image ... heap             (core, with a boot image) the image runs in the heap's bottom, right above
-                               the boot code: the EXE carries it after the boot code and the boot mover
-                               moves both, so the first screen needs no read. The game's heap takes the
-                               memory back once another image runs (a volatile overlay of the table:
-                               the core reads it again at every load); the image costs no resident RAM
+    image ... heap             (core, with a boot image) the image runs at the heap's very bottom, the boot
+                               code right above it: the EXE carries both and the boot mover moves both, so
+                               the first screen needs no read. The game must never allocate that low (its
+                               measured lowest use, every level): a resident overlay of the table, kept in
+                               RAM for good; it costs no RAM outside the heap
     entry FN...                functions the base calls to enter the image: ld --wrap=FN sends
                                every call through __wrap_FN, which loads the image first
     allow FN IMAGE  # reason   the base function FN (or the whole object FN.o) may refer to IMAGE
@@ -224,11 +224,10 @@ def cmd_ld(scenes, out, objdir):
         lma = ('ADDR(.scene_%s) + SIZEOF(.scene_%s)' % (pre[-1].name, pre[-1].name)) if pre else '__scene_region_start'
         w += ['SECTIONS {',
               '    __scene_boot_vma = ALIGN(ADDR(.bss) + SIZEOF(.bss), 16);',
-              '    __scene_boot_lma = %s;' % lma,
-              '    .scene_%s __scene_boot_vma : AT(__scene_boot_lma) {' % im.name] + body(im, '__scene_boot_vma')
-        end = 'ADDR(.scene_%s) + SIZEOF(.scene_%s)' % (im.name, im.name)
-        for h in heap:
-            # run right above the boot code, stored at the same distance after its store: one move takes both
+              '    __scene_boot_lma = %s;' % lma]
+        end = '__scene_boot_vma'
+        for h in heap + [im]:
+            # the heap images at the heap's bottom, the boot code above them, each stored at its distance from the store
             w += ['    __scene_%s_at = ALIGN(%s, 16);' % (h.name, end),
                   '    .scene_%s __scene_%s_at : AT(__scene_boot_lma + (__scene_%s_at - __scene_boot_vma)) {'
                   % (h.name, h.name, h.name)] + body(h, '__scene_%s_at' % h.name)
@@ -661,8 +660,8 @@ def cmd_manifest(scenes, outdir, out):
     for im in region:
         base = os.path.join(outdir, 'SCENES.%s' % im.name)
         starts[im.name] = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)
-        # a heap image's memory is the game's heap once another image runs: volatile, read at every load
-        cls = 'volatile' if im.heap else 'resident' if ARRANGE == 'resident' else 'swap'
+        # a heap image stays where the game's allocations never reach (scenes.txt says by how much): resident
+        cls = 'resident' if im.heap or ARRANGE == 'resident' else 'swap'
         text.append('overlay %s.OVL SCENES.%s.bin owner=PSX.EXE load=%#x class=%s' %
                     (im.name, im.name, starts[im.name], cls))
     text += ['scene BOOT PSX.EXE start']

@@ -8,12 +8,14 @@
 # least FRONT), and every byte of it is read at the Load_Level switch.
 
 # arrange: the per-game setting (owner, 2026-11-23). This: MISSION resident in the region (the EXE carries it, the
-# program's row tells the core so), FRONT in the heap's bottom (`heap`: carried in the EXE after the boot code and moved
-# up with it; the front end's allocations fill the 1319 KB block from the top down and never reach it, the mission's
-# do, so it is a volatile overlay that the core reads again after a mission, at a QUIT or game over: 19 sectors).
-# So no read before a briefing, as before the split, and the region is MISSION's 55,296 B: heap room above the
-# 1319 KB block 21,884 B on the core (4,164 B before the split). Measured against df8934c (NOTES-R3): briefing equal,
-# QUIT to the menu +26 VBlanks (the FRONT read; +38 at the first one, which also reads the scene table).
+# program's row tells the core so), FRONT at the very bottom of the heap (`heap`: carried in the EXE with the boot
+# code, which runs right above it, and moved up with it). NMS's 1319 KB block (JALLOC.C) fills from the top down, and
+# no screen or mission reaches FRONT: X360_TEST_HEAP over the nine missions, the lowest use is Mission 1's, 57,584 B
+# above the block's base, FRONT ends 38,920 B above it (sector padded): 18,664 B to spare against the 8 KB the game
+# asks for (docs/DECISIONS.md, the heap block). So FRONT is resident, the table is never read, and neither a
+# briefing nor a QUIT (nor a game over, not run) reads anything the 1996 game did not (df8934c: QUIT to the menu 171 and 171,
+# 171 and 171 here; NOTES-R3). The region is MISSION's 55,296 B. Before (11-24 night): FRONT above the boot code,
+# reached by Mission 1, a volatile overlay read again at every QUIT: 210 the first time, 197 later.
 # overlap (the shim's): FRONT and MISSION share the region, a read at every briefing too (+31). resident with FRONT
 # in the region: no read at a switch, but the room goes to -19,268 B (maxmalloc, MAIN.C:51, would have to shrink).
 # region: offset 0x7c0 puts MISSION's code where the x360-mission window's I-cache refill stalls match df8934c's
