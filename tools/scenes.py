@@ -247,7 +247,8 @@ def cmd_ld(scenes, out, objdir):
             at = 'ADDR(.scene_%s) + SIZEOF(.scene_%s)' % (pre[-1].name, pre[-1].name)
         else:
             at = '__scene_region_start'
-        w += ['SECTIONS {',
+        w += ['__initial_pc = __core_boot;',
+              'SECTIONS {',
               '    __psx_core_store_at = ALIGN(%s, 16);' % at,
               '    .psx_core_store STACK_INIT : AT(__psx_core_store_at) {',
               '        __psx_core_store = .;',

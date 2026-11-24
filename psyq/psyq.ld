@@ -24,7 +24,9 @@
 ENTRY(_start)
 /* The scene core (psx-core, feature link; sdk/psoxide-core.ld's rules): its __core_boot first, then the layer's
    boot-code mover (src/boot.rs; it moves nothing for a program without boot code), then psx-rt's _start. */
-__initial_pc = __core_boot;
+/* `__initial_pc = __core_boot` comes from the scenes script (tools/scenes.py, `core`). A program without the core
+   (the dev kit's 8 MB and retail PC-link builds) starts at psx-rt's _start (the header's DEFINED test below), as before
+   the core, and references none of it: the core's window and handoff block are fixed 2 MB addresses (CORE-ABI 0). */
 __core_next = __psyq_boot_entry;
 
 RAM_BASE       = 0x80000000;
@@ -132,6 +134,9 @@ SECTIONS {
     ASSERT(RAM_SIZE > 0x200000 || STACK_INIT == 0x801FDF00, "a console program on the core has RAM_SIZE 0x1FE000")
 
     /DISCARD/ : {
+        /* psx-core's image when no scenes script stores it (`core`, which claims it first): the dev kit's and the
+           PC-link builds run without the core; left in, lld would place it as an orphan ahead of the header */
+        *(.psx_core)
         *(.region)
         *(.MIPS.abiflags)
         *(.reginfo)
