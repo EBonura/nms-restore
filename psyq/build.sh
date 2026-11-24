@@ -11,7 +11,7 @@
 set -e
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/.." && pwd)
-rev=${PSOXIDE_REV:-6e32ce0a94a32dbe207018d52abc0104e63b9a03}
+rev=${PSOXIDE_REV:-5ec688be97b1610e151f424e8774f6e8247883d5}
 src=${PSOXIDE_SRC:-https://github.com/EBonura/PSoXide}
 sdk=$root/build/psoxide
 
@@ -43,7 +43,8 @@ panic_abort=$(policy PSX_PANIC_ABORT_FLAGS)
 # psyq.ld is a fork of the SDK's sdk/psoxide.ld (GNU ld and lld, RAM size, the scene region and the
 # I-cache placement are the layer's). Its PS-X EXE header block is the SDK's text: stop when the SDK's
 # header changes, so the layer's copy is never left behind silently.
-header_words() { grep -o 'LONG([^)]*)[^;]*;' "$1" | sed -e 's/ *\/\*.*//' -e 's/DEFINED(__initial_pc) ? __initial_pc : _start/_start/'; }
+header_words() { grep -o 'LONG([^)]*)[^;]*;' "$1" | sed -e 's/ *\/\*.*//' -e 's/DEFINED(__initial_pc) ? __initial_pc : DEFINED(__boot_initial) ? __boot_initial : _start/_start/' \
+	-e 's/DEFINED(__initial_pc) ? __initial_pc : _start/_start/'; }
 [ "$(header_words "$sdk/sdk/psoxide.ld")" = "$(header_words "$here/psyq.ld")" ] \
 	|| { echo "psyq/build.sh: the PS-X EXE header block of psyq.ld differs from $sdk/sdk/psoxide.ld: port the SDK's change" >&2; exit 1; }
 # RESTORE: PLATFORM (owner's decision, 2026-11-13: "gate the debug printout"). The debug console

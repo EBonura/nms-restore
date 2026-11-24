@@ -1,4 +1,4 @@
-//! The program's first instruction (the PS-X EXE header's initial PC, psyq.ld `__initial_pc`).
+//! Where the scene core's `__core_boot` (psx-core, the header's initial PC) goes next (psyq.ld `__core_next`).
 //!
 //! RESTORE: PLATFORM. What the scene core's `__core_boot` will do ahead of psx-rt's `_start`
 //! (scene-system CORE-ABI.md 4.3), the part a program needs before the core exists: move `$sp` to
@@ -15,11 +15,11 @@
 #[cfg(target_arch = "mips")]
 core::arch::global_asm!(
     r#"
-    .section .text.__core_boot,"ax",@progbits
-    .globl __core_boot
+    .section .text.__psyq_boot_entry,"ax",@progbits
+    .globl __psyq_boot_entry
     .set push
     .set noreorder
-__core_boot:
+__psyq_boot_entry:
     lui   $t0, %hi(__scene_boot_lma)
     addiu $t0, $t0, %lo(__scene_boot_lma)
     lui   $t1, %hi(__scene_boot_vma)
@@ -35,9 +35,8 @@ __core_boot:
     addiu $t2, $t2, -4
     bnez  $t2, 1b
     sw    $t3, 0($t1)
-2:  lui   $sp, %hi(STACK_INIT)
-    j     _start
-    addiu $sp, $sp, %lo(STACK_INIT)
+2:  j     _start
+    nop
     .set pop
 "#
 );

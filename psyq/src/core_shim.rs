@@ -4,13 +4,13 @@
 //! loading a scene image into its fixed range, the scene the handoff block reports, and a stream
 //! client taking the drive (the film). The names and meanings follow the core's ABI (scene-system
 //! CORE-ABI.md section 3: `psx_core_read`, `psx_core_pause`, `psx_core_client_attach` and
-//! `_detach`); `core_load_image` is not in that ABI yet (it is the row kind 1 "Image" the table
-//! already names) and is asked for. Declared for C in `psyq/include/psx_core_shim.h`.
+//! `_detach`, `psx_core_load_image`). Declared for C in `psyq/include/psx_core_shim.h`.
 //!
-//! Until the core exists this file is the core: it drives the drive with the SDK's polled sector
-//! reader, as the layer always has, and writes the handoff block itself. When the core lands, only
-//! this file changes: each function becomes a `jal` to its slot, and `attach` goes (the core's
-//! `__core_boot` does it before `_start`).
+//! The scene images load through the SDK's core (`psx_core::link::load_image`); the stream client
+//! (the film) attaches through it. The game's own files are still read with the SDK's polled sector
+//! reader, as the layer always has: the core's read has no read-ahead sector, which answers 65 of
+//! 360X's Mission 1's 135 file starts with no drive start (asked of the SDK). The core proves the
+//! drive stopped before each of its own reads, whatever the reader left.
 //!
 //! What stays the layer's, above this seam: the libcd API and the ISO walk (`cd.rs`), the LOAD FAILED
 //! screen (`loadfail.rs`), and which image a wrapped entry needs (`scenes.rs`).
@@ -35,7 +35,6 @@ const READ_TRIES: u32 = 5;
 /// Stage codes, the core's (CORE-ABI.md 3.2): 0 is success.
 pub const STAGE_READ_FAILED: u32 = 0x13;
 pub const STAGE_CHECKSUM: u32 = 0x14;
-pub const STAGE_TABLE_MAGIC: u32 = 0x21;
 pub const STAGE_NO_ROW: u32 = 0x22;
 pub const STAGE_BOUNDS: u32 = 0x24;
 pub const STAGE_CLIENT: u32 = 0x31;
@@ -279,7 +278,7 @@ pub extern "C" fn core_client_attach() -> u32 {
         CLIENT = true;
         SCRATCH_LBA = u32::MAX;
     }
-    0
+    psx_core::link::client_attach()
 }
 
 /// `psx_core_client_detach`: the client gives the drive back, paused (the next read settles it
@@ -291,278 +290,91 @@ pub extern "C" fn core_client_detach() {
         CLIENT = false;
         SCRATCH_LBA = u32::MAX;
     }
+    psx_core::link::client_detach();
 }
 
-// ---------------------------------------------------------------------------- handoff block
+// ------------------------------------------------------------------------ the scene core (psx-core)
 
-/// The handoff block (CORE-ABI.md 2), at its fixed address above the core's window.
-const BLOCK: usize = 0x801F_FF00;
-const BLOCK_MAGIC: u32 = 0x4243_5350;
-const OFF_CURRENT: usize = 0x14;
-const OFF_PREVIOUS: usize = 0x16;
-const OFF_COUNTER: usize = 0x1C;
-
-fn block_u16(off: usize, v: u16) {
-    // SAFETY: the handoff block, RAM above the program's stack that nothing else uses.
-    unsafe { core::ptr::write_volatile((BLOCK + off) as *mut u16, v) };
-}
-
-fn block_u32(off: usize, v: u32) {
-    // SAFETY: as block_u16.
-    unsafe { core::ptr::write_volatile((BLOCK + off) as *mut u32, v) };
-}
-
-/// Whether the scene core started this program (a switch, CORE-ABI.md 4.3: the handoff block valid
-/// with flag bit 0 set), rather than the BIOS (or the demo disc's chain loader) booting it.
-// SAFETY: foreground-only static, written once by `attach`.
+/// The program's RAM copy of the disc's scene table (CORE-ABI v2), read from LBA 22 by the core's
+/// read the first time an image is not in RAM (`psx_core::link::load_image`); zeroed until then.
+// SAFETY (all statics below): foreground only.
+static mut TABLE: [u32; 16 + 8 * 62] = [0; 16 + 8 * 62];
+/// Whether the scene core started this program (handoff flag bit 0), not a BIOS boot.
 static mut ENTERED_BY_CORE: bool = false;
+/// The images in RAM, one bit an image index: at boot the ones the EXE carries (the program's row says
+/// the same to the core, tools/scenes.py `manifest`) and the boot code; then what the core loaded. The
+/// layer asks the core only for an image not in it, so a game that never leaves its carried images
+/// (QD Up, resident) never reads the table.
+static mut IN_RAM: u32 = 0;
+
+extern "C" {
+    /// The image index the build gave the boot code (0: none), an absolute symbol (tools/scenes.py).
+    static __scene_boot_id: u8;
+    /// The images the EXE carries, one bit an image index (tools/scenes.py; psyq.ld provides 0).
+    static __scene_preloaded: u8;
+    /// 1 when the region images share one address (`arrange overlap`): a load replaces every other.
+    static __scene_overlap: u8;
+}
+
+fn bit(image: u32) -> u32 {
+    if image == 0 { 0 } else { 1 << image }
+}
 
 /// Whether the scene core started this program: the boot splash is the disc's first program's alone,
 /// so a program the core switched to does not play it again.
 pub(crate) fn entered_by_core() -> bool {
-    // SAFETY: see the static.
+    // SAFETY: see the statics.
     unsafe { ENTERED_BY_CORE }
 }
 
-/// What the core's `__psx_core_attach` does (CORE-ABI.md 4.3, step 4), the part a program needs before
-/// the core exists: on a core entry the block is the core's and stays; on a BIOS boot a fresh block,
-/// the preloaded front end current, no previous scene. Called once by the layer's `main`; it goes when
-/// the core lands. The lba offset and CD-DA base are psx-rt's entry registers (`disc_base`).
+/// Once, from the layer's `main` (the core's `__core_boot` and attach ran before `_start`): note how
+/// the program was started and which images are in RAM. No disc read.
 pub(crate) fn attach() {
-    // SAFETY: as block_u16; the block is RAM above the program's stack.
-    let (magic, inverse, flags) = unsafe {
-        (
-            core::ptr::read_volatile(BLOCK as *const u32),
-            core::ptr::read_volatile((BLOCK + 0xFC) as *const u32),
-            core::ptr::read_volatile((BLOCK + 0x18) as *const u32),
-        )
-    };
-    // The images the EXE carries come in with the program (tools/scenes.py `preload` and `boot`).
-    let (pre, boot) = (&raw const __scene_preloaded as u32, &raw const __scene_boot_id as u32);
+    let flags = psx_core::link::block_word(psx_core::abi::block::OFF_FLAGS);
     // SAFETY: see the statics.
-    unsafe { RESIDENT = pre | bit(boot) };
-    if magic == BLOCK_MAGIC && inverse == !BLOCK_MAGIC && flags & 1 != 0 {
-        // SAFETY: see the static.
-        unsafe { ENTERED_BY_CORE = true };
-        return;
+    unsafe {
+        ENTERED_BY_CORE = psx_core::link::block_valid() && flags & psx_core::abi::block::FLAG_CORE_ENTRY != 0;
+        IN_RAM = &raw const __scene_preloaded as u32;
+        if !ENTERED_BY_CORE {
+            IN_RAM |= bit(&raw const __scene_boot_id as u32);
+        }
     }
-    for off in (0..0x100).step_by(4) {
-        block_u32(off, 0);
-    }
-    block_u32(0x00, BLOCK_MAGIC);
-    block_u16(0x04, 1);
-    block_u16(0x06, 0x100);
-    block_u32(0x0C, psx_io::disc_base::lba_offset());
-    block_u32(0x10, u32::from(psx_io::disc_base::cdda_track_base()));
-    block_u16(OFF_CURRENT, pre.trailing_zeros() as u16 % 32);
-    block_u16(OFF_PREVIOUS, 0xFFFF);
-    block_u32(0x74, pre | bit(boot));
-    block_u32(0xFC, !BLOCK_MAGIC);
 }
 
-/// The program's RAM copy of the scene table, for `core_load_image`.
-pub(crate) fn table() -> *const u32 {
-    (&raw const PSYQ_SCENE_ROWS).cast()
-}
-
-/// The scene the handoff block says is current (0 the program itself, before any image).
+/// The scene the handoff block says is current.
 #[no_mangle]
 pub extern "C" fn core_current_scene() -> u32 {
-    // SAFETY: as block_u16.
-    u32::from(unsafe { core::ptr::read_volatile((BLOCK + OFF_CURRENT) as *const u16) })
+    psx_core::link::block_word(0x14) & 0xFFFF
 }
 
-/// Record a switch to `scene` (the core does this at every switch).
-fn entered(scene: u32) {
-    // SAFETY: see the statics. The loaded mask (handoff block v2, 0x74).
-    block_u32(0x74, unsafe { RESIDENT });
-    block_u16(OFF_PREVIOUS, core_current_scene() as u16);
-    block_u16(OFF_CURRENT, scene as u16);
-    // SAFETY: as block_u16.
-    let n = unsafe { core::ptr::read_volatile((BLOCK + OFF_COUNTER) as *const u32) };
-    block_u32(OFF_COUNTER, n.wrapping_add(1));
-}
-
-// ------------------------------------------------------------------------------ scene images
-
-/// What the shim keeps of a table row (CORE-ABI.md 1): its sectors and where they go.
-#[derive(Clone, Copy)]
-struct Row {
-    lba: u32,
-    sectors: u32,
-    t_addr: u32,
-    t_size: u32,
-    fnv: u32,
-    tries: u8,
-}
-
-const MAX_ROWS: usize = 8;
-/// The scenes whose images are in RAM now, one bit each (bit 0, the program, is never set).
-// SAFETY: foreground-only static.
-static mut RESIDENT: u32 = 0;
-
-/// The resident scenes whose rows' ranges overlap `row`'s (the rows the table has).
-fn overlapped(row: &Row) -> u32 {
-    let mut out = 0;
-    for id in 1..MAX_ROWS {
-        // SAFETY: see the statics.
-        let r = unsafe { ROWS[id] };
-        if r.sectors != 0 && r.t_addr < row.t_addr + row.t_size && row.t_addr < r.t_addr + r.t_size {
-            out |= bit(id as u32);
-        }
-    }
-    out
-}
-
-fn bit(scene: u32) -> u32 {
-    if scene == 0 || scene >= 32 { 0 } else { 1 << scene }
-}
-const NO_ROW: Row = Row { lba: 0, sectors: 0, t_addr: 0, t_size: 0, fnv: 0, tries: 0 };
-// SAFETY (both): foreground-only statics.
-static mut ROWS: [Row; MAX_ROWS] = [NO_ROW; MAX_ROWS];
-/// The table's file has been read (its rows are in `ROWS`).
-static mut TABLE_READ: bool = false;
-
-extern "C" {
-    /// The region the images share (tools/scenes.py's linker script; psyq.ld provides 0 for a
-    /// program without images).
-    static __scene_region_start: u8;
-    static __scene_region_end: u8;
-    /// The images the EXE carries in the region, one bit a scene id (0: none), an absolute symbol.
-    static __scene_preloaded: u8;
-    /// The scene id of the boot image the EXE carries for the start of the heap (0: none).
-    static __scene_boot_id: u8;
-}
-
-/// Word FNV-1a (CORE-ABI.md: offset basis 0x811C9DC5, prime 0x01000193, a word at a step).
-fn word_fnv(words: &[u32]) -> u32 {
-    let mut h: u32 = 0x811C_9DC5;
-    for &w in words {
-        h = (h ^ w).wrapping_mul(0x0100_0193);
-    }
-    h
-}
-
-/// Read the scene table: the first sector of `\SCENES.IMG`, whose image rows count their LBAs from
-/// the file's start (tools/scenes.py; the core's table, at a fixed LBA, will carry disc LBAs).
-/// The scene table's rows as the build wrote them into the program (tools/scenes.py `embed`, after the
-/// disc's layout is known): word 0 "PSQT", word 1 the row count, then the rows in the table's format with
-/// disc LBAs. With them the first switch reads no table. The core reads its own table; this goes with
-/// the shim.
+/// `psx_core_load_image(image_index, table)`: overlay `image` into its range unless it is in RAM, FNV
+/// checked, I-cache flushed, the core's loaded mask updated, returning on the caller's stack. The table
+/// argument is the layer's own copy (`TABLE`); the C declaration keeps the core's shape. The boot code
+/// is not an image of the table: it is valid until the first other image is entered.
 #[no_mangle]
-static mut PSYQ_SCENE_ROWS: [u32; 2 + 16 * MAX_ROWS] = {
-    let mut t = [0u32; 2 + 16 * MAX_ROWS];
-    t[0] = u32::from_le_bytes(*b"PSQT");
-    t
-};
-
-fn read_table() -> u32 {
-    // SAFETY: see the statics; written by the build, read here only.
-    let embedded = unsafe { &*(&raw const PSYQ_SCENE_ROWS) };
-    if embedded[0] == u32::from_le_bytes(*b"PSQT") && embedded[1] != 0 {
-        rows_from(&embedded[2..], embedded[1] as usize, 0);
-        // SAFETY: see the statics.
-        unsafe { TABLE_READ = true };
-        return 0;
-    }
-    let Some((base, _)) = crate::cd::find_file(b"\\SCENES.IMG;1") else {
-        return STAGE_READ_FAILED;
-    };
-    let Some(sector) = sector(base) else {
-        return STAGE_READ_FAILED;
-    };
-    if sector[0] != u32::from_le_bytes(*b"PSXS") || sector[1] != u32::from_le_bytes(*b"CN01") {
-        return STAGE_TABLE_MAGIC;
-    }
-    let count = (sector[2] >> 16) as usize;
-    let row_bytes = (sector[3] & 0xFFFF) as usize;
-    if row_bytes != 64 || count > 31 || word_fnv(&sector[16..16 + count * 16]) != sector[5] {
-        return STAGE_TABLE_MAGIC;
-    }
-    rows_from(&sector[16..], count, base);
-    // SAFETY: see the statics.
-    unsafe { TABLE_READ = true };
-    0
-}
-
-/// Keep the image rows (kind 1) of `count` table rows, their LBAs counted from `base`.
-fn rows_from(words: &[u32], count: usize, base: u32) {
-    for id in 0..count.min(MAX_ROWS) {
-        let r = &words[id * 16..id * 16 + 16];
-        if r[0] & 0xFFFF != id as u32 {
-            continue;
-        }
-        let row = Row { lba: base + r[1], sectors: r[2], t_addr: r[3], t_size: r[4], fnv: r[6], tries: (r[9] >> 16) as u8 };
-        // SAFETY: see the statics.
-        unsafe { ROWS[id] = if (r[0] >> 16) & 0xFF == 1 { row } else { NO_ROW } };
-    }
-}
-
-/// `psx_core_load_image(image_index, table_ptr)` (core v2, accepted by the SDK lane; slot address to
-/// come): `scene` is the image's row in the table, `_table` the program's RAM copy of the table (today
-/// the rows the build wrote into PSYQ_SCENE_ROWS, which this reads itself). Make scene image `scene` the current one, loading it into its fixed range while the
-/// program keeps running unless it is in RAM already: read its sectors, check its word FNV (a bad one
-/// is read again, up to the row's attempts), flush the instruction cache. The switch is recorded in
-/// the handoff block. Entering any scene but the boot one gives up the boot image (the heap takes its
-/// memory). 0, or a stage code (nothing is run from the range then). Not in the core's ABI yet: asked
-/// for.
-#[no_mangle]
-pub extern "C" fn core_load_image(scene: u32, _table: *const u32) -> u32 {
+pub extern "C" fn core_load_image(image: u32, _table: *const u32) -> u32 {
     let boot = &raw const __scene_boot_id as u32;
     // SAFETY: see the statics.
     unsafe {
-        if scene != boot {
-            RESIDENT &= !bit(boot);
+        if image != boot {
+            IN_RAM &= !bit(boot);
         }
-        if RESIDENT & bit(scene) != 0 {
-            // The boot code (splash, film player) is not a scene of its own: running it records nothing.
-            if scene != boot {
-                entered(scene);
-            }
+        if IN_RAM & bit(image) != 0 {
             return 0;
         }
-        if scene == boot {
+        if image == boot {
             return STAGE_NO_ROW;
         }
     }
-    // SAFETY: see the statics.
-    if unsafe { CLIENT } {
-        return STAGE_CLIENT;
-    }
-    // SAFETY: see the statics.
-    if !unsafe { TABLE_READ } {
-        let r = read_table();
-        if r != 0 {
-            return r;
+    // SAFETY: see the statics; the core follows its ABI.
+    let r = psx_core::link::load_image(image, unsafe { &mut *(&raw mut TABLE) });
+    // The layer's reader settles the drive again before its next read in any case.
+    forget();
+    if r == 0 {
+        // SAFETY: see the statics.
+        unsafe {
+            IN_RAM = if &raw const __scene_overlap as u32 != 0 { bit(image) } else { IN_RAM | bit(image) };
         }
     }
-    // SAFETY: see the statics.
-    let Some(row) = (unsafe { ROWS }).get(scene as usize).copied().filter(|r| r.sectors != 0) else {
-        return STAGE_NO_ROW;
-    };
-    let (lo, hi) = (&raw const __scene_region_start as u32, &raw const __scene_region_end as u32);
-    if row.t_addr < lo || row.t_size != row.sectors * 2048 || row.t_addr + row.t_size > hi {
-        return STAGE_BOUNDS;
-    }
-    let dst = row.t_addr as *mut u32;
-    let mut result = STAGE_CHECKSUM;
-    for _ in 0..row.tries.max(1) {
-        if !read(row.lba, row.sectors, dst, false, None) {
-            result = STAGE_READ_FAILED;
-            break;
-        }
-        // SAFETY: the range was just read, inside the region.
-        if word_fnv(unsafe { core::slice::from_raw_parts(dst, row.t_size as usize / 4) }) == row.fnv {
-            result = 0;
-            break;
-        }
-    }
-    if result != 0 {
-        return result;
-    }
-    psx_rt::cache::flush_instruction_cache();
-    // SAFETY: see the statics. The image replaces whatever it overlaps (`overlap`: every other region image).
-    unsafe { RESIDENT = (RESIDENT & !overlapped(&row)) | bit(scene) };
-    entered(scene);
-    0
+    r
 }

@@ -18,6 +18,10 @@ into one shared region, docs/DECISIONS.md "Scene images").
 
 SCENES.TXT, one directive a line, `#` starts a comment:
 
+    core                       the program carries the SDK scene core (psx-core, sdk/psoxide-core.ld):
+                               its stored copy right after .data, where the region and .bss will be
+                               (`__core_boot` copies it into the window), the boot code's store after
+                               it; the region's images are not carried (the core loads them)
     arrange overlap|resident   the per-game setting (owner, 2026-11-23: a modular loader, the
                                arrangement a setting): `overlap` puts the region images at one
                                address, loaded on demand (frees RAM, a read at each switch);
@@ -90,8 +94,9 @@ class Image:
 
 
 def parse(path):
-    global ARRANGE
+    global ARRANGE, CORE
     ARRANGE = 'overlap'
+    CORE = False
     region = (0x1000, 0)
     images, allows = [], []
     for n, raw in enumerate(open(path), 1):
@@ -99,7 +104,9 @@ def parse(path):
         if not line:
             continue
         kind, args = line[0], line[1:]
-        if kind == 'arrange':
+        if kind == 'core':
+            CORE = True
+        elif kind == 'arrange':
             ARRANGE = args[0]
         elif kind == 'region':
             region = (int(args[0], 0), int(args[1], 0))
@@ -157,7 +164,8 @@ def cmd_ld(scenes, out, objdir):
     w = ['/* Made by tools/scenes.py from %s: the scene images, one region after .data.' % os.path.basename(scenes),
          '   Link with -T this -T psyq/psyq.ld (this script first, so its patterns claim their sections). */',
          'SECTIONS {',
-         '    __scene_data_end = ADDR(.data) + SIZEOF(.data);',
+         '    __scene_data_end = ADDR(.data) + SIZEOF(.data);']
+    w += [
          '    __scene_region_start = __scene_data_end + ((%#x - __scene_data_end) & %#x);' % (offset, align - 1)]
     def body(im, base):
         pats = []
@@ -214,6 +222,31 @@ def cmd_ld(scenes, out, objdir):
               '    ASSERT(__scene_boot_lma + __scene_boot_size <= __scene_boot_vma, "the boot image would be moved over itself")',
               '}',
               'INSERT AFTER .bss;', '']
+    if CORE:
+        # The core's stored copy, last in the EXE (mkisopsx: a Program's row stops before it), run at the window
+        # (sdk/psoxide-core.ld's rule; __core_boot copies it there first thing).
+        if boot:
+            at = '__scene_boot_lma + __scene_boot_size'
+        elif pre:
+            at = 'ADDR(.scene_%s) + SIZEOF(.scene_%s)' % (pre[-1].name, pre[-1].name)
+        else:
+            at = '__scene_region_start'
+        w += ['SECTIONS {',
+              '    __psx_core_store_at = ALIGN(%s, 16);' % at,
+              '    .psx_core_store STACK_INIT : AT(__psx_core_store_at) {',
+              '        __psx_core_store = .;',
+              '        KEEP(*(.psx_core))',
+              '        . = ALIGN(4);',
+              '        __psx_core_store_end = .;',
+              '    }',
+              '    __psx_core_store_lma = LOADADDR(.psx_core_store);',
+              '    __psx_core_store_load_end = __psx_core_store_lma + SIZEOF(.psx_core_store);',
+              '    ASSERT(STACK_INIT == 0x801FDF00, "a program on the core has RAM_SIZE 0x1FE000")',
+              '    ASSERT(__psx_core_store_end - __psx_core_store <= 0x2000, "the core image must fit the window")',
+              '    ASSERT(__psx_core_store_end > __psx_core_store, "psx-core is not linked with feature link")',
+              '}',
+              'INSERT AFTER .bss;', '']
+    w += ['__scene_overlap = %d;' % (1 if ARRANGE == 'overlap' else 0), '']
     open(out, 'w').write('\n'.join(w))
 
 
@@ -516,6 +549,7 @@ def cmd_patch(exe, mapfile, blob, blobmap, tools):
     pc, payload = struct.unpack_from('<I', prog, 0x10)[0], struct.unpack_from('<I', prog, 0x1C)[0]
     lma = text_lo + len(prog) - 0x800
     lines, inside, start_at = [], False, None
+    CORE_MAP = any(l.rstrip().endswith(' __core_boot') for l in open(mapfile))
     for line in open(mapfile):
         m = ROW.match(line)
         if m and len(m.group(5)) - len(m.group(5).lstrip(' ')) == 0:
@@ -537,7 +571,8 @@ def cmd_patch(exe, mapfile, blob, blobmap, tools):
         open(tmap, 'w').write(''.join(lines))
         t = bytearray(prog) + image
         t += b'\0' * ((-len(t)) % SECTOR)
-        struct.pack_into('<II', t, 0x10, start_at, 0)
+        # the SDK's tools take a core program's entry as `__core_boot` (the header's PC), else `_start`
+        struct.pack_into('<II', t, 0x10, pc if CORE_MAP else start_at, 0)
         struct.pack_into('<I', t, 0x1C, len(t) - 0x800)
         open(texe, 'wb').write(t)
         for tool in ('hazard-patch', 'hazard-scan'):
@@ -555,26 +590,57 @@ def cmd_patch(exe, mapfile, blob, blobmap, tools):
 
 
 def cmd_splice(scenes, outdir, exe):
-    """Put the preloaded image and then the boot image (patched, from cmd_cut/cmd_patch) into the EXE
-    after the program's load: the preloaded one at its place in the region, the boot one right after
-    it (`__core_boot` moves it up), and grow the header's size to cover them."""
+    """Put into the EXE what it carries after the program's load: the scene core's stored copy (core
+    mode), the preloaded image at its place in the region, the boot code (patched, from cmd_cut and
+    cmd_patch) where `__core_boot` or `__boot_entry` moves it from; grow the header's size to cover them."""
     _, images, _ = parse(scenes)
+    elf = os.path.splitext(exe)[0] + '.elf'
+    syms = elf_symbols(elf)
     prog = bytearray(open(exe, 'rb').read())
     load = struct.unpack_from('<I', prog, 0x18)[0]
-    end = len(prog.rstrip(b'\0'))
+    data_end = syms['__data_end']
+    pieces = []
     for im in [i for i in images if i.preload] + [i for i in images if i.boot]:
         base = os.path.join(outdir, 'SCENES.%s' % im.name)
-        data = open(base + '.bin', 'rb').read()
         run = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)
-        at = 0x800 + (run if im.preload else boot_lma(outdir, exe)) - load
-        if at < end:
-            sys.exit(f'scenes.py splice: {im.name} would be stored inside the program')
-        prog = prog[:at].ljust(at, b'\0') + data
-        end = len(prog)
-        print(f'scenes: {im.name} carried in the EXE at {at - 0x800 + load:#x} ({len(data)} bytes)')
+        pieces.append((im.name, run if im.preload else syms['__scene_boot_lma'], open(base + '.bin', 'rb').read()))
+    for name, addr, data in pieces:
+        if addr < data_end:
+            sys.exit(f'scenes.py splice: {name} would be stored inside the program')
+        at = 0x800 + addr - load
+        if len(prog) < at + len(data):
+            prog.extend(b'\0' * (at + len(data) - len(prog)))
+        prog[at:at + len(data)] = data
+        print(f'scenes: {name} carried in the EXE at {addr:#x} ({len(data)} bytes)')
     prog += b'\0' * ((-len(prog)) % SECTOR)
     struct.pack_into('<I', prog, 0x1C, len(prog) - 0x800)
     open(exe, 'wb').write(prog)
+
+
+def cmd_manifest(scenes, outdir, out):
+    """The mkisopsx --scenes manifest (scene table v2) for the program and its region images: the images
+    the EXE carries (`preload`, every one with `arrange resident`) on the program's `carries=`."""
+    _, images, _ = parse(scenes)
+    region = sorted([im for im in images if not im.boot], key=lambda i: i.id)
+    syms = elf_symbols(os.path.join(outdir, [f for f in os.listdir(outdir) if f.endswith('.elf')][0]))
+    lo, hi = syms['__scene_region_start'], syms['__scene_region_end']
+    hi = lo + ((hi - lo + SECTOR - 1) & ~(SECTOR - 1))
+    ids = [im.id for im in region]
+    if ids != list(range(1, len(ids) + 1)):
+        sys.exit('scenes.py manifest: the region images must have ids 1..n (their image index)')
+    carried = [im.name + '.OVL' for im in region if im.preload]
+    text = ['# Made by tools/scenes.py: the scene table v2 for mkisopsx --scenes',
+            'program PSX.EXE - reserve=%#x-%#x' % (lo, hi) + (' carries=' + ','.join(carried) if carried else '')]
+    starts = {}
+    for im in region:
+        base = os.path.join(outdir, 'SCENES.%s' % im.name)
+        starts[im.name] = int(ROW.match(open(base + '.map').readlines()[1]).group(1), 16)
+        text.append('overlay %s.OVL SCENES.%s.bin owner=PSX.EXE load=%#x class=%s' %
+                    (im.name, im.name, starts[im.name], 'resident' if ARRANGE == 'resident' else 'swap'))
+    text += ['scene BOOT PSX.EXE start']
+    for im in region:
+        text.append('scene %s %s.OVL entry=%#x' % (im.name, im.name, starts[im.name]))
+    open(out, 'w').write('\n'.join(text) + '\n')
 
 
 def cmd_embed(img, exe, base_lba):
@@ -667,6 +733,8 @@ def main():
         cmd_patch(*args)
     elif cmd == 'embed' and len(args) == 3:
         cmd_embed(args[0], args[1], int(args[2], 0))
+    elif cmd == 'manifest' and len(args) == 3:
+        cmd_manifest(*args)
     elif cmd == 'splice' and len(args) == 3:
         cmd_splice(*args)
     elif cmd == 'pack' and len(args) in (3, 5):

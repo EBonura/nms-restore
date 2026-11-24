@@ -104,7 +104,7 @@ case $ram in
 esac
 # RESTORE: PLATFORM. The disc build splits the program into a resident base and scene images
 # (360x/scenes.txt, tools/scenes.py): their linker script goes first, each screen's entry function is
-# wrapped so that a call loads its image, and the images are cut into SCENES.IMG for the disc.
+# wrapped so that a call loads its image, and the images are cut into the overlay files mkisopsx --scenes puts on the disc (scenes.manifest).
 scenes=""
 if [ "$ram" = cd ]; then
 	python3 -I "$root/tools/scenes.py" ld "$here/scenes.txt" "$out/scenes.ld" "$obj"
@@ -126,7 +126,8 @@ case $ram in
 		python3 -I "$root/tools/scenes.py" cut "$here/scenes.txt" "$out/360x.elf" "$out" ;;
 	*) link ;;
 esac
-mipsel-none-elf-objcopy -O binary -j .ps_exe_head -j .text -j .data "$out/360x.elf" "$out/360x.exe"
+# (the scene core's stored copy follows .data: psx-core, tools/scenes.py `core`)
+mipsel-none-elf-objcopy -O binary -j .ps_exe_head -j .text -j .data -j .psx_core_store "$out/360x.elf" "$out/360x.exe"
 size=$(wc -c < "$out/360x.exe" | tr -d ' ')
 pad=$(( (2048 - size % 2048) % 2048 ))
 [ $pad = 0 ] || head -c $pad /dev/zero >> "$out/360x.exe"
@@ -134,14 +135,14 @@ pad=$(( (2048 - size % 2048) % 2048 ))
 "$root/psyq/hazard.sh" "$out/360x.exe" "$out/360x.map"
 if [ "$ram" = cd ]; then
 	# RESTORE: PLATFORM. The images' layer code too (the film player's), through the program's trampolines;
-	# then the images go into SCENES.IMG with the table.
-	for f in "$out"/SCENES.*.bin; do
+	# then the EXE carries the preloaded ones and the boot code (splice), the disc the rest.
+	# (only the boot code holds the layer's code, which LLVM's delay-slot filler may leave hazards in; NMS's C is gcc's)
+	for f in "$out"/SCENES.BOOT.bin; do
 		"$root/psyq/hazard.sh" --image "$out/360x.exe" "$out/360x.map" "$f" "${f%.bin}.map"
 	done
-	python3 -I "$root/tools/scenes.py" pack "$here/scenes.txt" "$out" "$out/SCENES.IMG" --list "$out/SCENES.IMG.txt"
 	python3 -I "$root/tools/scenes.py" splice "$here/scenes.txt" "$out" "$out/360x.exe"
-	# the rows, with SCENES.IMG where the disc puts it: the first file after the boot area (disc.sh checks)
-	python3 -I "$root/tools/scenes.py" embed "$out/SCENES.IMG" "$out/360x.exe" ${SCENES_LBA:-1024}
+	# the scene table v2 for the disc (mkisopsx --scenes): the program and its overlays
+	python3 -I "$root/tools/scenes.py" manifest "$here/scenes.txt" "$out" "$out/scenes.manifest"
 fi
 # RESTORE: PLATFORM. A disc's executable carries the gate's receipt (sdk/docs/GATE.md): psx-gate over the
 # layer, then the stamp, as the last change to the file.

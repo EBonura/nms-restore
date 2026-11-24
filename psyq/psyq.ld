@@ -22,7 +22,10 @@
  * pads it to whole 800h-byte sectors.
  */
 ENTRY(_start)
+/* The scene core (psx-core, feature link; sdk/psoxide-core.ld's rules): its __core_boot first, then the layer's
+   boot-code mover (src/boot.rs; it moves nothing for a program without boot code), then psx-rt's _start. */
 __initial_pc = __core_boot;
+__core_next = __psyq_boot_entry;
 
 RAM_BASE       = 0x80000000;
 RAM_SIZE       = DEFINED(RAM_SIZE) ? RAM_SIZE : 0x1FE000;
@@ -96,7 +99,8 @@ SECTIONS {
         . = ALIGN(4);
         __data_end = .;
     }
-    __load_end  = __data_end;
+    /* the scene core's stored copy is the last thing in the file (psx-core, tools/scenes.py `core`) */
+    __load_end  = DEFINED(__psx_core_store_load_end) ? __psx_core_store_load_end : __data_end;
     __image_end = __text_start + ((__load_end - __text_start + EXE_HEAD_BYTES - 1) & ~(EXE_HEAD_BYTES - 1));
 
     .bss (NOLOAD) : {
@@ -117,12 +121,14 @@ SECTIONS {
     PROVIDE(__scene_region_start = 0);
     PROVIDE(__scene_region_end = 0);
     PROVIDE(__scene_preloaded = 0);
+    PROVIDE(__scene_overlap = 0);
     PROVIDE(__scene_boot_id = 0);
     PROVIDE(__scene_boot_lma = 0);
     PROVIDE(__scene_boot_vma = 0);
     PROVIDE(__scene_boot_size = 0);
     __heap_end   = STACK_INIT - STACK_RESERVE;
     ASSERT(__bss_end <= STACK_INIT - STACK_RESERVE, "program does not fit below the stack reserve")
+    ASSERT(RAM_SIZE > 0x200000 || STACK_INIT == 0x801FDF00, "a console program on the core has RAM_SIZE 0x1FE000")
 
     /DISCARD/ : {
         *(.region)

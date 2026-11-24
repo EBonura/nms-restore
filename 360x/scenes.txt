@@ -7,24 +7,26 @@
 # gives back is the smaller of FRONT and MISSION: MISSION is only as large as it needs to be (at
 # least FRONT), and every byte of it is read at the Load_Level switch.
 
-# arrange: the per-game setting (owner, 2026-11-23). overlap (this): FRONT and MISSION share one region and load at
+# arrange: the per-game setting (owner, 2026-11-23). overlap (this; the EXE carries FRONT, `preload`, and the program's
+# row tells the core so): FRONT and MISSION share one region and load at
 # the switches (a 19-sector read at a game over or QUIT, 27 at each mission's briefing, about 0.4 to 0.6 s each in the
 # emulator); heap room above the 1319 KB block 19,644 B (4,164 B before the split). resident: no read at a switch, but
 # the room goes to -19,268 B, so maxmalloc (MAIN.C:51) would lose 19 KB of Mission 1's 56.2 KB margin.
+core
 arrange overlap
 region 0x1000 0x000
 
 # Boot-only code, not a scene (PLAN.md "Splash: one mechanism"): the splash (the SDK's, with the PSX Archive credit) and the film player, which
 # only the start of the game uses. The EXE carries it; it runs at the start of the heap, which the game
 # fills from the top down (JALLOC.C), as psyq-boot.ld's overlay did. No read before the splash.
-image 1 BOOT boot
+image 3 BOOT boot
 layer .boot_only .boot_only.* .text.FmvPlay .text.FmvMemoryBytes .text.*psx_fmv* .rodata.*psx_fmv* .bss.*psx_fmv*
 layer .text.PsxSplash .text.*psx_splash* .rodata.*psx_splash*
 entry PsxSplash FmvPlay FmvMemoryBytes
 
 # The front end (the EXE carries it too, so the first screen needs no read): language, title and attract loop, main menu with the memory card, planet select,
 # high-score entry.
-image 2 FRONT preload
+image 1 FRONT preload
 objects LANGUAGE TITLE SHIPDEMO HIGH CREDITS OPTIONS PLANETS
 # LOADSAVE's strings stay in the base: please_w[] (LOADSAVE.C:59) points at them and Loading_Message
 # (GENERAL.C:1447) prints it under every load, the mission's included.
@@ -36,7 +38,7 @@ entry Select_Language Title_Screen Ship_Description High_Scores Display_Credits 
 # Init_Newgame (the front-end flow calls it, MAIN.C) and Reset_Weapon_Ammo (MAIN.C calls it at power-on)
 # stay in the base. PROCESS, SPRITE2 and PARTICLE stay in the base: the front end's star fields use
 # PARTICLE, which calls SPRITE2.
-image 3 MISSION
+image 2 MISSION
 except LEVEL Init_Newgame
 except FIRE Reset_Weapon_Ammo
 objects CONTROL SCROLLER LOADDATA PANEL

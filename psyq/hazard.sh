@@ -20,19 +20,6 @@ if [ "$1" = --image ]; then
 	python3 -I "$root/tools/scenes.py" patch "$2" "$3" "$4" "$5" "$root/build/psx-gate-target/release"
 	exit
 fi
-# RESTORE: PLATFORM. The program starts at `__core_boot` (src/boot.rs, the scene core's entry ahead of
-# psx-rt's `_start`), which the tools do not know as an entry yet: they check that the header's initial PC
-# is the map's `_start`. So they run with the PC set to `_start`, and the real one goes back after.
-pc() {	# pc EXE [NEW]: print the header's initial PC, or set it to NEW (hex)
-	python3 -I -c 'import struct,sys
-f=open(sys.argv[1],"r+b"); f.seek(16)
-if len(sys.argv)>2: f.write(struct.pack("<I",int(sys.argv[2],16)))
-else: print("%08x" % struct.unpack("<I",f.read(4))[0])' "$@"
-}
-entry=$(pc "$1")
-start=$(awk '$NF=="_start" && $1 ~ /^[0-9a-f]+$/ {print $1; exit}' "$2")
-[ -n "$start" ] || { echo "hazard.sh: no _start in $2"; exit 1; }
-pc "$1" "$start"
-"$root/build/psx-gate-target/release/hazard-patch" --map "$2" "$1" || { pc "$1" "$entry"; exit 1; }
-"$root/build/psx-gate-target/release/hazard-scan" --map "$2" "$1" || { pc "$1" "$entry"; exit 1; }
-pc "$1" "$entry"
+# The program starts at the scene core's `__core_boot`, which the SDK's tools (at this pin) know as the entry.
+"$root/build/psx-gate-target/release/hazard-patch" --map "$2" "$1"
+"$root/build/psx-gate-target/release/hazard-scan" --map "$2" "$1"

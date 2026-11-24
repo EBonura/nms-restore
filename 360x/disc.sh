@@ -12,8 +12,9 @@
 # and the creature files of missions 2 to 9, which tools/x360_txt2spr.py
 # --stage compiles from the tree's GRAPHICS/LEVELn art into build/360x-cd/levels
 # (NMS's TXT2SPR step; LOADDATA.C names the files).
-# The disc holds SYSTEM.CNF, PSX.EXE, SCENES.IMG (the scene images build.sh cuts out of the link:
-# the boot splash and film player, the front end, the mission; tools/scenes.py), 360X.DAT and
+# The disc holds SYSTEM.CNF, SCENES.TBL and PSX.EXE (the SDK scene core's table and the program, which
+# carries the core, the boot splash and film player and the front end), FRONT.OVL and MISSION.OVL (the
+# scene images build.sh cuts out of the link, tools/scenes.py; mkisopsx --scenes), 360X.DAT and
 # SAT2.STR (the intro film, tools/x360_film.py, streamed by the layer's FmvPlay) in the root directory.
 #
 # The image is made by the PSoXide SDK's mkisopsx (PSoXide/tools/mkisopsx),
@@ -49,7 +50,5 @@ python3 -I "$root/tools/x360_dat.py" "$data" "$out/360X.DAT" --list "$out/360X.D
 cargo build -q --release --locked $offline --manifest-path "$psoxide/tools/mkisopsx/Cargo.toml" \
 	--target-dir "$root/build/mkiso-target"
 "$root/build/mkiso-target/release/mkisopsx" --exe "$out/360x.exe" --out "$out/360x.bin" --gate-file "$root/psx-gate.toml" ${MKISO_DIAG:+--diag} --volume 360X \
-	--file "$out/SCENES.IMG" --file "$out/360X.DAT" --xa-file "$out/SAT2.STR" > "$out/mkisopsx.log" 2>&1 || { cat "$out/mkisopsx.log"; exit 1; }
+	--scenes "$out/scenes.manifest" --core-image "$psoxide/sdk/crates/psx-core/prebuilt/psx-core.bin" --file "$out/360X.DAT" --xa-file "$out/SAT2.STR" > "$out/mkisopsx.log" 2>&1 || { cat "$out/mkisopsx.log"; exit 1; }
 cat "$out/mkisopsx.log"
-# RESTORE: PLATFORM. The program carries the scene rows with SCENES.IMG at LBA 1024 (build.sh): the disc must agree.
-grep -q "^SCENES.IMG: LBA ${SCENES_LBA:-1024}," "$out/mkisopsx.log" || { echo "SCENES.IMG is not at LBA ${SCENES_LBA:-1024}"; exit 1; }
