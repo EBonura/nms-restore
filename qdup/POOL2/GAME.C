@@ -642,6 +642,9 @@ void  end_of_frame_control(void)
 
   setup_show_potted_balls();
   replay_flag=YES;
+#ifdef	PSX
+  PadPressed=0;	// RESTORE: BUG FIX, the end-of-frame key starts empty (Show_potted_balls, PAD.C)
+#endif
 
   while   ( 1 )
 	{
@@ -3028,6 +3031,13 @@ double steves_angle;
 	  Handle3D();
 
      key=find_which_key_input();
+#ifdef	PSX
+     // RESTORE: BUG FIX. NMS's PC build left this replay of the frame's pots on any key or mouse button; the
+     // PS1 build defines find_which_key_input() as NULL (TYPES.H) and has no mouse, so the match never went on
+     // past its first frame. A press of Cross or Start (the buttons MENU.C waits for) since the screen began is that
+     // key here (PAD.C PadPressed, the PC's key buffer: the replay runs this check once a shot).
+     if ( PadPressed & (PAD_START|PAD_RD) ) key=1;
+#endif
 
      if ( (key!=0) or ( mouse_buttons!=0) )
       {
