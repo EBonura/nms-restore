@@ -10,6 +10,9 @@
 # folders, x360_dat.py checks). One exception: the sound bank (OPTIONS.VH, OPTPA.SEQ,
 # OPTPB.SEQ, OPTIONS.VB) sits where Mission 1's load ends, not at the boot, because
 # every mission loads it last and the boot loads it once.
+# CHLINK.PSX and .SPR (the chain weapon's shot, which the restoration loads since the list was made,
+# LOADDATA.C) sit where every mission asks for them, after S_SPFIRE: unlisted, they were at the
+# DAT's end, two long seeks in each mission load (Mission 1 CD log, 2026-11-27).
 HIGH.PSX
 HIGH.SPR
 360X.PSX
@@ -84,6 +87,8 @@ S_EXP7.PSX
 S_EXP7.SPR
 S_SPFIRE.PSX
 S_SPFIRE.SPR
+CHLINK.PSX
+CHLINK.SPR
 FLOPL1.PSX
 FLOPL1.SPR
 L1C1.PSX
