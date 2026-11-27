@@ -224,11 +224,19 @@ build = "qdup"
 # Poll-bound tapes (the frontend's --press route, the smoke's presses, transcribed to PXITAPE2 with
 # --input-tape-transcribe): 360X in Mission 1 with Cross held, QD Up after the first table loads (cue left and
 # right, the strike). Windows are in the game's own pad polls.
+# Anchored on the mission (2026-11-27), as qdup-shot is on the table: the same presses, split at the poll Mission 1's
+# fuel is first set (poll 2657 on main 55d9d8c). The menu presses replay from power-on (pgo/x360-mission-menu.pxtape);
+# Cross held in the mission (pgo/x360-mission-after.pxtape) and the window count from the poll fuel turns non-zero on the
+# build under test, so a faster or slower Mission 1 load no longer moves the window onto other gameplay.
+# polls = the old [2850, 3400] less 2657.
 [[speed]]
 name = "x360-mission"
 build = "x360"
-tape = "pgo/x360-boot-thrust.pxtape"
-polls = [2850, 3400]
+anchor = { kind = "ram", sym = "fuel", size = 2, op = "gt", value = 0 }
+anchor_max_polls = 3000
+anchor_tape = "pgo/x360-mission-menu.pxtape"
+tape = "pgo/x360-mission-after.pxtape"
+polls = [193, 743]
 offsets = [-24, -12, 0, 12, 24, 36]
 launch_args = ["--digital-pad"]
 
