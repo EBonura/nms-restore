@@ -140,17 +140,8 @@ press = ["start"]
 hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 2860 }
 timeout = 300
 
-[[step]]
-label = "the option and planet screens publish no clock: wait for the game clock to reach 3050"
-wait_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 3050 }
-timeout = 4000
-
-[[step]]
-label = "Start"
-press = ["start"]
-hold_until = { kind = "ram", sym = "__psx_rt_vblank_count", size = 4, op = "ge", value = 3060 }
-timeout = 300
-
+# Five paced presses reach Mission 1's load: a sixth (at 3050) landed during the load and, once the load got
+# shorter (2026-11-27, read-ahead in runs), in the mission, where Start pauses it.
 [[step]]
 label = "Mission 1 loads and starts (Init_Level sets the fuel)"
 wait_until = { kind = "ram", sym = "fuel", size = 2, op = "gt", value = 0 }
