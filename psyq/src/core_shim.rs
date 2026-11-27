@@ -8,8 +8,8 @@
 //!
 //! The scene images load through the SDK's core (`psx_core::link::load_image`); the stream client
 //! (the film) attaches through it. The game's own files are still read with the SDK's polled sector
-//! reader, as the layer always has: the core's read has no read-ahead sector, which answers 65 of
-//! 360X's Mission 1's 135 file starts with no drive start (asked of the SDK). The core proves the
+//! reader, as the layer always has: the core's read has no read-ahead, which takes 360X's
+//! Mission 1 from 135 drive starts to 63 (asked of the SDK). The core proves the
 //! drive stopped before each of its own reads, whatever the reader left.
 //!
 //! What stays the layer's, above this seam: the libcd API and the ISO walk (`cd.rs`), the LOAD FAILED
@@ -58,10 +58,30 @@ pub(crate) struct Failure {
 // handler.
 static mut READER: SectorReader = SectorReader::with_cd(unsafe { Cd::steal() });
 static mut LAST_FAILURE: Option<Failure> = None;
-/// One sector: directory reads (`sector`) and the sector after a read (`core_read`).
-static mut SCRATCH: [u32; SECTOR_WORDS] = [0; SECTOR_WORDS];
-/// The sector `SCRATCH` holds (`u32::MAX`: none).
+/// Sectors a read runs on for past its end (`read_once`) when it is one of a run of short reads,
+/// kept in `SCRATCH`; any other read runs on for one, as before.
+///
+/// RESTORE: PLATFORM. Four, the sound bank's piece (`FILES.C` `VABPIECE`). A read runs on for
+/// four when it starts where the last one stopped and is a whole piece, or is shorter while the
+/// read before it was short too and what that one ran on for answered a request (`USED`,
+/// `LAST_SHORT`). Short reads come in runs (the bank's pieces; Mission 1's small pictures, each
+/// with its table); the first short read after a long one, and a read elsewhere on the disc (as
+/// QD Up's are), keep the one sector. 360X's Mission 1: 87 drive starts to 63, with no more
+/// sectors read. A start costs about 45 ms (SeekL, the first sector, the Pause) to a sector's
+/// 6.7 ms. 6 KB of `.bss` over the one sector kept before, taken from the room over 360X's heap
+/// block.
+const AHEAD: usize = 4;
+/// `AHEAD` sectors: directory reads (`sector`, the first one) and the sectors after a read
+/// (`core_read`).
+static mut SCRATCH: [[u32; SECTOR_WORDS]; AHEAD] = [[0; SECTOR_WORDS]; AHEAD];
+/// The first sector `SCRATCH` holds (`u32::MAX`: none).
 static mut SCRATCH_LBA: u32 = u32::MAX;
+/// How many sectors from `SCRATCH_LBA` it holds (meaningful only while that is not `u32::MAX`).
+static mut SCRATCH_COUNT: u32 = 0;
+/// A request was answered from `SCRATCH` since the last read that started the drive.
+static mut USED: bool = false;
+/// The last read that started the drive was of at most `AHEAD` sectors.
+static mut LAST_SHORT: bool = false;
 /// The disc's size in sectors, from the volume descriptor (0 until it has been read): the sector
 /// after a read is only read when it is on the disc.
 static mut VOLUME_END: u32 = 0;
@@ -110,20 +130,42 @@ fn read_once(lba: u32, count: u32, dst: *mut u32, ahead: bool, hook: Option<exte
         }
     }
     // SAFETY: see the statics.
-    if ahead && lba + count < unsafe { VOLUME_END } {
+    let (used, last_short) = unsafe {
+        (
+            core::mem::replace(&mut *(&raw mut USED), false),
+            core::mem::replace(&mut *(&raw mut LAST_SHORT), count <= AHEAD as u32),
+        )
+    };
+    // SAFETY: see the statics.
+    let (first, held) = unsafe { (SCRATCH_LBA, SCRATCH_COUNT) };
+    // this read goes on from where the last one stopped: the game is walking forward on the disc
+    let onward = first != u32::MAX && lba >= first && lba - first <= held;
+    let short = onward && (count == AHEAD as u32 || (count < AHEAD as u32 && used && last_short));
+    let wanted = if short { AHEAD as u32 } else { 1 };
+    // SAFETY: see the statics.
+    let on_disc = unsafe { VOLUME_END }.saturating_sub(lba + count).min(wanted);
+    if ahead && on_disc > 0 {
         // RESTORE: PLATFORM. A game that loads its files one after another asks for the next
         // one at the sector this read ends at, and starting a read costs 40 ms to a
-        // sector's 6.7 ms: the stream runs on for that one sector, if the disc has it (a read
-        // past the last sector of the image answers with an error or nothing, and the layer
-        // would wait for it). The core's read has no such option yet: asked for (CORE-ABI.md 3).
+        // sector's 6.7 ms: the stream runs on for up to `AHEAD` sectors in a run of short
+        // reads and one after any other, as many as the disc has (a read past the last sector of the
+        // image answers with an error or nothing, and the layer would wait for it), in the same
+        // bracket, before the Pause below. The
+        // core's read has no such option yet: asked for (CORE-ABI.md 3).
         // SAFETY: see the statics.
         unsafe {
             SCRATCH_LBA = u32::MAX;
-            if rd.read_sector(&mut *(&raw mut SCRATCH)) {
+            let mut kept = 0;
+            while kept < on_disc && rd.read_sector(&mut (*(&raw mut SCRATCH))[kept as usize]) {
+                kept += 1;
+            }
+            if kept > 0 {
                 SCRATCH_LBA = lba + count;
+                SCRATCH_COUNT = kept;
             }
         }
-        // a failed extra sector is not the caller's failure: the stream is stopped below
+        // a failed extra sector is not the caller's failure (the ones before it are kept): the
+        // stream is stopped below
     }
     rd.stop();
     Ok(())
@@ -131,7 +173,7 @@ fn read_once(lba: u32, count: u32, dst: *mut u32, ahead: bool, hook: Option<exte
 
 /// Read `count` sectors from `lba` into `dst` (whole sectors, word aligned), trying up to
 /// `READ_TRIES` times with a full re-sync between tries. With `ahead`, the stream runs on for the
-/// one sector after them, which `core_read` answers a one-sector request for with no drive start.
+/// `AHEAD` sectors after them, which `core_read` answers a request held whole with no drive start.
 fn read(lba: u32, count: u32, dst: *mut u32, ahead: bool, hook: Option<extern "C" fn(u32)>) -> bool {
     for tries in 1..=READ_TRIES {
         match read_once(lba, count, dst, ahead, hook) {
@@ -204,28 +246,42 @@ mod fault {
     }
 }
 
-/// The sector `lba`, in the shim's one sector buffer (kept while it holds `lba`; the next read may
+/// The slot of `SCRATCH` that holds sector `lba`, when it holds the `count` sectors from `lba`.
+fn kept(lba: u32, count: u32) -> Option<usize> {
+    // SAFETY: see the statics.
+    let (first, held) = unsafe { (SCRATCH_LBA, SCRATCH_COUNT) };
+    (first != u32::MAX && lba >= first && count <= held && lba - first <= held - count)
+        .then(|| (lba - first) as usize)
+}
+
+/// The sector `lba`, in the shim's sector buffer (kept while it holds `lba`; the next read may
 /// replace it): what the layer's directory walk reads. `None` when the drive failed.
 pub(crate) fn sector(lba: u32) -> Option<&'static [u32; SECTOR_WORDS]> {
     // SAFETY: see the statics.
     unsafe {
-        if SCRATCH_LBA != lba {
-            SCRATCH_LBA = u32::MAX;
-            if !read(lba, 1, (&raw mut SCRATCH).cast(), false, None) {
-                return None;
+        let slot = match kept(lba, 1) {
+            Some(slot) => slot,
+            None => {
+                SCRATCH_LBA = u32::MAX;
+                if !read(lba, 1, (&raw mut SCRATCH).cast(), false, None) {
+                    return None;
+                }
+                SCRATCH_LBA = lba;
+                SCRATCH_COUNT = 1;
+                0
             }
-            SCRATCH_LBA = lba;
-            if lba == psx_io::iso::PVD_LBA {
-                // the volume space size is at byte 80 of the descriptor
-                let b = psx_io::iso::as_bytes(&*(&raw const SCRATCH));
-                VOLUME_END = u32::from_le_bytes([b[80], b[81], b[82], b[83]]);
-            }
+        };
+        let sector = &(*(&raw const SCRATCH))[slot];
+        if lba == psx_io::iso::PVD_LBA {
+            // the volume space size is at byte 80 of the descriptor
+            let b = psx_io::iso::as_bytes(sector);
+            VOLUME_END = u32::from_le_bytes([b[80], b[81], b[82], b[83]]);
         }
-        Some(&*(&raw const SCRATCH))
+        Some(sector)
     }
 }
 
-/// Forget the sector kept (a new disc session: `CdInit`).
+/// Forget the sectors kept (a new disc session: `CdInit`).
 pub(crate) fn forget() {
     // SAFETY: see the statics.
     unsafe { SCRATCH_LBA = u32::MAX };
@@ -237,20 +293,27 @@ pub(crate) fn forget() {
 /// will take member-relative ones) into `dst` (word aligned, whole sectors), blocking, with the
 /// retries, ending paused. `hook(i)` runs after sector `i` is in RAM. 0, or `STAGE_READ_FAILED`.
 ///
-/// RESTORE: PLATFORM. A one-sector request for the sector after the last read is answered from the
-/// sector kept (`read_once`), with no drive start: NMS's .SPR tables are read so, 65 of 360X's
-/// Mission 1's 135 starts.
+/// RESTORE: PLATFORM. A request for sectors the last read ran on for is answered from the sectors
+/// kept (`read_once`), with no drive start: NMS's .SPR tables, small pictures and the sound bank's
+/// pieces are read so: 360X's Mission 1 makes 63 drive starts, not 135.
 #[no_mangle]
 pub unsafe extern "C" fn core_read(lba: u32, sectors: u32, dst: *mut u32, hook: Option<extern "C" fn(u32)>) -> u32 {
     if sectors == 0 {
         return 0;
     }
-    // SAFETY: see the statics.
-    if sectors == 1 && unsafe { SCRATCH_LBA } == lba {
-        // SAFETY: the caller's buffer holds a sector; SCRATCH is one.
-        unsafe { core::ptr::copy_nonoverlapping((&raw const SCRATCH) as *const u32, dst, SECTOR_WORDS) };
-        if let Some(hook) = hook {
-            hook(0);
+    if let Some(slot) = kept(lba, sectors) {
+        // SAFETY: see the statics.
+        unsafe { USED = true };
+        for i in 0..sectors as usize {
+            // SAFETY: the caller's buffer holds `sectors` whole sectors; `kept` checked that
+            // SCRATCH holds them from `slot`.
+            unsafe {
+                let from = (&raw const SCRATCH).cast::<u32>().add((slot + i) * SECTOR_WORDS);
+                core::ptr::copy_nonoverlapping(from, dst.add(i * SECTOR_WORDS), SECTOR_WORDS);
+            }
+            if let Some(hook) = hook {
+                hook(i as u32);
+            }
         }
         return 0;
     }

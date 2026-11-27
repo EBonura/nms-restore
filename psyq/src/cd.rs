@@ -26,9 +26,9 @@
 //! (`root_directory`, `find_in_directory`, `PVD_LBA`), the SDK's own code. Two things stay here. First, the
 //! libcd shim itself (BCD `CdlLOC` positions, `CdControl` commands that only set where the next read starts,
 //! the blocking `CdRead` with an always-finished `CdReadSync`): it is the 1996 API the games' C calls, so
-//! there is no SDK twin to call. Second (now in `core_shim.rs`, below the seam), the one-sector read-ahead cache:
+//! there is no SDK twin to call. Second (now in `core_shim.rs`, below the seam), the read-ahead cache:
 //! NMS's loaders ask for the next file at the sector the last read ended at, and a drive start costs 40 ms
-//! against a sector's 6.7 ms; the cache answers 65 of Mission 1's 135 drive starts with no seek. The SDK's
+//! against a sector's 6.7 ms; the cache takes Mission 1 from 135 drive starts to 63. The SDK's
 //! `psx-cdstream` is a streaming reader (reads queued ahead of the caller) and these reads block, so it does
 //! not fit; `SectorReader::find` / `iso::find_in_root` walk the root only, where `CdSearchFile` takes
 //! `\DIR\FILE` paths, so the per-component walk through `find_in_directory` stays.
@@ -219,7 +219,7 @@ pub unsafe extern "C" fn CdRead(sectors: i32, buf: *mut u32, _mode: i32) -> i32 
     // SAFETY: see the statics.
     let lba = unsafe { TARGET };
     // RESTORE: PLATFORM. Through the scene core's seam (core_shim.rs), which also answers a
-    // one-sector request for the sector after the last read with no drive start (docs/DECISIONS.md, 360X).
+    // request for sectors the last read ran on for with no drive start (docs/DECISIONS.md, 360X).
     // SAFETY: the caller's buffer holds `sectors` whole sectors, word aligned.
     let ok = unsafe { core_shim::core_read(lba, sectors as u32, buf, None) } == 0;
     unsafe {
